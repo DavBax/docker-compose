@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+    memos:
+        image: index.docker.io/neosmemo/memos:latest
+        container_name: memos
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true
+        environment:
+            - PUID='1000'
+            - PGID='1000'
+        ports:
+            - '5230:5230'
+        volumes:
+            - memosVol:/var/opt/memos
+        networks:
+            - myNUCNetwork
+        labels:
+            - traefik.http.routers.memos.rule=Host(`memos.nuc.main`)
+volumes:
+    memosVol:
+        name: memosVol
+        external: true
+networks:
+    myNUCNetwork:
+        name: myNUCNetwork
+        external: true

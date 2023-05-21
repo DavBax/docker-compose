@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  glances:
+    image: index.docker.io/nicolargo/glances:latest
+    container_name: glances
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    ports:
+        - '61208:61208'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "GLANCES_OPT=-w"
+    labels:
+      - "traefik.port=61208"
+     # - "traefik.frontend.rule=Host:glances.docker.localhost"
+      - "traefik.http.routers.glances.rule=Host(`glances.nuc.main`)"
+    networks:
+      - myNUCNetwork 
+networks:
+     myNUCNetwork: 
+         name: myNUCNetwork 
+         external: true

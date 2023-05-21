@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+    portainer-ee:
+        image: 'index.docker.io/portainer/portainer-ee:latest'
+        container_name: portainer
+        security_opt:
+             - no-new-privileges:true
+        restart: unless-stopped
+        ports:
+            - '8000:8000'
+            - '9000:9000'
+            - '9443:9443'
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
+            - 'portainerBEVol:/data'
+        networks:
+            - myNUCNetwork
+volumes:
+         portainerBEVol:
+             name: portainerBEVol
+             external: true
+networks:
+         myNUCNetwork:
+             name: myNUCNetwork
+             external: true

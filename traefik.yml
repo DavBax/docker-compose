@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  traefik:
+    image: 'index.docker.io/traefik:latest'
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    command: --api.insecure=true --providers.docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80" # The HTTP port
+      - "8080:8080" # The Web UI (enabled by --api.insecure=true)
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - myNUCNetwork #check network name
+networks:
+     myNUCNetwork: #check network name
+         name: myNUCNetwork #check network name
+         external: true
