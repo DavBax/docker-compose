@@ -9,7 +9,7 @@ services:
         # user: '1000:1001'
          command: --interval 43200 #remove to default to 24hrs (43200=12hrs)
          environment:
-             DOCKER_CONFIG: /home/dave/.docker/
+             DOCKER_CONFIG: /home/pi/.docker/
          volumes:
              - /var/run/docker.sock:/var/run/docker.sock
              - $HOME/.docker/config.json:/config.json #check dir of file
