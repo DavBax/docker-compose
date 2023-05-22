@@ -16,10 +16,10 @@ services:
          volumes:
              - heimdallVol:/config
          networks:
-             - myNetwork #check network
+             - myPiNetwork #check network
 networks:
-     myNetwork: #check network
-         name: myNetwork #check network
+     myPiNetwork: #check network
+         name: myPiNetwork #check network
          external: true
 volumes:
      heimdallVol:
