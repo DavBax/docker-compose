@@ -11,6 +11,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.traefik.entrypoints=http"
         - "traefik.http.routers.traefik.rule=Host(`traefik.nuc.main`)"
+        - "traefik.docker.network=myNUCNetwork"
     ports:
       - "80:80" # The HTTP port
       - "8080:8080" # The Web UI (enabled by --api.insecure=true)
