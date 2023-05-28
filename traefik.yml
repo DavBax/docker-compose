@@ -14,7 +14,7 @@ services:
         - "traefik.http.routers.traefik.rule=Host(`traefik.nuc.main`)"
         - "traefik.docker.network=myNUCNetwork"
     ports:
-      - "80:80" # The HTTP port
+      #- "80:80" # The HTTP port
       - "8080:8080" # The Web UI (enabled by --api.insecure=true)
     volumes:
       # So that Traefik can listen to the Docker events
