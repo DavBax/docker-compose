@@ -19,7 +19,8 @@ services:
     networks:
         - myNUCNetwork
     labels:
-        - "traefik.port=4000"
+        #- "traefik.port=4000"
+        - "traefik.http.services.dashy.loadbalancer.server.port=4000"
         - "traefik.http.routers.dashy.rule=Host(`dashy.nuc.main`)"
     # Set any environmental variables
     #environment:
