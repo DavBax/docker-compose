@@ -14,8 +14,8 @@ services:
       - "GLANCES_OPT=-w"
     labels:
       - "traefik.port=61208"
-      - "traefik.frontend.rule=Host:glances.nuc.main"
-     # - "traefik.http.routers.glances.rule=Host(`glances.nuc.main`)"
+     # - "traefik.frontend.rule=Host:glances.nuc.main"
+      - "traefik.http.routers.glances.rule=Host(`glances.nuc.main/`)"
     networks:
       - myNUCNetwork 
 networks:
