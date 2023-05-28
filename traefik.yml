@@ -10,6 +10,7 @@ services:
     labels:
         - "traefik.enable=true"
         - "traefik.http.routers.traefik.entrypoints=http"
+        - "traefik.port=8080"
         - "traefik.http.routers.traefik.rule=Host(`traefik.nuc.main`)"
         - "traefik.docker.network=myNUCNetwork"
     ports:
