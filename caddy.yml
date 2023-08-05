@@ -14,7 +14,7 @@ services:
              - '80:80'
              - '443:443'
          volumes:
-             - caddyVol:/etc/caddy/
+             - caddyVol:/
              #- caddyVol/data:/data
              #- caddyVol/config:/config
          networks:
