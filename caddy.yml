@@ -14,9 +14,9 @@ services:
              - '80:80'
              - '443:443'
          volumes:
-             - caddyVol:/
-             #- caddyVol/data:/data
-             #- caddyVol/config:/config
+             - caddyVol:/etc/caddy/
+             - caddyVol:/data
+             - caddyVol:/config
          networks:
              - myNUCIntNetwork #check network
              - myNUCNetwork
