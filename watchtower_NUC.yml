@@ -10,6 +10,7 @@ services:
          command: --interval 43200 #remove to default to 24hrs (43200=12hrs)
          environment:
              DOCKER_CONFIG: /home/dave/.docker/
+             WATCHTOWER_CLEANUP: "true"
          volumes:
              - /var/run/docker.sock:/var/run/docker.sock
              - $HOME/.docker/config.json:/config.json #check dir of file
