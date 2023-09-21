@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+    adarkroom:
+        image: index.docker.io/dahuss/a-dark-room:latest
+        container_name: adarkroom
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true
+        environment:
+            - PUID='1000'
+            - PGID='1000'
