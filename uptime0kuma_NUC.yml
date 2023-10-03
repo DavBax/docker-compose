@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+    uptime-kuma:
+        image: elestio/uptime-kuma:latest
+        container_name: uptime-kuma
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true
+        ports:
+            - '3001:3001'
+        volumes:
+            - 'uptimekumaVol:/app/data'
+        networks:
+            - myNUCNetwork
+networks:
+    myNUCNetwork:
+        name: myNUCNetwork
+        external: true
+volumes:
+    uptimekumaVol:
+        name: uptimekumaVol
+        external: true
