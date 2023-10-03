@@ -1,7 +1,7 @@
 version: '3.8'
 services:
      npm:
-         image: lscr.io/jc21/nginx-proxy-manager:latest
+         image: index.docker.io/jc21/nginx-proxy-manager:latest
          container_name: npm
          restart: unless-stopped
          security_opt:
@@ -14,10 +14,10 @@ services:
              - npmVol:/data
              - npmVol:/etc/letsencrypt
          networks:
-             - myNetwork
+             - myNUCNetwork
 networks:
-     myNetwork:
-         name: myNetwork
+     myNUCNetwork:
+         name: myNUCNetwork
          external: true
 volumes:
      npmVol:
