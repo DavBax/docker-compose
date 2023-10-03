@@ -10,7 +10,7 @@ services:
             - '3001:3001'
         volumes:
             - 'uptimekumaVol:/app/data'
-            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/docker.sock:/var/run/docker.sock:ro
         networks:
             - myNUCNetwork
 networks:
