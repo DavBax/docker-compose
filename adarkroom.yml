@@ -11,3 +11,9 @@ services:
             - PGID='1000'
         ports:
             - '3080:80'
+         networks:
+            - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork
+         external: true
