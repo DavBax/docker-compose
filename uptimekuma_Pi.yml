@@ -13,7 +13,7 @@ services:
         networks:
             - myPiNetwork
 networks:
-    myNUCNetwork:
+    myPiNetwork:
         name: myPiNetwork
         external: true
 volumes:
