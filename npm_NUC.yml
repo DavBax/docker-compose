@@ -7,9 +7,9 @@ services:
          security_opt:
              - no-new-privileges:true
          ports:
-             #- '80:80'
+             - '80:80'
              - '81:81'
-             #- '443:443'
+             - '443:443'
          volumes:
              - npmVol:/data
              - npmVol:/etc/letsencrypt
