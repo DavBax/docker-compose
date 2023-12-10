@@ -7,7 +7,7 @@ services:
          security_opt:
             - no-new-privileges:true
         # user: '1000:1001'
-         command: --interval 30 #43200 #remove to default to 24hrs (43200=12hrs)
+         command: --interval 43200 #remove to default to 24hrs (43200=12hrs)
          environment:
              DOCKER_CONFIG: /home/dave/.docker/
              WATCHTOWER_CLEANUP: "true"
