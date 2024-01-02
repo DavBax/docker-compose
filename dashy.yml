@@ -24,8 +24,8 @@ services:
         - "traefik.http.routers.dashy.rule=Host(`nuc.main`)"
         - "traefik.docker.network=myNUCNetwork"
     # Set any environmental variables
-    environment:
-        - url=http://dashy.nuc.main/
+    #environment:
+    #    - url=http://dashy.nuc.main/
     #  - NODE_ENV=production
     # Configure healthchecks
     healthcheck:
