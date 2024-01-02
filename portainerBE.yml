@@ -7,9 +7,9 @@ services:
              - no-new-privileges:true
         restart: unless-stopped
         ports:
-            - '8000:8000'
-            - '9000:9000'
-            - '9443:9443'
+            #- '8000:8000' #only used for Edge Agents
+            - '9000:9000' #legacy port for mgmt web interface, portainer agent uses 9001 to speak to server
+            - '9443:9443' #to access mgmt web interface
         volumes:
             - '/var/run/docker.sock:/var/run/docker.sock'
             - 'portainerBEVol:/data'
