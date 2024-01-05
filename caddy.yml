@@ -12,7 +12,7 @@ services:
              - TZ=Europe/London
          ports:
              - '85:80'
-             - '445:443'
+             - '4443:443'
          volumes:
              - caddyVol:/etc/caddy/
              #- caddyVol/data:/data/
