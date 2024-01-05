@@ -9,8 +9,14 @@ services:
         ports:
             - '3000:3000'
             - '3001:3001'
+        volumes:
+            - 'openspeedtestVol:/var/log/letsencrypt'
         networks:
             - myNUCNetwork
+volumes:
+    openspeedtestVol:
+        name: openspeedtestVol
+        external: true
 networks:
      myNUCNetwork:
          name: myNUCNetwork
