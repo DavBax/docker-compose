@@ -18,12 +18,12 @@ services:
              #- caddyVol/data:/data/
              #- caddyVol/config:/config/
          networks:
-             - myNUCIntNetwork #check network
+            # - myNUCIntNetwork #check network
              - myNUCNetwork
 networks:
-     myNUCIntNetwork: #check network
-         name: myNUCIntNetwork #check network
-         internal: true
+     #myNUCIntNetwork: #check network
+     #    name: myNUCIntNetwork #check network
+     #    internal: true
      myNUCNetwork:
          name: myNUCNetwork
          external: true
