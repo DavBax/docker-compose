@@ -1,7 +1,7 @@
 version: '3.8'
 services:
      syslog-ng:
-         image: lscr.io/linuxserver/syslog-ng:latest
+         image: index.docker.io/linuxserver/syslog-ng:latest
          container_name: syslog-ng
          restart: unless-stopped
          security_opt:
