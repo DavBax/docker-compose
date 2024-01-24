@@ -12,7 +12,8 @@ services:
          ports:
              - '3000:3000'
          volumes:
-             - grafanaVol:/var/lib/grafana
+             - grafanaVol:/var/lib/grafana #path for data 
+             - grafanaVol:/etc/grafana #grafana.ini file is here
          networks:
              - myNUCNetwork
 networks:
