@@ -6,7 +6,7 @@ services:
          restart: unless-stopped
          security_opt:
              - no-new-privileges:true
-         user: 1000:1000
+         #user: 1000:1000
          #environment:
              #- UID=1000
              #- GID=1000
