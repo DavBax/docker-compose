@@ -6,7 +6,10 @@ services:
          restart: unless-stopped
          security_opt:
              - no-new-privileges:true
+         user: 1000:1000
          #environment:
+             #- UID=1000
+             #- GID=1000
              #- GF_SERVER_ROOT_URL=http://my.grafana.server/
              #- GF_INSTALL_PLUGINS=grafana-clock-panel
          ports:
