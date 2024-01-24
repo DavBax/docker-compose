@@ -9,11 +9,11 @@ services:
          #user: 1000:1000
          environment:
              #changes values in /etc/grafana/grafana.ini
-             GF_SECURITY_PROTOCOL=https
-             GF_SECURITY_DOMAIN=thehome.party
-             GF_SECURITY_ROOT_URL=https://grafana.thehome.party:3000
-             GF_SECURITY_CERT_KEY=/etc/grafana/grafana.key
-             GF_SECURITY_CERT_FILE=/etc/grafana/grafana.crt
+             - GF_SECURITY_PROTOCOL=https
+             - GF_SECURITY_DOMAIN=thehome.party
+             - GF_SECURITY_ROOT_URL=https://grafana.thehome.party:3000
+             - GF_SECURITY_CERT_KEY=/etc/grafana/grafana.key
+             - GF_SECURITY_CERT_FILE=/etc/grafana/grafana.crt
              #- UID=1000
              #- GID=1000
              #- GF_SERVER_ROOT_URL=http://my.grafana.server/
