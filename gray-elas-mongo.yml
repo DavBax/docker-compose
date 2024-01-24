@@ -1,5 +1,5 @@
 version: '3.8'
-  services:
+services:
      mongo: #MongoDB: https://hub.docker.com/_/mongo/
          image: index.docker.io/mongo:latest
          container_name: mongo
