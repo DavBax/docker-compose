@@ -50,7 +50,7 @@ services:
          volumes:
              - graylogVol:/usr/share/graylog/data
          ports:
-             - 9000:9000 #Graylog web interface and REST API
+             - 9090:9000 #Graylog web interface and REST API (changed to 9090 as Portainer is using 9000)
              - 1514:1514 #Syslog TCP
              - 1514:1514/udp #Syslog UDP
              - 12201:12201 #GELF TCP
