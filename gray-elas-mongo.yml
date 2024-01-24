@@ -1,7 +1,7 @@
 version: '3.8'
 services:
      mongo: #MongoDB: https://hub.docker.com/_/mongo/
-         image: index.docker.io/mongo:6.0.13
+         image: index.docker.io/mongo:latest
          container_name: mongo
          restart: unless-stopped
          security_opt:
