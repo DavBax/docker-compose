@@ -52,7 +52,7 @@ services:
              - 12201:12201 #GELF TCP
              - 12201:12201/udp #GELF UDP
          networks:
-             -myNUCNetwork
+             - myNUCNetwork
          depends_on:
              - mongo
              - elasticsearch
