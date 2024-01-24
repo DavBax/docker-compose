@@ -35,7 +35,7 @@ services:
          networks:
              - myNUCNetwork
      graylog: #Graylog: https://hub.docker.com/r/graylog/graylog/
-         image: index.docker.io/graylog/graylog:latest
+         image: index.docker.io/graylog/graylog:5.2.3
          container_name: graylog
          restart: unless-stopped
          security_opt:
