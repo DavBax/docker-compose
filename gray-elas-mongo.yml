@@ -21,6 +21,8 @@ services:
              - transport.host=localhost
              - network.host=0.0.0.0
              - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+         volumes:
+             - elasticVol:/usr/share/elasticsearch/data
          ports:
              - 9200:9200 #?
              - 9300:9300 #?
@@ -45,6 +47,8 @@ services:
              - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918 #Password: admin
              - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
          entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+         volumes:
+             - graylogVol:/usr/share/graylog/data
          ports:
              - 9000:9000 #Graylog web interface and REST API
              - 1514:1514 #Syslog TCP
@@ -63,4 +67,10 @@ networks:
 volumes:
      mongoVol:
          name: mongoVol
+         external: true
+     elasticVol:
+         name: elasticVol
+         external: true
+     graylogVol:
+         name: graylogVol
          external: true
