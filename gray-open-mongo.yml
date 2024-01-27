@@ -58,6 +58,8 @@ services:
              GRAYLOG_HTTP_EXTERNAL_URI: "https://thehome.party:9090/"
              GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
              GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+         env_file:
+             - stack.env
          ports:
              - "5044:5044/tcp"    #Beats
              - "5140:5140/udp"    #Syslog
