@@ -93,8 +93,3 @@ volumes:
      graylogJournalVol:
          name: graylogJournalVol
          external: true
-volumes:
-  mongodb_data:
-  os_data:
-  graylog_data:
-  graylog_journal:
