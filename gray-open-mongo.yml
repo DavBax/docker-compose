@@ -66,7 +66,7 @@ services:
              - "5140:5140/tcp"    #Syslog
              - "5555:5555/tcp"    #RAW TCP
              - "5555:5555/udp"    #RAW TCP
-             - "9090:9000/tcp"    #Server API
+             - "9000:9000/tcp"    #Server API
              - "12201:12201/tcp"  #GELF TCP
              - "12201:12201/udp"  #GELF UDP
              #- "10000:10000/tcp" #Custom TCP port
