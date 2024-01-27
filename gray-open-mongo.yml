@@ -21,8 +21,8 @@ services:
              - "bootstrap.memory_lock=true" #Disable JVM heap memory swapping
              - "discovery.type=single-node"
              - "action.auto_create_index=false"
-             #- "plugins.security.ssl.http.enabled=false"
-             #- "plugins.security.disabled=true"
+             - "plugins.security.ssl.http.enabled=false"
+             - "plugins.security.disabled=true"
          ulimits:
              memlock:
                  hard: -1 #Set memlock to unlimited (no soft or hard limit)
