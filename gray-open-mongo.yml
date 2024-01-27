@@ -74,7 +74,7 @@ services:
              - "13301:13301/tcp"  #Forwarder data
              - "13302:13302/tcp"  #Forwarder config
          volumes:
-             - "graylogDataVol:/usr/share/graylog/data/data"
+             - "graylogDataVol:/usr/share/graylog/data"
              - "graylogJournalVol:/usr/share/graylog/data/journal"
          networks:
              - myNUCNetwork
