@@ -7,9 +7,9 @@ services:
          security_opt:
              - no-new-privileges:true
          volumes:
-             - mongodbVol:/data/ #allows access to all folders in /data/
-             #- mongodbVol:/data/db
-             #- mongodbVol:/data/configdb
+             # - mongodbVol:/data/ 
+             - mongodbVol:/data/db
+             - mongoconfigdbVol:/data/configdb
          networks:
              - myNUCNetwork
      opensearch:
@@ -85,6 +85,9 @@ networks:
 volumes:
      mongodbVol:
          name: mongodbVol
+         external: true
+     mongoconfigdbVol:
+         name: mongoconfigdbVol
          external: true
      opensearchVol:
          name: opensearchVol
