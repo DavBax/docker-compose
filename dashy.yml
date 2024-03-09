@@ -12,6 +12,7 @@ services:
         - dashyVol:/app/public/ #file needs to be conf.yml
     ports:
         - '4000:80'
+        - '4001:443'
     networks:
         - myNUCNetwork
     #labels:
