@@ -12,6 +12,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - "GLANCES_OPT=-w" #web-server mode
+      - TZ=Europe/London
     labels:
       - "traefik.port=61208"
      # - "traefik.frontend.rule=Host:glances.nuc.main"
