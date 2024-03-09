@@ -6,10 +6,7 @@ services:
     restart: unless-stopped
     security_opt:
         - no-new-privileges:true
-    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
-    user: 1000:1000
-    #  - UID=1000
-    #  - GID=1000
+
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
     #   - /home/dave/dashy/my-local-conf.yml:/app/public/conf.yml
@@ -18,15 +15,18 @@ services:
         - '4000:80'
     networks:
         - myNUCNetwork
-    labels:
+    #labels:
         #- "traefik.port=4000"
-        - "traefik.http.services.dashy.loadbalancer.server.port=4000"
-        - "traefik.http.routers.dashy.rule=Host(`nuc.main`)"
-        - "traefik.docker.network=myNUCNetwork"
+        #- "traefik.http.services.dashy.loadbalancer.server.port=4000"
+        #- "traefik.http.routers.dashy.rule=Host(`nuc.main`)"
+        #- "traefik.docker.network=myNUCNetwork"
     # Set any environmental variables
-    #environment:
-    #    - url=http://dashy.nuc.main/
-    #  - NODE_ENV=production
+    environment:
+       #- url=http://dashy.nuc.main/
+        - NODE_ENV=production
+      # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
+        - UID=1000
+        - GID=1000
     # Configure healthchecks
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck']
