@@ -6,7 +6,6 @@ services:
     restart: unless-stopped
     security_opt:
         - no-new-privileges:true
-
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
     #   - /home/dave/dashy/my-local-conf.yml:/app/public/conf.yml
