@@ -11,7 +11,7 @@ services:
     #   - /home/dave/dashy/my-local-conf.yml:/app/public/conf.yml
         - dashyVol:/app/public/ #file needs to be conf.yml
     ports:
-        - '4000:80'
+        #- '4000:80' #no longer required, accessing via https
         - '4001:443'
     networks:
         - myNUCNetwork
