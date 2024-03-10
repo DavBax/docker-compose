@@ -10,6 +10,7 @@ services:
     volumes:
     #   - /home/dave/dashy/my-local-conf.yml:/app/public/conf.yml
         - dashyVol:/app/public/ #file needs to be conf.yml
+        - dashyVol:/etc/ssl/certs/ #to upload ssl certs
     ports:
         - '4000:80' #no longer required, accessing via https
         - '4001:443'
