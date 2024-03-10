@@ -15,6 +15,10 @@ services:
              - npmVol:/etc/letsencrypt
          networks:
              - myNUCNetwork
+         healthcheck:
+             test: ["CMD", "/usr/bin/check-health"]
+             interval: 10s
+             timeout: 3s
 networks:
      myNUCNetwork:
          name: myNUCNetwork
