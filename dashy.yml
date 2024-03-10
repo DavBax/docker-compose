@@ -41,7 +41,8 @@ networks:
     myNUCNetwork: 
         name: myNUCNetwork 
         external: true
-volumes:
-    dashyVol:
-        name: dashyVol
-        external: true
+#volumes no longer needed, using bind mounts for three files instead
+#volumes:
+#    dashyVol:
+#        name: dashyVol
+#        external: true
