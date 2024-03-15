@@ -10,6 +10,9 @@ services:
              - '80:80'
              - '81:81'
              - '443:443'
+         environment:
+             - PUID='1000'
+             - PGID='1000'
          volumes:
              - npmVol:/data
              - npmVol:/etc/letsencrypt
