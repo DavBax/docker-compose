@@ -11,8 +11,7 @@ services:
             - PGID='1000'
         volumes:
             - /home/dave/dufs/:/data
-        command: /data --tls-cert /home/dave/certs/cert1.pem --tls-key
-            /home/dave/certs/privkey1.pem
+        command: /data --tls-cert /home/dave/certs/cert1.pem --tls-key /home/dave/certs/privkey1.pem
         ports:
             - '5000:5000'
         networks:
