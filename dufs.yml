@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+    dufs:
+        image: index.docker.io/sigoden/dufs:latest
+        container_name: dufs
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true
+        environment:
+            - PUID='1000'
+            - PGID='1000'
+        volumes:
+            - /home/dave/dufs/:/data
+        command: /data -A
+        ports:
+            - '5000:5000'
+        networks:
+            - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork
+         external: true
