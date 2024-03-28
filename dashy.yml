@@ -28,8 +28,8 @@ services:
        #- url=http://dashy.nuc.main/
         #- NODE_ENV=production
       # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
-        - UID=1001
-        - GID=1001
+        - UID=1000
+        - GID=1000
     # Configure healthchecks
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck']
