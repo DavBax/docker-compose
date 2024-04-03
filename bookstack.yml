@@ -9,17 +9,18 @@ services:
          security_opt:
              - no-new-privileges:true
          environment:
-             #- PUID=1000
-             #- PGID=1000
-             - APP_URL=192.168.0.5
+             - PUID=1000
+             - PGID=1000
+             - APP_URL=https://bookstack.thehome.party
+             - DB_PORT=3306
              - DB_HOST=bookstack_db
              - DB_USER=bookstack
              - DB_PASS=yourdbpass
              - DB_DATABASE=bookstackapp
          volumes:
-             - bookstackVol:/config
+             - /home/dave/bookstack/appData:/config
          ports:
-             - '6875:6875'
+             - '6875:80'
          networks:
              - myNUCNetwork
      bookstack_db:
@@ -29,25 +30,18 @@ services:
          security_opt:
              - no-new-privileges:true
          environment:
-             #- PUID=1000
-             #- PGID=1000
+             - PUID=1000
+             - PGID=1000
              - MYSQL_ROOT_PASSWORD=yourdbrootpass
              - TZ=Europe/London
              - MYSQL_DATABASE=bookstackapp
              - MYSQL_USER=bookstack
              - MYSQL_PASSWORD=yourdbpass
          volumes:
-             - bookstackdbVol:/config
+             - /home/dave/bookstack/dbData:/config
          networks:
              - myNUCNetwork
 networks:
      myNUCNetwork: 
          name: myNUCNetwork 
-         external: true
-volumes:
-     bookstackVol:
-         name: bookstackVol
-         external: true
-     bookstackdbVol:
-         name: bookstackdbVol
          external: true
