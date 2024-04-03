@@ -18,7 +18,7 @@ services:
              - DB_PASS=yourdbpass
              - DB_DATABASE=bookstackapp
          volumes:
-             - ~/bookstack/appData/:/config
+             - /home/dave/bookstack/appData/:/config
          ports:
              - '6875:80'
          networks:
@@ -38,7 +38,7 @@ services:
              - MYSQL_USER=bookstack
              - MYSQL_PASSWORD=yourdbpass
          volumes:
-             - ~/bookstack/dbData/:/config
+             - /home/dave/bookstack/dbData/:/config
          networks:
              - myNUCNetwork
 networks:
