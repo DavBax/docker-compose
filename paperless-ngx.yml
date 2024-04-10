@@ -27,7 +27,6 @@
 #
 # For more extensive installation and update instructions, refer to the
 # documentation.
-
 version: "3.8"
 services:
   broker:
@@ -73,9 +72,6 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
-      PAPERLESS_DBNAME: paperless #using DBHOST instead?
-      PAPERLESS_DBUSER: paperless
-      PAPERLESS_DBPASS: paperless
 # The UID and GID of the user used to run paperless in the container. Set this
 # to your UID and GID on the host so that you have write access to the
 # consumption directory.
@@ -94,7 +90,7 @@ services:
 # be a very long sequence of random characters. You don't need to remember it.
       #PAPERLESS_SECRET_KEY: change-me
 # Use this variable to set a timezone for the Paperless Docker containers. If not specified, defaults to UTC.
-      PAPERLESS_TIME_ZONE: Europe/London
+      #PAPERLESS_TIME_ZONE: America/Los_Angeles
 # The default language to use for OCR. Set this to the language most of your
 # documents are written in.
       #PAPERLESS_OCR_LANGUAGE: eng
@@ -106,14 +102,6 @@ networks:
          external: true
 volumes:
   data:
-     name: paperlessngxdataVol
-     external: true
   media:
-     name: paperlessngxmediaVol
-     external: true
   pgdata:
-     name: paperlessngxpgdataVol
-     external: true
   redisdata:
-     name: paperlessngxredisdataVol
-     external: true
