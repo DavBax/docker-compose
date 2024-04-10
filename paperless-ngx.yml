@@ -54,7 +54,7 @@ services:
     networks:
       - myNUCNetwork
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    image: index.docker.io/paperlessngx/paperless-ngx:latest
     container_name: paperless-ngx
     restart: unless-stopped
     security_opt:
