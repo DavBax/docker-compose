@@ -47,6 +47,4 @@ networks:
          external: true
 volumes:
      bookstackAppVol:
-         name: bookstackAppVol
      bookstackDBVol:
-         name: bookstackDBVol
