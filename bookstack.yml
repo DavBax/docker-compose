@@ -38,7 +38,8 @@ services:
              - MYSQL_USER=bookstack
              - MYSQL_PASSWORD=yourdbpass
          volumes:
-             - bookstackDBVol:/config
+             - bookstackDBConfigVol:/config
+             - bookstackDBFilesVol:/var/lib/mysql
          networks:
              - myNUCNetwork
 networks:
@@ -47,4 +48,5 @@ networks:
          external: true
 volumes:
      bookstackAppVol:
-     bookstackDBVol:
+     bookstackDBConfigVol:
+     bookstackDBFilesVol:
