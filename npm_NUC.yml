@@ -28,5 +28,3 @@ networks:
          external: true
 volumes:
      npmVol:
-         name: npmVol
-         external: true
