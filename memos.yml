@@ -19,8 +19,6 @@ services:
             - traefik.http.routers.memos.rule=Host(`memos.nuc.main`)
 volumes:
     memosVol:
-        name: memosVol
-        external: true
 networks:
     myNUCNetwork:
         name: myNUCNetwork
