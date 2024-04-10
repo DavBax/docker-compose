@@ -51,6 +51,7 @@ services:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
+      TZ: Europe/London
     networks:
       - myNUCNetwork
   webserver:
