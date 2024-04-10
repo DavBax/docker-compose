@@ -73,6 +73,7 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
+      PAPERLESS_DBPASS: paperless
 # The UID and GID of the user used to run paperless in the container. Set this
 # to your UID and GID on the host so that you have write access to the
 # consumption directory.
