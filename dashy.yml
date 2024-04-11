@@ -8,7 +8,7 @@ services:
         - no-new-privileges:true
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
-        - 'home/dave/dashy:/app/public'
+        - 'home/dave/dashy/:/app/public/'
         #- './certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
         #- './certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
         #- dashyVol:/app/public/ #file needs to be conf.yml
