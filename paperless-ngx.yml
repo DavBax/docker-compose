@@ -71,6 +71,7 @@ services:
       - media:/usr/src/paperless/media
       - /home/dave/paperlessngx/export:/usr/src/paperless/export
       - /home/dave/paperlessngx/consume:/usr/src/paperless/consume
+      - /home/dave/paperlessngx/consume/test.txt:/usr/src/paperless/test.txt
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
