@@ -7,9 +7,9 @@ services:
          security_opt:
              - no-new-privileges:true
          ports:
-             - '80:80'
+             - #'80:80'
              - '82:81'
-             - '443:443'
+             - #'443:443'
          environment:
              - PUID=1000
              - PGID=1000
