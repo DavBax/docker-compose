@@ -67,11 +67,11 @@ services:
     ports:
       - "8010:8000"
     volumes:
-      - /home/dave/paperlessngx/data:/usr/src/paperless/data
-      - /home/dave/paperlessngx/media:/usr/src/paperless/media
-      - /home/dave/paperlessngx/export:/usr/src/paperless/export
-      - /home/dave/paperlessngx/consume:/usr/src/paperless/consume
-      - ~/paperlessngx/consume/test.txt:/usr/src/paperless/test.txt
+      - '/home/dave/paperlessngx/data:/usr/src/paperless/data'
+      - '/home/dave/paperlessngx/media:/usr/src/paperless/media'
+      - '/home/dave/paperlessngx/export:/usr/src/paperless/export'
+      - '/home/dave/paperlessngx/consume:/usr/src/paperless/consume'
+      #- ~/paperlessngx/consume/test.txt:/usr/src/paperless/test.txt
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
