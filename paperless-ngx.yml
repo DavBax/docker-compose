@@ -36,7 +36,7 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - redisdata:/data
+      - './paperlessngx/redisdata:/data' #portainer, relative path, set to "/home/dave/"
     networks:
       - myNUCNetwork
   db:
@@ -46,7 +46,7 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - './paperlessngx/pgdata:/var/lib/postgresql/data' #portainer, relative path, set to "/home/dave/"
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
@@ -67,10 +67,10 @@ services:
     ports:
       - "8010:8000"
     volumes:
-      - '/home/dave/paperlessngx/data:/usr/src/paperless/data'
-      - '/home/dave/paperlessngx/media:/usr/src/paperless/media'
-      - '/home/dave/paperlessngx/export:/usr/src/paperless/export'
-      - '/home/dave/paperlessngx/consume:/usr/src/paperless/consume'
+      - './paperlessngx/data:/usr/src/paperless/data'
+      - './paperlessngx/media:/usr/src/paperless/media'
+      - './paperlessngx/export:/usr/src/paperless/export'
+      - './paperlessngx/consume:/usr/src/paperless/consume'
       #- ~/paperlessngx/consume/test.txt:/usr/src/paperless/test.txt
     environment:
       PAPERLESS_REDIS: redis://broker:6379
