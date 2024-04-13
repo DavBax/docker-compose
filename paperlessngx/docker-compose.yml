@@ -75,8 +75,8 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
-      PAPERLESS_URL: https://paperless.thehome.party
-      PAPERLESS_CONSUMER_POLLING: 10
+      PAPERLESS_URL: https://paperlessngx.thehome.party
+      #PAPERLESS_CONSUMER_POLLING: 10
 # The UID and GID of the user used to run paperless in the container. Set this
 # to your UID and GID on the host so that you have write access to the
 # consumption directory.
@@ -102,11 +102,11 @@ services:
     networks:
       - myNUCNetwork
 networks:
-     myNUCNetwork: 
-         name: myNUCNetwork 
+     myNUCNetwork:
+         name: myNUCNetwork
          external: true
-volumes:
-  data:
-  media:
-  pgdata:
-  redisdata:
+#volumes:
+#  data:
+#  media:
+#  pgdata:
+#  redisdata:
