@@ -9,9 +9,11 @@ services:
         environment:
             - PUID='1000'
             - PGID='1000'
+#            - DUFS_TLS_CERT='/home/dave/certs/cert1.pem'
+#            - DUFS_TLS_KEY='/home/dave/certs/privkey1.pem'
         volumes:
-            - /home/dave/dufs/:/data
-        command: /data --tls-cert /home/dave/certs/cert1.pem --tls-key /home/dave/certs/privkey1.pem
+            - '/home/dave/dufs/data:/data'
+        command: /data -A # --tls-cert '/home/dave/certs/cert1.pem' --tls-key '/home/dave/certs/privkey1.pem'
         ports:
             - '5000:5000'
         networks:
