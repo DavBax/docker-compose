@@ -14,8 +14,8 @@ services:
              - PUID=1000
              - PGID=1000
          volumes:
-             - npmVol:/data
-             - npmVol:/etc/letsencrypt
+             - /home/dave/npm/data:/data
+             - /home/dave/npm/letsencrypt:/etc/letsencrypt
          networks:
              - myNUCNetwork
          #healthcheck:
@@ -26,5 +26,3 @@ networks:
      myNUCNetwork:
          name: myNUCNetwork
          external: true
-volumes:
-     npmVol:

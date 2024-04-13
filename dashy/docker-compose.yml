@@ -8,9 +8,9 @@ services:
         - no-new-privileges:true
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
-        - '/home/dave/github/docker-compose/dashy/conf.yml:/app/public/conf.yml'
-        #- 'home/dave/certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
-        #- 'home/dave/certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
+        - '/home/dave/docker-compose/dashy/conf.yml:/app/public/conf.yml'
+        - '/home/dave/certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
+        - '/home/dave/certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
         #- dashyVol:/app/public/ #file needs to be conf.yml
         #- dashyVol:/etc/ssl/certs/ #to upload ssl certs
     ports:
@@ -33,8 +33,8 @@ services:
       retries: 3
       start_period: 40s
 networks:
-    myNUCNetwork: 
-        name: myNUCNetwork 
+    myNUCNetwork:
+        name: myNUCNetwork
         external: true
 #volumes no longer needed, using bind mounts for three files instead
 #volumes:

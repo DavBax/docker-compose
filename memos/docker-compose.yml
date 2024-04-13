@@ -12,13 +12,9 @@ services:
         ports:
             - '5230:5230'
         volumes:
-            - memosVol:/var/opt/memos
+            - '/home/dave/memos/data:/var/opt/memos'
         networks:
             - myNUCNetwork
-        labels:
-            - traefik.http.routers.memos.rule=Host(`memos.nuc.main`)
-volumes:
-    memosVol:
 networks:
     myNUCNetwork:
         name: myNUCNetwork

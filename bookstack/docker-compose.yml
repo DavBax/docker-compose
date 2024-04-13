@@ -18,7 +18,7 @@ services:
              - DB_PASS=yourdbpass
              - DB_DATABASE=bookstackapp
          volumes:
-             - bookstackAppVol:/config
+             - '/home/dave/bookstack/config:/config'
          ports:
              - '6875:80'
          networks:
@@ -38,15 +38,15 @@ services:
              - MYSQL_USER=bookstack
              - MYSQL_PASSWORD=yourdbpass
          volumes:
-             - bookstackDBConfigVol:/config
-             - bookstackDBFilesVol:/var/lib/mysql
+             - '/home/dave/bookstack/db/config:/config'
+             - '/home/dave/bookstack/db/files:/var/lib/mysql'
          networks:
              - myNUCNetwork
 networks:
-     myNUCNetwork: 
-         name: myNUCNetwork 
+     myNUCNetwork:
+         name: myNUCNetwork
          external: true
-volumes:
-     bookstackAppVol:
-     bookstackDBConfigVol:
-     bookstackDBFilesVol:
+#volumes:
+#     bookstackAppVol:
+#     bookstackDBConfigVol:
+#     bookstackDBFilesVol:
