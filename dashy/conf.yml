@@ -1,0 +1,89 @@
+---
+# Page meta info, like heading, footer text and nav links
+pageInfo:
+  title: System Panel
+  description: Resource Usage Monitoring
+
+# Optional app settings and configuration
+appConfig:
+  #statusCheck: true
+  #statusCheckAllowInsecure: true
+  #Access-Control-Allow-Origin: https://glances.thehome.party
+  theme: colorful
+
+# Main content - An array of sections, each containing an array of items
+sections:
+- name: CPU Usage
+  icon: fas fa-tachometer
+  displayData:
+    rows: 2
+  widgets:
+  - type: gl-current-cpu
+    options:
+      hostname: https://glances.thehome.party
+  - type: gl-current-cores
+    options:
+      hostname: https://glances.thehome.party
+
+- name: CPU History
+  icon: fas fa-microchip
+  displayData:
+    cols: 2
+  widgets:
+  - type: gl-cpu-history
+    options:
+      hostname: https://glances.thehome.party
+      limit: 60
+
+- name: Disk Space
+  icon: fas fa-hdd
+  widgets:
+  - type: gl-disk-space
+    options:
+      hostname: https://glances.thehome.party
+
+- name: Network Interfaces
+  icon: fas fa-ethernet
+  widgets:
+  - type: gl-network-interfaces
+    options:
+      hostname: https://glances.thehome.party
+      limit: 500
+
+- name: Network Traffic
+  icon: fas fa-exchange
+  displayData:
+    cols: 2
+  widgets:
+  - type: gl-network-traffic
+    options:
+      hostname: https://glances.thehome.party
+      limit: 500
+
+- name: Disk IO
+  icon: fas fa-disc-drive
+  widgets:
+  - type: gl-disk-io
+    options:
+      hostname: https://glances.thehome.party
+
+- name: Memory Usage
+  icon: fas fa-memory
+  widgets:
+  - type: gl-current-mem
+    options:
+      hostname: https://glances.thehome.party
+
+- name: System Load
+  icon: fas fa-tasks-alt
+  widgets:
+  - type: gl-system-load
+    options:
+      hostname: https://glances.thehome.party
+
+- name: System Alerts
+  icon: fas fa-sensor-alert
+  widgets:
+  - type: gl-alerts
+    options:
+      hostname: https://glances.thehome.party
