@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  dozzle:
+    container_name: dozzle
+    image: index.docker.io/amir20/dozzle:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 9999:8080
+    networks:
+      - myNUCNetwork
+    environment:
+      - DOZZLE_NO_ANALYTICS
+networks:
+    myNUCNetwork: 
+        name: myNUCNetwork 
+        external: true

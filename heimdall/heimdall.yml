@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+     heimdall:
+         image: lscr.io/linuxserver/heimdall:latest
+         container_name: heimdall
+         restart: unless-stopped
+         security_opt:
+             - no-new-privileges:true
+         environment:
+             - PUID=1000
+             - PGID=1000
+             - TZ=Europe/London
+         ports:
+             - '80:80'
+             - '443:443'
+         volumes:
+             - heimdallVol:/config
+         networks:
+             - myPiNetwork #check network
+networks:
+     myPiNetwork: #check network
+         name: myPiNetwork #check network
+         external: true
+volumes:
+     heimdallVol:
+         name: heimdallVol
+         external: true

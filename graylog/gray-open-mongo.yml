@@ -1,0 +1,100 @@
+version: "3.8"
+services:
+     mongodb: #MongoDB: https://hub.docker.com/_/mongo/
+         image: index.docker.io/mongo:latest
+         container_name: mongodb
+         restart: unless-stopped
+         security_opt:
+             - no-new-privileges:true
+         volumes:
+             # - mongodbVol:/data/ 
+             - mongodbVol:/data/db
+             - mongoconfigdbVol:/data/configdb
+         networks:
+             - myNUCNetwork
+     opensearch:
+         image: index.docker.io/opensearchproject/opensearch:latest
+         container_name: opensearch
+         restart: unless-stopped
+         environment:
+             - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g" #Set mon & max JVM heap sizes
+             - "bootstrap.memory_lock=true" #Disable JVM heap memory swapping
+             - "discovery.type=single-node"
+             - "action.auto_create_index=false"
+             - "plugins.security.ssl.http.enabled=false"
+             - "plugins.security.disabled=true"
+         ulimits:
+             memlock:
+                 hard: -1 #Set memlock to unlimited (no soft or hard limit)
+                 soft: -1
+             nofile:
+                 soft: 65536 #Maximum number of open files for the opensearch user - set to at least 65536
+                 hard: 65536
+         ports:
+             - "9200:9200" #REST API
+             - "9600:9600" #performance analyser
+         volumes:
+             - "opensearchVol:/usr/share/opensearch/data"
+         networks:
+             - myNUCNetwork
+     graylog:
+         image: index.docker.io/graylog/graylog:5.2.3
+         container_name: graylog
+         restart: unless-stopped
+         security_opt:
+             - no-new-privileges:true
+         depends_on:
+             opensearch:
+                 condition: "service_started"
+             mongodb:
+                 condition: "service_started"
+         entrypoint: "/usr/bin/tini -- wait-for-it opensearch:9200 --  /docker-entrypoint.sh"
+         environment:
+             GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
+             #entered via Portainer's Stack Env options
+             #GRAYLOG_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+             #GRAYLOG_ROOT_PASSWORD_SHA2: "${GRAYLOG_ROOT_PASSWORD_SHA2:?Please configure GRAYLOG_ROOT_PASSWORD_SHA2 in the .env file}"
+             GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+             GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
+             GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
+             GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+         env_file:
+             - stack.env
+         ports:
+             - "5044:5044/tcp"    #Beats
+             - "5140:5140/udp"    #Syslog
+             - "5140:5140/tcp"    #Syslog
+             - "5555:5555/tcp"    #RAW TCP
+             - "5555:5555/udp"    #RAW TCP
+             - "9000:9000/tcp"    #Server API
+             - "12201:12201/tcp"  #GELF TCP
+             - "12201:12201/udp"  #GELF UDP
+             #- "10000:10000/tcp" #Custom TCP port
+             #- "10000:10000/udp" #Custom UDP port
+             - "13301:13301/tcp"  #Forwarder data
+             - "13302:13302/tcp"  #Forwarder config
+         volumes:
+             - "graylogDataVol:/usr/share/graylog/data"
+             - "graylogJournalVol:/usr/share/graylog/data/journal"
+         networks:
+             - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork 
+         external: true
+volumes:
+     mongodbVol:
+         name: mongodbVol
+         external: true
+     mongoconfigdbVol:
+         name: mongoconfigdbVol
+         external: true
+     opensearchVol:
+         name: opensearchVol
+         external: true
+     graylogDataVol:
+         name: graylogDataVol
+         external: true
+     graylogJournalVol:
+         name: graylogJournalVol
+         external: true

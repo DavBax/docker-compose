@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+     grafana:
+         image: index.docker.io/grafana/grafana-enterprise:latest
+         container_name: grafana
+         restart: unless-stopped
+         security_opt:
+             - no-new-privileges:true
+         #user: 1000:1000
+         environment:
+             #changes values in /etc/grafana/grafana.ini
+             - GF_SECURITY_PROTOCOL=https
+             - GF_SECURITY_DOMAIN=thehome.party
+             - GF_SECURITY_ROOT_URL=https://grafana.thehome.party:3000
+             - GF_SECURITY_CERT_KEY=/etc/grafana/grafana.key
+             - GF_SECURITY_CERT_FILE=/etc/grafana/grafana.crt
+             #- UID=1000
+             #- GID=1000
+             #- GF_SERVER_ROOT_URL=http://my.grafana.server/
+             #- GF_INSTALL_PLUGINS=grafana-clock-panel
+         ports:
+             - '3000:3000'
+         volumes:
+             - grafanaVol:/var/lib/grafana #path for data 
+             #- grafanaVol:/etc/grafana #grafana.ini file is here
+         networks:
+             - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork 
+         external: true
+volumes:
+     grafanaVol:
+         name: grafanaVol
+         external: true
