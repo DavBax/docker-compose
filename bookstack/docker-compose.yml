@@ -21,6 +21,7 @@ services:
              - '/home/dave/bookstack/config:/config'
          ports:
              - '6875:80'
+             - '6876:443'
          networks:
              - myNUCNetwork
      bookstack_db:
