@@ -1,7 +1,7 @@
 version: '3.8'
 services:
      heimdall:
-         image: lscr.io/linuxserver/heimdall:latest
+         image: index.docker.io/linuxserver/heimdall:latest
          container_name: heimdall
          restart: unless-stopped
          security_opt:
@@ -11,17 +11,15 @@ services:
              - PGID=1000
              - TZ=Europe/London
          ports:
-             - '80:80'
-             - '443:443'
+             - '8080:80'
+             - '4430:443'
          volumes:
-             - heimdallVol:/config
+             - '/home/dave/heimdall:/config'
+             - '/home/dave/certs/cert1.pem:/config/keys/cert.crt'
+             - '/home/dave/certs/privkey1.pem:/config/keys/cert.key'
          networks:
-             - myPiNetwork #check network
+             - myNUCNetwork #check network
 networks:
-     myPiNetwork: #check network
-         name: myPiNetwork #check network
-         external: true
-volumes:
-     heimdallVol:
-         name: heimdallVol
+     myNUCNetwork: #check network
+         name: myNUCNetwork #check network
          external: true
