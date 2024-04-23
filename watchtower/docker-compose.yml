@@ -11,6 +11,9 @@ services:
          environment:
              DOCKER_CONFIG: /home/dave/.docker/
              WATCHTOWER_CLEANUP: "true"
+             WATCHTOWER_NOTIFICATIONS: 'gotify'
+             WATCHTOWER_NOTIFICATION_GOTIFY_URL: 'https://gotify.thehome.party/'
+             WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: 'AxME5k00TUYGcZ-'
          volumes:
              - /var/run/docker.sock:/var/run/docker.sock:ro
              - $HOME/.docker/config.json:/config.json #check dir of file
