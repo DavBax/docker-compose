@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+     gotify:
+         image: index.docker.io/gotify/server:latest
+         container_name: gotify
+         restart: unless-stopped
+         user: '1000:1000'
+         security_opt:
+            - no-new-privileges:true
+         environment:
+             - TZ=Europe/London
+             - GOTIFY_DEFAULTUSER_PASS=password
+#             - UID=1000
+#             - GID=1000
+         volumes:
+             - '/home/dave/gotify:/app/data'
+         ports:
+             - '8080:80'
+         networks:
+             - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork
+         external: true
