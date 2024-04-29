@@ -7,8 +7,8 @@ services:
         security_opt:
             - no-new-privileges:true
         environment:
-            - PUID='1000'
-            - PGID='1000'
+            - UID=1000
+            - GID=1000
 #            - DUFS_TLS_CERT='/home/dave/certs/cert1.pem'
 #            - DUFS_TLS_KEY='/home/dave/certs/privkey1.pem'
         volumes:
