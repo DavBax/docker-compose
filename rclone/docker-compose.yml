@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+     rclone:
+         image: index.docker.io/rclone/rclone:latest
+         container_name: rclone
+         restart: unless-stopped
+#         user: '1000:1000'
+         security_opt:
+             - no-new-privileges:true
+         ports:
+             - '5572:5572'
+         environment:
+             - TZ=Europe/London
+             - RCLONE_USERNAME=AGOODUSERNAME
+             - RCLONE_PASSWORD=AGOODPASSWORD
+             - RCLONE_PORT=5572
+             - PUID=1000
+             - PGID=1000
+         volumes:
+             - '/home/dave/rclone/config:/config/rclone'
+             - '/home/dave/rclone/data:/data'
+             - '/home/dave/rclone/logs:/logs'
+             - '/var/cache/rclone:/vfsCache'
+             - '/etc/passwd:/etc/passwd:ro'
+             - '/etc/group:/etc/group:ro'
+             - '/etc/fuse.conf:/etc/fuse.conf:ro'
+         devices:
+             - '/dev/fuse:/dev/fuse:rwm'
+         cap_add:
+             - SYS_ADMIN
+         command:
+             - rcd
+             - --rc-web-gui
+             - --rc-web-gui-no-open-browser
+             - --rc-addr=:5572
+             - --rc-user=AGOODUSERNAME
+             - --rc-pass=AGOODPASSWORD
+             - --log-file=/logs/rclone.log
+             - --log-level=DEBUG
+             - --cache-dir=/vfsCache
+         networks:
+             - myNUCNetwork
+networks:
+     myNUCNetwork:
+         name: myNUCNetwork
+         external: true

@@ -19,9 +19,11 @@ sections:
     rows: 2
   widgets:
   - type: gl-current-cpu
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
   - type: gl-current-cores
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
 
@@ -31,14 +33,23 @@ sections:
     cols: 2
   widgets:
   - type: gl-cpu-history
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
       limit: 60
 
+- name: CPU Temp
+  icon: fas fa-microchip
+  widgets:
+  - type: gl-cpu-temp
+    options:
+      hostname: https://glances.thehome.party
+      units: C
 - name: Disk Space
   icon: fas fa-hdd
   widgets:
   - type: gl-disk-space
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
 
@@ -46,6 +57,7 @@ sections:
   icon: fas fa-ethernet
   widgets:
   - type: gl-network-interfaces
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
       limit: 500
@@ -56,6 +68,7 @@ sections:
     cols: 2
   widgets:
   - type: gl-network-traffic
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
       limit: 500
@@ -64,6 +77,7 @@ sections:
   icon: fas fa-disc-drive
   widgets:
   - type: gl-disk-io
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
 
@@ -71,6 +85,7 @@ sections:
   icon: fas fa-memory
   widgets:
   - type: gl-current-mem
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
 
@@ -78,12 +93,37 @@ sections:
   icon: fas fa-tasks-alt
   widgets:
   - type: gl-system-load
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
-
 - name: System Alerts
   icon: fas fa-sensor-alert
   widgets:
   - type: gl-alerts
+    useProxy: true
     options:
       hostname: https://glances.thehome.party
+- name: Proxmox
+  icon: fas fa-sensor-alert
+  widgets:
+   - type: proxmox-lists
+     useProxy: true
+     options:
+       cluster_url: https://pve.thehome.party
+       user_name: root@pam
+       token_name: dashy
+       token_uuid: c1a3193b-31f6-4709-bbc9-b45f451381cd
+       node: proxmox
+       node_data: qemu
+       title: Proxmox VMs
+       title_as_link: false
+       footer: Proxmox
+       footer_as_link: true
+       hide_templates: 1
+- name: Proxmox System Alerts
+  icon: fas fa-sensor-alert
+  widgets:
+  - type: gl-alerts
+    useProxy: true
+    options:
+      hostname: https://pve.thehome.party

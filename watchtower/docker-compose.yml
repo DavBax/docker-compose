@@ -10,6 +10,7 @@ services:
          command: --interval 21600 #remove to default to 24hrs (43200=12hrs, 21600=6hrs)
          environment:
              DOCKER_CONFIG: /home/dave/.docker/
+             DOCKER_API-VERSION: "1.45"
              WATCHTOWER_CLEANUP: "true"
              WATCHTOWER_NOTIFICATIONS: 'gotify'
              WATCHTOWER_NOTIFICATION_GOTIFY_URL: 'https://gotify.thehome.party/'
