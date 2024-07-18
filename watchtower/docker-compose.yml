@@ -10,11 +10,11 @@ services:
          command: --interval 21600 #remove to default to 24hrs (43200=12hrs, 21600=6hrs)
          environment:
              DOCKER_CONFIG: /home/dave/.docker/
-             DOCKER_API-VERSION: "1.45"
+             #DOCKER_API-VERSION: "1.45"
              WATCHTOWER_CLEANUP: "true"
              WATCHTOWER_NOTIFICATIONS: 'gotify'
              WATCHTOWER_NOTIFICATION_GOTIFY_URL: 'https://gotify.thehome.party/'
-             WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: 'AxME5k00TUYGcZ-'
+             WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: 'AsAc_t7M6DDwgRW'
          volumes:
              - /var/run/docker.sock:/var/run/docker.sock:ro
              - $HOME/.docker/config.json:/config.json #check dir of file
