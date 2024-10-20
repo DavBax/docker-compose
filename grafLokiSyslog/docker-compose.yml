@@ -1,0 +1,156 @@
+services:
+  cadvisorAIO:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisorAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    ports:
+      - published: 8088
+        target: 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    networks:
+      - myNUCNetwork
+  grafanaAIO:
+    image: index.docker.io/grafana/grafana:latest
+    container_name: grafanaAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_BASIC_ENABLED: "false"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/no_folder/loki_syslog_aio_overview.json
+    ports:
+      - protocol: tcp
+        published: 3001
+        target: 3000
+    volumes:
+      - /home/dave/grafLokiSyslog/config/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - /home/dave/grafLokiSyslog/config/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - /home/dave/grafLokiSyslog/config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - myNUCNetwork
+  lokiAIO:
+    image: index.docker.io/grafana/loki:latest
+    container_name: lokiAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    command: -config.file=/etc/loki/loki-config.yml
+    depends_on:
+      - minioAIO
+    ports:
+      - protocol: tcp
+        published: 3100
+        target: 3100
+    volumes:
+      - /home/dave/grafLokiSyslog/config/loki-config-s3.yml:/etc/loki/loki-config.yml:ro
+    networks:
+      - myNUCNetwork
+  minioAIO:
+    image: index.docker.io/minio/minio:latest
+    container_name: minioAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    command: -c 'mkdir -p /data/loki && /usr/bin/docker-entrypoint.sh minio server /data'
+    entrypoint: sh
+    environment:
+      MINIO_ROOT_USER: minio123
+      MINIO_PROMETHEUS_AUTH_TYPE: public
+      MINIO_ROOT_PASSWORD: minio456
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:9001/minio/health/live
+      timeout: 20s
+    ports:
+      - published: 9001
+        target: 9000
+    networks:
+      - myNUCNetwork
+  node-exporterAIO:
+    image: index.docker.io/prom/node-exporter:latest
+    container_name: node-exporterAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    command: --path.rootfs=/host
+    pid: host
+    ports:
+      - published: 9100
+        target: 9100
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - myNUCNetwork
+  prometheusAIO:
+    image: index.docker.io/prom/prometheus:latest
+    container_name: prometheusAIO
+    restart: unless-stopped
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.enable-admin-api
+    - --web.enable-lifecycle
+    ports:
+      - published: 9090
+        target: 9090
+    volumes:
+      - /home/dave/grafLokiSyslog/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - myNUCNetwork
+  promtailAIO:
+    image: index.docker.io/grafana/promtail:latest
+    container_name: promtailAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    command: -config.file=/etc/promtail/promtail-config.yml
+    ports:
+      - protocol: tcp
+        published: 1514
+        target: 1514
+      - protocol: tcp
+        published: 9080
+        target: 9080
+    volumes:
+      - /home/dave/grafLokiSyslog/config/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+    networks:
+      - myNUCNetwork
+  syslog-ngAIO:
+    image: index.docker.io/balabit/syslog-ng:latest
+    container_name: syslog-ngAIO
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    command: -edv
+    depends_on:
+      - promtailAIO
+    ports:
+      - protocol: udp
+        published: 514
+        target: 514
+      - protocol: tcp
+        published: 601
+        target: 601
+    volumes:
+      - /home/dave/grafLokiSyslog/config/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf:ro
+    networks:
+      - myNUCNetwork
+networks:
+  myNUCNetwork:
+    name: myNUCNetwork
+    external: true
+#version: '3.3'

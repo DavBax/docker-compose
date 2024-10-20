@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
      watchtower:
          image: index.docker.io/containrrr/watchtower:latest

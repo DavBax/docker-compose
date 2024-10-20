@@ -1,0 +1,27 @@
+#version: "3.8"
+services:
+  crowdsec:
+    container_name: crowdsec
+    image: index.docker.io/crowdsecurity/crowdsec:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/dave/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - /home/dave/crowdsec/logs:/var/log/nginx
+      - /home/dave/crowdsec/db:/var/lib/crowdsec/data/
+      - /home/dave/crowdsec/config:/etc/crowdsec/
+    ports:
+      - 8090:8080
+      - 6060:6060
+    networks:
+      - myNUCNetwork
+    environment:
+      COLLECTIONS: "crowdsecurity/nginx-proxy-manager crowdsecurity/nginx crowdsecurity/apache2 crowdsecurity/sshd"
+      #GID: "1000:1000"
+      PUID: 1000
+      GID: 1000
+networks:
+    myNUCNetwork: 
+        name: myNUCNetwork 
+        external: true

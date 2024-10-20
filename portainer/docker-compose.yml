@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 services:
     portainer-ee:
         image: 'index.docker.io/portainer/portainer-ee:latest'

@@ -27,7 +27,7 @@
 #
 # For more extensive installation and update instructions, refer to the
 # documentation.
-version: "3.8"
+#version: "3.8"
 services:
   broker:
     image: index.docker.io/library/redis:latest

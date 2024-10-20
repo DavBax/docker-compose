@@ -1,0 +1,87 @@
+#version: "3.8"
+services:
+  db_recipes:
+    image: index.docker.io/library/postgres:latest #postgres:16-alpine
+    container_name: tandoor_db
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    volumes:
+      - /home/dave/tandoor/postgresql:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    networks:
+      - myNUCNetwork
+  web_recipes:
+    image: index.docker.io/vabene1111/recipes:latest
+    container_name: tandoor
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    env_file:
+      - ./.env
+    volumes:
+      - /home/dave/tandoor/staticfiles:/opt/recipes/staticfiles
+      # Do not make this a bind mount, see https://docs.tandoor.dev/install/docker/#volumes-vs-bind-mounts
+      - /home/dave/tandoor/nginxfiles:/opt/recipes/nginx/conf.d
+      - /home/dave/tandoor/mediafiles:/opt/recipes/mediafiles
+    depends_on:
+      - db_recipes
+    networks:
+      - myNUCNetwork
+  nginx_recipes:
+    image: index.docker.io/nginx:latest #nginx:mainline-alpine
+    container_name: tandoor_nginx
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    env_file:
+      - ./.env
+    depends_on:
+      - web_recipes
+    ports:
+      - 8020:80
+    volumes:
+      # Do not make this a bind mount, see https://docs.tandoor.dev/install/docker/#volumes-vs-bind-mounts
+      - /home/dave/tandoor/nginxfiles:/etc/nginx/conf.d:ro
+      - /home/dave/tandoor/staticfiles:/static:ro
+      - /home/dave/tandoor/mediafiles:/media:ro
+    networks:
+      - myNUCNetwork
+networks:
+    myNUCNetwork:
+        name: myNUCNetwork
+        external: true
+volumes:
+    nginx_config:
+  # tandoor:
+    # image: index.docker.io/vabene1111/recipes:latest
+    # container_name: tandoor
+    # restart: unless-stopped
+    # user: 1000:1000
+    # security_opt:
+        # - no-new-privileges:true
+    # volumes:
+        # - /home/dave/tandoor/staticfiles:/opt/recipes/staticfiles'
+        # - /home/dave/tandoor/mediafiles:/opt/recipes/mediafiles'
+    # ports:
+        # - 8020:8080
+    # networks:
+        # - myNUCNetwork
+# #    env_file:
+# #      - ./.env
+    # environment:
+        # - SECRET_KEY=ITQWFE5F3jbFN0xrwyomkA+qkuRucSdNH2kIIi9RxJKeL7FgzN
+        # - DB_ENGINE=django.db.backends.postgresql
+        # - POSTGRES_HOST=db_recipes
+        # - POSTGRES_PORT=5432
+        # - POSTGRES_USER=djangodb
+        # - POSTGRES_PASSWORD=password_postgres
+        # - POSTGRES_DB=djangodb       
+    # #Configure healthchecks    
+# #    healthcheck:
+# #      test: ['CMD', 'node', '/app/services/healthcheck']
+# #      interval: 1m30s
+# #      timeout: 10s
+# #      retries: 3
+# #      start_period: 40s

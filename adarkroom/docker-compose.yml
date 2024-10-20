@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
     adarkroom:
         image: index.docker.io/dahuss/a-dark-room:latest

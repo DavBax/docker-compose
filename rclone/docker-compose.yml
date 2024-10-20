@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 services:
      rclone:
          image: index.docker.io/rclone/rclone:latest

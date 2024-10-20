@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
      watchtower:
          image: index.docker.io/containrrr/watchtower:latest
@@ -14,9 +14,9 @@ services:
              WATCHTOWER_CLEANUP: "true"
              WATCHTOWER_NOTIFICATIONS: 'gotify'
              WATCHTOWER_NOTIFICATION_GOTIFY_URL: 'https://gotify.thehome.party/'
-             WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: 'AsAc_t7M6DDwgRW'
+             WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: 'AxME5k00TUYGcZ-'
          volumes:
-             - /var/run/docker.sock:/var/run/docker.sock:ro
+             - /var/run/docker.sock:/var/run/docker.sock
              - $HOME/.docker/config.json:/config.json #check dir of file
          networks:
              - myNUCNetwork #check network name

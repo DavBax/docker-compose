@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 services:
      syslog-ng:
          image: index.docker.io/linuxserver/syslog-ng:latest

@@ -96,6 +96,7 @@ sections:
     useProxy: true
     options:
       hostname: https://glances.thehome.party
+
 - name: System Alerts
   icon: fas fa-sensor-alert
   widgets:
@@ -103,6 +104,7 @@ sections:
     useProxy: true
     options:
       hostname: https://glances.thehome.party
+
 - name: Proxmox
   icon: fas fa-sensor-alert
   widgets:
@@ -120,6 +122,7 @@ sections:
        footer: Proxmox
        footer_as_link: true
        hide_templates: 1
+
 - name: Proxmox System Alerts
   icon: fas fa-sensor-alert
   widgets:

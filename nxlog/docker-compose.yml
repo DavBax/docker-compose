@@ -1,0 +1,18 @@
+services:
+  nxlog:
+    image: index.docker.io/nxlog/nxlog-ce:latest
+    container_name: nxlog
+    restart: unless-stopped
+    #user: 1000:1000
+    security_opt:
+      - no-new-privileges
+    ports:
+      - 5514:5514
+    volumes:
+      - /home/dave/nxlog:/opt/nxlog/etc/nxlog.d
+    networks:
+      - myNUCNetwork
+networks:
+  myNUCNetwork:
+    name: myNUCNetwork
+    external: true

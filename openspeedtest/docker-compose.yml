@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 services:
     speedtest:
         image: index.docker.io/openspeedtest/latest:latest

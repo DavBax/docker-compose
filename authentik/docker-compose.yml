@@ -1,0 +1,109 @@
+services:
+  postgresql:
+    #image: docker.io/library/postgres:16-alpine
+    image: index.docker.io/library/postgres:latest
+    container_name: authentik-postgres
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - /home/dave/authentik/postgresdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+    env_file:
+      - .env
+    networks:
+      - myNUCNetwork
+  redis:
+    #image: docker.io/library/redis:alpine
+    image: index.docker.io/library/redis:latest
+    container_name: authentik-redis
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/dave/authentik/redisdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    networks:
+      - myNUCNetwork
+  server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.6.3} #see /.env for latest tag
+    container_name: authentik-server
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command: server
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    volumes:
+      - /home/dave/authentik/media:/media
+      - /home/dave/authentik/custom-templates:/templates
+    env_file:
+      - .env
+    ports:
+      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+      - "${COMPOSE_PORT_HTTPS:-9443}:9443" #changed to 9001 in .env file
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - myNUCNetwork
+  worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.6.3}
+    container_name: authentik-worker
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command: worker
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
+    user: 1000:1000 #changed from "root"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/dave/authentik/media:/media
+      - /home/dave/authentik/certs:/certs
+      - /home/dave/authentik/custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - myNUCNetwork
+networks:
+    myNUCNetwork:
+        name: myNUCNetwork
+        external: true
+#volumes:
+#  database:
+#    driver: local
+#  redis:
+#    driver: local

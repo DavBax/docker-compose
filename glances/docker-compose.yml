@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
   glances:
     image: index.docker.io/nicolargo/glances:latest
