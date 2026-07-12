@@ -1,0 +1,31 @@
+services:
+  dockge:
+    image: index.docker.io/louislam/dockge:latest
+    container_name: dockge
+    #    user: 1000:1000 #Not required, PUID/PGID env variabbles instead
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 5001:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/davepifive/DockerData/data:/app/data
+      # Stacks Directory
+      # EAD IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # . FULL path only. No relative path (MUST)
+      # . Left Stacks Path === Right Stacks Path (MUST)
+      - /home/davepifive/docker-compose:/home/davepifive/docker-compose
+    environment:
+      # Tell Dockge where to find the stacks
+      - DOCKGE_STACKS_DIR=/home/davepifive/docker-compose
+      - UID=1000
+      - GID=1000
+networks: {}
+
+#    networks:
+#      - myNUCNetwork
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

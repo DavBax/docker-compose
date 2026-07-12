@@ -1,0 +1,50 @@
+services:
+  beszel:
+    image: index.docker.io/henrygd/beszel:latest
+    container_name: beszel
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 8091:8090
+    volumes:
+      - /home/davepifive/DockerData/beszel/data:/beszel_data
+      - /home/davepifive/DockerData/beszel/socket:/beszel_socket
+    #    networks:
+    #      - myNUCNetwork
+    healthcheck:
+      # The URL is relative to the container, not the host
+      test:
+        - CMD
+        - /beszel
+        - health
+        - --url
+        - http://localhost:8090
+      start_period: 5s # Check 5 seconds after the container starts
+      interval: 120s # Then check every 120 seconds after that
+  beszel-agent:
+    image: index.docker.io/henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    network_mode: host
+    volumes:
+      - /home/davepifive/DockerData/beszel/socket:/beszel_socket
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test:
+        - CMD
+        - /agent
+        - health
+        # Run the health command
+      start_period: 5s # Check 5 seconds after the container starts
+      interval: 120s # Then check every 120 seconds after that
+    environment:
+      LISTEN: /beszel_socket/beszel_socket
+      # Do not remove quotes around the key
+      KEY: ${SSH_Key}
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

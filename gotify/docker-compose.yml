@@ -1,0 +1,25 @@
+services:
+  gotify:
+    image: index.docker.io/gotify/server-arm64:latest
+    container_name: gotify
+    restart: unless-stopped
+    #         user: '1000:1000'
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=Europe/London
+      - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
+      - UID='1000'
+      - GID='1000'
+    volumes:
+      - /home/davepifive/DockerData/gotify/data:/app/data
+    ports:
+      - 8090:80
+networks: {}
+
+#    networks:
+#      - myNUCNetwork
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

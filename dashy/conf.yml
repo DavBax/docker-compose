@@ -1,0 +1,132 @@
+---
+# Page meta info, like heading, footer text and nav links
+pageInfo:
+  title: System Panel
+  description: Resource Usage Monitoring
+
+# Optional app settings and configuration
+appConfig:
+  #statusCheck: true
+  #statusCheckAllowInsecure: true
+  #Access-Control-Allow-Origin: https://glances.thehome.party
+  theme: colorful
+
+# Main content - An array of sections, each containing an array of items
+sections:
+- name: CPU Usage
+  icon: fas fa-tachometer
+  displayData:
+    rows: 2
+  widgets:
+  - type: gl-current-cpu
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+  - type: gl-current-cores
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: CPU History
+  icon: fas fa-microchip
+  displayData:
+    cols: 2
+  widgets:
+  - type: gl-cpu-history
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+      limit: 60
+
+- name: CPU Temp
+  icon: fas fa-microchip
+  widgets:
+  - type: gl-cpu-temp
+    options:
+      hostname: https://glances.thehome.party
+      units: C
+- name: Disk Space
+  icon: fas fa-hdd
+  widgets:
+  - type: gl-disk-space
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: Network Interfaces
+  icon: fas fa-ethernet
+  widgets:
+  - type: gl-network-interfaces
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+      limit: 500
+
+- name: Network Traffic
+  icon: fas fa-exchange
+  displayData:
+    cols: 2
+  widgets:
+  - type: gl-network-traffic
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+      limit: 500
+
+- name: Disk IO
+  icon: fas fa-disc-drive
+  widgets:
+  - type: gl-disk-io
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: Memory Usage
+  icon: fas fa-memory
+  widgets:
+  - type: gl-current-mem
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: System Load
+  icon: fas fa-tasks-alt
+  widgets:
+  - type: gl-system-load
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: System Alerts
+  icon: fas fa-sensor-alert
+  widgets:
+  - type: gl-alerts
+    useProxy: true
+    options:
+      hostname: https://glances.thehome.party
+
+- name: Proxmox
+  icon: fas fa-sensor-alert
+  widgets:
+   - type: proxmox-lists
+     useProxy: true
+     options:
+       cluster_url: https://pve.thehome.party
+       user_name: root@pam
+       token_name: root@pam!pi5-dashy
+       token_uuid: 19ddebc1-e4dc-4033-a31a-5e800483b944
+       node: proxmox
+       node_data: qemu
+       title: Proxmox VMs
+       title_as_link: false
+       footer: Proxmox
+       footer_as_link: true
+       hide_templates: 1
+
+- name: Proxmox System Alerts
+  icon: fas fa-sensor-alert
+  widgets:
+  - type: gl-alerts
+    useProxy: true
+    options:
+      hostname: https://pve.thehome.party

@@ -1,0 +1,63 @@
+# Editing these env vars will apply them to daemon and server containers. Recommend doing this over editing for each container.
+# Or, use a .env file
+x-netvisor-env: &netvisor-env
+  NETVISOR_LOG_LEVEL: ${NETVISOR_LOG_LEVEL:-info}
+  NETVISOR_SERVER_PORT: ${NETVISOR_SERVER_PORT:-60072}
+  NETVISOR_DAEMON_PORT: ${NETVISOR_DAEMON_PORT:-60073}
+
+services:
+  postgres:
+    image: index.docker.io/postgres:17-alpine
+    container_name: netvisor-db
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      POSTGRES_DB: netvisor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    volumes:
+      - /home/davepifive/DockerData/netvisor/postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - netvisor
+
+  server:
+    image: index.docker.io/mayanayza/netvisor-server:latest
+    container_name: netvisor-server
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "${NETVISOR_SERVER_PORT:-60072}:${NETVISOR_SERVER_PORT:-60072}"
+    environment:
+      <<: *netvisor-env
+      NETVISOR_DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/netvisor
+      NETVISOR_WEB_EXTERNAL_PATH: /app/static
+      # 172.17.0.1 is Docker's default bridge gateway. If your's is different, make sure to change it.
+#      NETVISOR_INTEGRATED_DAEMON_URL: http://172.17.0.1:${NETVISOR_DAEMON_PORT:-60073}
+    volumes:
+      - /home/davepifive/DockerData/netvisor/data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+#      daemon:
+#        condition: service_healthy
+    networks:
+      - netvisor
+
+#volumes:
+# postgres_data:
+# daemon-config:
+
+networks:
+  netvisor:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.0.0/16
+          gateway: 172.31.0.1

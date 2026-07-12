@@ -1,0 +1,24 @@
+services:
+  rclone:
+    image: index.docker.io/rclone/rclone:latest
+    container_name: rclone
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    command: rcd --rc-web-gui --rc-addr :5572 --rc-user dave --rc-pass password
+    ports:
+      - "5572:5572"
+    volumes:
+      - /home/davepifive/DockerData/rclone/config:/config/rclone
+      - /home/davepifive/DockerData/rclone/logs:/logs
+#    user: "1000:1000"
+    environment:
+      - PHP_TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+    networks:
+      - myNUCNetwork
+networks:
+  myNUCNetwork:
+    name: myNUCNetwork
+    external: true

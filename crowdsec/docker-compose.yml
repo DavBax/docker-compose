@@ -1,0 +1,26 @@
+services:
+  crowdsec:
+    container_name: crowdsec
+    image: index.docker.io/crowdsecurity/crowdsec:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+#    network_mode: bridge
+    ports:
+      - "7422:7422"
+      - "8080:8080"
+    environment:
+      - "TZ=Europe/Londone"
+      - "COLLECTIONS=ZoeyVid/npmplus"
+    volumes:
+      - "/home/davepifive/DockerData/crowdsec/conf:/etc/crowdsec"
+      - "/home/davepifive/DockerData/crowdsec/data:/var/lib/crowdsec/data"
+      - "/home/davepifive/DockerData/npmplus/data/nginx:/opt/npmplus/nginx:ro"
+      - "/home/davepifive/DockerData/crowdsec/logs:/var/log/nginx"
+#      - "/opt/openappsec/logs:/opt/openappsec/logs:ro" # only uncomment if you also use the openappsec-agent container
+    networks:
+      - myNUCNetwork
+networks:
+  myNUCNetwork:
+    name: myNUCNetwork
+    external: true

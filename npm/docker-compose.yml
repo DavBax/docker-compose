@@ -1,0 +1,29 @@
+services:
+  npm:
+    image: index.docker.io/jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 81:81 #admin portal
+      - 443:443
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/davepifive/DockerData/npm/data:/data
+      - /home/davepifive/DockerData/npm/letsencrypt:/etc/letsencrypt
+    healthcheck:
+      test:
+        - CMD
+        - /usr/bin/check-health
+      interval: 10s
+      timeout: 3s
+#    networks:
+#      - myNUCNetwork
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

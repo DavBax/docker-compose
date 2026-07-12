@@ -1,0 +1,28 @@
+services:
+  dozzle:
+    container_name: dozzle
+    image: index.docker.io/amir20/dozzle:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 9999:8080
+    environment:
+      - DOZZLE_NO_ANALYTICS
+    healthcheck:
+      test:
+        - CMD
+        - /dozzle
+        - healthcheck
+      interval: 3s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+#    networks:
+#      - myNUCNetwork
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

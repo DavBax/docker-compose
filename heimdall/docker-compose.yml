@@ -1,0 +1,24 @@
+services:
+     heimdall:
+         image: index.docker.io/linuxserver/heimdall:latest
+         container_name: heimdall
+         restart: unless-stopped
+         security_opt:
+             - no-new-privileges:true
+         environment:
+             - PUID=1000
+             - PGID=1000
+             - TZ=Europe/London
+         ports:
+             - '800:80'
+             - '4430:443'
+         volumes:
+             - '/home/davepifive/DockerData/heimdall/config:/config'
+#             - '/home/dave/certs/cert1.pem:/config/keys/cert.crt'
+#             - '/home/dave/certs/privkey1.pem:/config/keys/cert.key'
+         networks:
+             - myNUCNetwork #check network
+networks:
+     myNUCNetwork: #check network
+         name: myNUCNetwork #check network
+         external: true
