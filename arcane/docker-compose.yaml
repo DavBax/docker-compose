@@ -1,0 +1,25 @@
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/arcane:latest
+    container_name: arcane
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "3552:3552"
+    environment:
+      - APP_URL=https://arcane.thehome.party
+      - PUID=1000
+      - PGID=1000
+      - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
+      - ENCRYPTION_KEY=${enc_key}
+      - JWT_SECRET=${jwt}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/davepifive/DockerData/arcane/data:/app/data
+      - /home/davepifive/docker-compose:/home/davepifive/docker-compose
+    healthcheck:
+      test: ['CMD', '/app/arcane', 'health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
