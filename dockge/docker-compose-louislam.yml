@@ -2,6 +2,7 @@ services:
   dockge:
     image: index.docker.io/louislam/dockge:latest
     container_name: dockge
+    #    user: 1000:1000 #Not required, PUID/PGID env variabbles instead
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -18,11 +19,13 @@ services:
     environment:
       # Tell Dockge where to find the stacks
       - DOCKGE_STACKS_DIR=/home/davepifive/docker-compose
-      - PUID=1000
-      - PGID=1000
-    networks:
-      - myNUCNetwork
-networks:
-  myNUCNetwork:
-    name: myNUCNetwork
-    external: true
+      - UID=1000
+      - GID=1000
+networks: {}
+
+#    networks:
+#      - myNUCNetwork
+#networks:
+#  myNUCNetwork:
+#    name: myNUCNetwork
+#    external: true

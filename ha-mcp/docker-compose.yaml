@@ -3,14 +3,14 @@ services:
     image: ghcr.io/homeassistant-ai/ha-mcp:stable
     container_name: ha-mcp
     restart: unless-stopped
-    # read_only: true pairs with tmpfs: /tmp because the Python runtime writes temporary files there; 
+    # read_only: true pairs with tmpfs: /tmp because the Python runtime writes temporary files there;
     read_only: true
     tmpfs:
       - /tmp
-    # cap_drop: [ALL] drops every Linux kernel capability the container would otherwise inherit; 
+    # cap_drop: [ALL] drops every Linux kernel capability the container would otherwise inherit;
     cap_drop:
       - ALL
-    # no-new-privileges:true blocks privilege escalation via setuid binaries. 
+    # no-new-privileges:true blocks privilege escalation via setuid binaries.
     security_opt:
       - no-new-privileges:true
     deploy:
@@ -21,7 +21,7 @@ services:
       - 8086:8086
     environment:
       - HOMEASSISTANT_URL=https://ha.thehome.party
-      - HOMEASSISTANT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1N2YzNjk3NWU0N2Q0OTAzODI3ZmRlOWE2ZmVlYjJiNSIsImlhdCI6MTc3Mzg0MzY4NSwiZXhwIjoyMDg5MjAzNjg1fQ.8_rkKnx1SxIFYYI3L_qe8St1R1Uf43lUj2wYFbR9aHM
+      - HOMEASSISTANT_TOKEN=${ha_token}
     command: ha-mcp-web
 #    networks:
 #      - myNUCNetwork
