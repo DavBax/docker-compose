@@ -8,17 +8,19 @@ services:
     # user: '1000:1001'
     command: --interval 21600 #remove to default to 24hrs (43200=12hrs, 21600=6hrs)
     environment:
-      #             DOCKER_CONFIG: /home/dave/.docker/
-      #             DOCKER_API-VERSION: "1.45"
+#     DOCKER_CONFIG: /home/dave/.docker/
+#     DOCKER_API-VERSION: "1.45"
+      TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
-      WATCHTOWER_NOTIFICATIONS: gotify
-      WATCHTOWER_NOTIFICATION_GOTIFY_URL: https://gotify.thehome.party/
-      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${gotify_token}
+      WATCHTOWER_NOTIFICATION_URL: "gotify://192.168.66.5:8090/${gotify_token}"
+#      WATCHTOWER_NOTIFICATIONS: gotify
+#      WATCHTOWER_NOTIFICATION_GOTIFY_URL: http://192.168.66.5:8090
+#      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${gotify_token}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    #             - $HOME/.docker/config.json:/config.json #check dir of file
-    #    networks:
+#     - $HOME/.docker/config.json:/config.json #check dir of file
+#    networks:
     #      - myNUCNetwork #check network name
     #networks:
     #  myNUCNetwork:

@@ -1,0 +1,21 @@
+services:
+  duplicati:
+    image: index.docker.io/duplicati/duplicati:latest
+    container_name: duplicati
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - SETTINGS_ENCRYPTION_KEY=${enc_key}
+    volumes:
+      - /home/davepifive/DockerData/duplicati/config:/config #config files
+      - /home/davepifive/DockerData/duplicati/data:/data #config files
+      #read only folders, no need to write
+      - /home/davepifive/DockerData:/source/docker-data:ro
+      - /home/davepifive/DockerData-sqlite-snapshots:/source/sqlite-snapshots:ro
+      - /home/davepifive/scripts:/source/scripts:ro
+    ports:
+      - "8200:8200"
