@@ -29,9 +29,12 @@ services:
     security_opt:
       - no-new-privileges:true
     network_mode: host
+    depends_on:
+      beszel:
+        condition: service_healthy
     volumes:
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:
       test:
         - CMD
@@ -42,6 +45,9 @@ services:
       interval: 120s # Then check every 120 seconds after that
     environment:
       LISTEN: /beszel_socket/beszel_socket
+      DOCKER_HOST: tcp://127.0.0.1:2375
+      HUB_URL: http://localhost:8091
+      TOKEN: ${hub_token}
       # Do not remove quotes around the key
       KEY: ${SSH_Key}
 #networks:

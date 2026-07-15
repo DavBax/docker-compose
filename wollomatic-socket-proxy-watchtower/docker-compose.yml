@@ -1,0 +1,68 @@
+# docker-compose-socket-proxy-watchtower.yml
+#
+# Second wollomatic/socket-proxy tier, scoped for Watchtower only.
+# Unlike the read-only tier, this one needs write access to actually
+# stop/remove/recreate/start containers during an update - but still no
+# access to networks (beyond reconnecting), volumes, exec, swarm, secrets,
+# etc.
+#
+# IMPORTANT: the exact set of endpoints below is a best-effort starting
+# point based on Watchtower's documented update flow (inspect -> pull ->
+# stop -> rename -> create -> reconnect networks -> start -> remove old
+# container/image), NOT verified against real traffic yet. Same approach
+# as the read-only tier: run with -loglevel=debug and a temporarily broad
+# allowlist first, watch what Watchtower actually requests during a real
+# update cycle, then narrow this regex to match. Don't treat this as final
+# until that verification pass has been done.
+
+services:
+  socket-proxy-watchtower:
+    image: index.docker.io/wollomatic/socket-proxy:1
+    container_name: socket-proxy-watchtower
+    restart: unless-stopped
+    # Find your docker group's GID with: getent group docker
+    user: "65534:990"
+    mem_limit: 64M
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - '-loglevel=info'
+      - '-listenip=0.0.0.0'
+      - '-allowfrom=watchtower'
+      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|events.*|info|version|_ping)'
+      - '-allowHEAD=/(v1\..{1,2}/)?_ping'
+      - '-allowPOST=/(v1\..{1,2}/)?(containers/create|containers/[^/]+/(start|stop|rename)|images/create|networks/[^/]+/connect)'
+      - '-allowDELETE=/(v1\..{1,2}/)?(containers/[^/]+|images/[^/]+)'
+      - '-allowhealthcheck'
+      - '-watchdoginterval=3600'
+      - '-stoponwatchdog'
+      - '-shutdowngracetime=5'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # read-only for file operations, but not for http operations
+    healthcheck:
+      test: ["CMD", "./healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+    networks:
+      - socket-proxy-watchtower-net
+    # No port published - only reachable by containers on
+    # socket-proxy-watchtower-net, and even then, only "watchtower" per
+    # -allowfrom above.
+
+networks:
+  socket-proxy-watchtower-net:
+    driver: bridge
+    ipam:
+      config:
+        # Confirm this /28 is actually free before deploying:
+        #   docker network ls -q | xargs -n1 docker network inspect \
+        #     --format '{{.Name}}: {{range .IPAM.Config}}{{.Subnet}}{{end}}'
+        # 10.10.0.0/28 through 10.10.0.240/28 and 10.10.1.0/28 were taken
+        # as of the read-only tier setup - this uses the next block along,
+        # but re-check first in case something new has been added since.
+        - subnet: 10.10.2.0/28
+          gateway: 10.10.2.1

@@ -5,12 +5,14 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 9999:8080
     environment:
       - DOZZLE_NO_ANALYTICS
+      - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
+      - DOZZLE_ENABLE_MCP=true
     healthcheck:
       test:
         - CMD
@@ -20,9 +22,10 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
-#    networks:
-#      - myNUCNetwork
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+    networks:
+      - default
+      - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+networks:
+  wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
+    driver: bridge
+    external: true

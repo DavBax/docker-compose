@@ -7,20 +7,22 @@ services:
       - no-new-privileges:true
     ports:
       - 61208:61208
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - GLANCES_OPT=-w #web-server mode
       - TZ=Europe/London
+      - DOCKER_HOST=tcp://socket-proxy-readonly-vm:2375
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:61208/api/4/status"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-#    networks:
-#      - myNUCNetwork
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+    networks:
+      - default
+      - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+networks:
+  wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
+    driver: bridge
+    external: true

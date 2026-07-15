@@ -13,15 +13,17 @@ services:
       - no-new-privileges:true
     volumes:
       - /home/davepifive/DockerData/portracker/data:/data # Required for data persistence
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Required for discovering services running in Docker
+#      - /var/run/docker.sock:/var/run/docker.sock:ro # Not using docker socket, now using TCP connection with socket container
     ports:
       - 4999:4999
-      # environment:
+    environment:
+      - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
       # Optional: For enhanced TrueNAS features
       # - TRUENAS_API_KEY=your-api-key-here
-#    networks:
-#      - myNUCNetwork
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+    networks:
+      - default
+      - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+networks:
+  wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
+    driver: bridge
+    external: true

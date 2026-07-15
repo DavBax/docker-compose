@@ -7,13 +7,14 @@ services:
             - no-new-privileges:true
         volumes:
             - /home/davepifive/DockerData/uptimekuma:/app/data
-            - /var/run/docker.sock:/var/run/docker.sock:ro
+#            - /var/run/docker.sock:/var/run/docker.sock:ro # Add Docker containers in the UI, changing fromm socket to TCP
         ports:
 #            - 127.0.0.1:3001:3001
             - "3001:3001"
-#        networks:
-#            - myNUCNetwork
-#networks:
-#     myNUCNetwork:
-#         name: myNUCNetwork
-#         external: true
+        networks:
+            - default
+            - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+networks:
+  wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
+    driver: bridge
+    external: true

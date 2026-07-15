@@ -1,0 +1,88 @@
+# docker-compose-socket-proxy-readonly-wollomatic.yml
+#
+# Alternative to docker-compose-socket-proxy-readonly.yml, using
+# wollomatic/socket-proxy instead of tecnativa/docker-socket-proxy.
+#
+# Client group: uptimekuma, dozzle, glances, portracker, beszel-agent
+# (NOT the beszel hub itself - it never mounts the socket, only the agent
+# does). Read-only Docker API access only, no writes.
+#
+# beszel-agent is a special case: it runs with network_mode: host, so it
+# cannot join socket-proxy-readonly-wm-net like the others - Docker doesn't
+# allow combining network_mode: host with a custom network. Instead, the
+# proxy publishes its port on 127.0.0.1 only (still unreachable from the
+# LAN), and beszel-agent connects via DOCKER_HOST=tcp://127.0.0.1:2375.
+#
+# IMPORTANT: even though beszel-agent dials 127.0.0.1, Docker's hairpin NAT
+# rewrites the source address when a host-networked connection crosses into
+# a user-defined bridge network - the proxy actually sees the request
+# arrive from the network's gateway IP (10.10.1.1 here, confirmed via
+# `docker network inspect`), not 127.0.0.1. -allowfrom is set to that
+# gateway IP accordingly. The subnet is pinned below so this can't
+# silently change on a future network recreate.
+#
+# Key differences from the Tecnativa version:
+#   - Regex-based allowlist per HTTP method, instead of per-section booleans.
+#     Only GET is allowed below - no POST at all - so this is read-only by
+#     construction, not just by leaving flags at 0.
+#   - Built-in hostname/IP allowlist (-allowfrom): only the containers/
+#     addresses listed are permitted to connect at all - not just filtered
+#     once connected.
+#   - Runs unprivileged, read-only filesystem, all capabilities dropped -
+#     no "privileged: true" needed by design (unlike Tecnativa's image,
+#     which sometimes needs it on SELinux/AppArmor hosts).
+
+services:
+  socket-proxy-readonly-wm:
+    image: index.docker.io/wollomatic/socket-proxy:1
+    container_name: socket-proxy-readonly-wm
+    restart: unless-stopped
+    # Runs as the "nobody" user (65534) plus the host's docker group, so it
+    # can read the socket without running as root. Find your docker group's
+    # GID with: getent group docker
+    user: "65534:990"
+    mem_limit: 64M
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - '-loglevel=info'
+      - '-listenip=0.0.0.0'
+      - '-allowfrom=uptimekuma,dozzle,glances,portracker,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
+      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|events.*|info|version|_ping)'
+      - '-allowHEAD=/(v1\..{1,2}/)?_ping'
+      - '-allowhealthcheck'
+      - '-watchdoginterval=3600'
+      - '-stoponwatchdog'
+      - '-shutdowngracetime=5'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      # Published on loopback only, so the host-networked beszel-agent can
+      # reach it via 127.0.0.1. Still not reachable from the LAN.
+      - "127.0.0.1:2375:2375"
+    healthcheck:
+      test: ["CMD", "./healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+    networks:
+      - socket-proxy-readonly-wm-net
+    # No port published to the LAN - only 127.0.0.1 (above) and containers
+    # on socket-proxy-readonly-wm-net can reach this, and even then, only
+    # the hostnames/addresses listed in -allowfrom.
+
+networks:
+  socket-proxy-readonly-wm-net:
+    driver: bridge
+    ipam:
+      config:
+        # Pinned to the subnet Docker already auto-allocated to this network
+        # (confirmed via `docker network inspect`), so it can't silently
+        # shift to a different /28 on a future recreate - beszel-agent's
+        # DOCKER_HOST/-allowfrom rely on this gateway IP staying fixed.
+        - subnet: 10.10.1.0/28
+          gateway: 10.10.1.1
+#    internal: true #cannot be internal, as beszel-agent connects via the published port.
