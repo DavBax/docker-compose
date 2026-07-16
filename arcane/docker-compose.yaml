@@ -8,14 +8,16 @@ services:
     ports:
       - "3552:3552"
     environment:
+      - TZ=Europe/London
       - APP_URL=https://arcane.thehome.party
       - PUID=1000
       - PGID=1000
       - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
       - ENCRYPTION_KEY=${enc_key}
       - JWT_SECRET=${jwt}
+      - DOCKER_HOST=tcp://socket-proxy-management:2375
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+#      - /var/run/docker.sock:/var/run/docker.sock
       - /home/davepifive/DockerData/arcane/data:/app/data
       - /home/davepifive/docker-compose:/home/davepifive/docker-compose
     healthcheck:
@@ -23,3 +25,10 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+    networks:
+      - default
+      - wollomatic-socket-proxy-management_socket-proxy-management-net
+networks:
+  wollomatic-socket-proxy-management_socket-proxy-management-net:
+    driver: bridge
+    external: true

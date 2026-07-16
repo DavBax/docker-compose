@@ -34,6 +34,7 @@ services:
         condition: service_healthy
     volumes:
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
+      - /home/davepifive/DockerData/beszel/agent_data:/var/lib/beszel-agent
 #      - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:
       test:
