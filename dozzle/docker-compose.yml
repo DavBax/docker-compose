@@ -7,8 +7,8 @@ services:
       - no-new-privileges:true
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - 9999:8080
+#    ports:
+#      - 9999:8080
     environment:
       - DOZZLE_NO_ANALYTICS
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
@@ -22,10 +22,19 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.rule=Host(`dozzle.thehome.party`)"
+      - "traefik.http.routers.dozzle.entrypoints=websecure"
+      - "traefik.http.routers.dozzle.tls=true"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
     networks:
       - default
+      - traefik-internal
       - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
 networks:
   wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true

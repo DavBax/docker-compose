@@ -25,10 +25,19 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.thehome.party`)"
+      - "traefik.http.routers.arcane.entrypoints=websecure"
+      - "traefik.http.routers.arcane.tls=true"
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552" # match Mealie's actual internal port
     networks:
       - default
+      - traefik-internal
       - wollomatic-socket-proxy-management_socket-proxy-management-net
 networks:
   wollomatic-socket-proxy-management_socket-proxy-management-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true
