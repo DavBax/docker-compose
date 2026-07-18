@@ -13,13 +13,17 @@ services:
       - GID='1000'
     volumes:
       - /home/davepifive/DockerData/gotify/data:/app/data
-    ports:
-      - 8090:80
-networks: {}
-
-#    networks:
-#      - myNUCNetwork
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+#    ports:
+#      - 8090:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gotify.rule=Host(`gotify.thehome.party`)"
+      - "traefik.http.routers.gotify.entrypoints=websecure"
+      - "traefik.http.routers.gotify.tls=true"
+      - "traefik.http.services.gotify.loadbalancer.server.port=80"
+    networks:
+      - default
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true

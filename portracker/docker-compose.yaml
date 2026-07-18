@@ -14,16 +14,25 @@ services:
     volumes:
       - /home/davepifive/DockerData/portracker/data:/data # Required for data persistence
 #      - /var/run/docker.sock:/var/run/docker.sock:ro # Not using docker socket, now using TCP connection with socket container
-    ports:
-      - 4999:4999
+#    ports:
+#      - 4999:4999
     environment:
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
       # Optional: For enhanced TrueNAS features
       # - TRUENAS_API_KEY=your-api-key-here
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portracker.rule=Host(`portracker.thehome.party`)"
+      - "traefik.http.routers.portracker.entrypoints=websecure"
+      - "traefik.http.routers.portracker.tls=true"
+      - "traefik.http.services.portracker.loadbalancer.server.port=4999"
     networks:
       - default
+      - traefik-internal
       - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
 networks:
   wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true

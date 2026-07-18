@@ -13,13 +13,17 @@ services:
     volumes:
       - /home/davepifive/DockerData/dufs/data:/data
     command: /data -A # --tls-cert '/home/dave/certs/cert1.pem' --tls-key '/home/dave/certs/privkey1.pem'
-    ports:
-      - 5000:5000
-networks: {}
-
-#        networks:
-#            - myNUCNetwork
-#networks:
-#     myNUCNetwork:
-#         name: myNUCNetwork
-#         external: true
+#    ports:
+#      - 5000:5000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dufs.rule=Host(`dufs.thehome.party`)"
+      - "traefik.http.routers.dufs.entrypoints=websecure"
+      - "traefik.http.routers.dufs.tls=true"
+      - "traefik.http.services.dufs.loadbalancer.server.port=5000"
+    networks:
+#      - default # removed, therefore dufs should have no internet access
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true

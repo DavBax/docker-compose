@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    ports:
-      - 8091:8090
+#    ports:
+#      - 8091:8090
     volumes:
       - /home/davepifive/DockerData/beszel/data:/beszel_data
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
@@ -22,6 +22,15 @@ services:
         - http://localhost:8090
       start_period: 5s # Check 5 seconds after the container starts
       interval: 120s # Then check every 120 seconds after that
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beszel.rule=Host(`beszel.thehome.party`)"
+      - "traefik.http.routers.beszel.entrypoints=websecure"
+      - "traefik.http.routers.beszel.tls=true"
+      - "traefik.http.services.beszel.loadbalancer.server.port=8090"
+    networks:
+      - default
+      - traefik-internal
   beszel-agent:
     image: index.docker.io/henrygd/beszel-agent:latest
     container_name: beszel-agent
@@ -51,7 +60,6 @@ services:
       TOKEN: ${hub_token}
       # Do not remove quotes around the key
       KEY: ${SSH_Key}
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+networks:
+  traefik-internal:
+    external: true

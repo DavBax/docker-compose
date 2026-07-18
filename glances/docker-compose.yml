@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    ports:
-      - 61208:61208
+#    ports:
+#      - 61208:61208
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
@@ -19,10 +19,19 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glances.rule=Host(`glances.thehome.party`)"
+      - "traefik.http.routers.glances.entrypoints=websecure"
+      - "traefik.http.routers.glances.tls=true"
+      - "traefik.http.services.glances.loadbalancer.server.port=61208"
     networks:
       - default
+      - traefik-internal
       - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
 networks:
   wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true

@@ -17,5 +17,17 @@ services:
       - /home/davepifive/DockerData:/source/docker-data:ro
       - /home/davepifive/DockerData-sqlite-snapshots:/source/sqlite-snapshots:ro
       - /home/davepifive/scripts:/source/scripts:ro
-    ports:
-      - "8200:8200"
+#    ports:
+#      - "8200:8200"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.duplicati.rule=Host(`duplicati.thehome.party`)"
+      - "traefik.http.routers.duplicati.entrypoints=websecure"
+      - "traefik.http.routers.duplicati.tls=true"
+      - "traefik.http.services.duplicati.loadbalancer.server.port=8200"
+    networks:
+      - default
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true

@@ -23,9 +23,15 @@ services:
       - HOMEASSISTANT_URL=https://ha.thehome.party
       - HOMEASSISTANT_TOKEN=${ha_token}
     command: ha-mcp-web
-#    networks:
-#      - myNUCNetwork
-#networks:
-#  myNUCNetwork:
-#    name: myNUCNetwork
-#    external: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ha-mcp.rule=Host(`ha-mcp.thehome.party`)"
+      - "traefik.http.routers.ha-mcp.entrypoints=websecure"
+      - "traefik.http.routers.ha-mcp.tls=true"
+      - "traefik.http.services.ha-mcp.loadbalancer.server.port=8086"
+    networks:
+      - default # rewuired so ha-mcp can reach outbound to the ha server over the network
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true

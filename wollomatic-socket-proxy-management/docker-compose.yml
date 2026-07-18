@@ -34,7 +34,7 @@ services:
       - '-loglevel=debug'
       - '-listenip=0.0.0.0'
       - '-allowfrom=dockge,arcane'
-      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|info|version|_ping)'
+      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|distribution.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowPOST=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*)'
       - '-allowDELETE=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*)'

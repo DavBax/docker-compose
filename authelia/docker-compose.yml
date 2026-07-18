@@ -1,0 +1,42 @@
+services:
+  authelia:
+    image: index.docker.io/authelia/authelia:4.39.20 # pin explicitly - Authelia's own docs advise against :latest due to breaking changes; check Docker Hub for the current version before deploying
+    container_name: authelia
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+#    read_only: true
+#    tmpfs:
+#      - /tmp
+    mem_limit: 256M
+    user: "1000:1000" # runs as my user
+    environment:
+      TZ: Europe/London
+      # these paths are INSIDE the container, mapped to bind mounts
+      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /secrets/JWT_SECRET
+      AUTHELIA_SESSION_SECRET_FILE: /secrets/SESSION_SECRET
+      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/STORAGE_ENCRYPTION_KEY
+    volumes:
+      - /home/davepifive/DockerData/authelia/config:/config
+      - /home/davepifive/DockerData/authelia/secrets:/secrets:ro
+    networks:
+      - traefik-internal
+      # Deliberately NOT on any egress-capable network - Authelia doesn't
+      # need internet for local users + TOTP. If you later add SMTP-based
+      # password reset or a Duo push notifier, that would need adding.
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false" # watchtower will ignore, update manually
+      - "traefik.enable=true"
+      - "traefik.http.routers.authelia.rule=Host(`sso.thehome.party`)"
+      - "traefik.http.routers.authelia.entrypoints=websecure"
+      - "traefik.http.routers.authelia.tls=true"
+      - "traefik.http.services.authelia.loadbalancer.server.port=9091"
+      # This middleware is what OTHER services will reference later to
+      # protect themselves via forwardAuth - defined here since it lives
+      # naturally alongside the service it points at.
+      - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
+      - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+networks:
+  traefik-internal:
+    external: true # same shared network Mealie/ha-mcp/etc. use to reach Traefik

@@ -46,8 +46,8 @@ services:
     env_file:
       - .env
     ports:
-      - "80:80"  # use high ports inside the container so
-      - "443:443" # we don't need to be root to bind the ports
+      - "80:80"  
+      - "443:443" 
     volumes:
       - /home/davepifive/DockerData/traefik/traefik.yml:/etc/traefik/traefik.yml:ro    # Static Traefik Configuration
       - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro            # Folder to store dynamic configuration file provider

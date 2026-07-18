@@ -1,20 +1,29 @@
 services:
-    uptimekuma:
-        image: index.docker.io/louislam/uptime-kuma:2
-        container_name: uptime-kuma
-        restart: unless-stopped
-        security_opt:
-            - no-new-privileges:true
-        volumes:
-            - /home/davepifive/DockerData/uptimekuma:/app/data
-#            - /var/run/docker.sock:/var/run/docker.sock:ro # Add Docker containers in the UI, changing fromm socket to TCP
-        ports:
-#            - 127.0.0.1:3001:3001
-            - "3001:3001"
-        networks:
-            - default
-            - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+  uptimekuma:
+    image: index.docker.io/louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/davepifive/DockerData/uptimekuma:/app/data
+#     - /var/run/docker.sock:/var/run/docker.sock:ro # Add Docker containers in the UI, changing fromm socket to TCP
+#    ports:
+#      - 127.0.0.1:3001:3001
+#      - "3001:3001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptimekuma.rule=Host(`uptimekuma.thehome.party`)"
+      - "traefik.http.routers.uptimekuma.entrypoints=websecure"
+      - "traefik.http.routers.uptimekuma.tls=true"
+      - "traefik.http.services.uptimekuma.loadbalancer.server.port=3001"
+    networks:
+      - default
+      - traefik-internal
+      - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
 networks:
   wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true

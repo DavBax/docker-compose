@@ -5,8 +5,10 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    ports:
-      - "3552:3552"
+# ports not used in traefik, only in npm
+# traefik uses traefik-internal network instead
+#    ports:
+#      - "3552:3552"
     environment:
       - TZ=Europe/London
       - APP_URL=https://arcane.thehome.party
