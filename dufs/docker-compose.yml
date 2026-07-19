@@ -6,6 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
+      - TZ=Europe/London
       - UID=1000
       - GID=1000
     #            - DUFS_TLS_CERT='/home/dave/certs/cert1.pem'

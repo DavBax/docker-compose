@@ -29,6 +29,8 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    environment: 
+      - TZ=Europe/London
     command:
       # --- START HERE: broad allowlist for the observation period ---
       - '-loglevel=debug'

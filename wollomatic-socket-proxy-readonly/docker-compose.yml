@@ -47,6 +47,8 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    environment:
+      - TZ=Europe/London
     command:
       - '-loglevel=info'
       - '-listenip=0.0.0.0'

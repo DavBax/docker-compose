@@ -20,6 +20,7 @@ services:
     ports:
       - 8086:8086
     environment:
+      - TZ=Europe/London
       - HOMEASSISTANT_URL=https://ha.thehome.party
       - HOMEASSISTANT_TOKEN=${ha_token}
     command: ha-mcp-web

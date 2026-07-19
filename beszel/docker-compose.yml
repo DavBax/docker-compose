@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    environment: 
+      - TZ=Europe/London
 #    ports:
 #      - 8091:8090
     volumes:
@@ -54,9 +56,10 @@ services:
       start_period: 5s # Check 5 seconds after the container starts
       interval: 120s # Then check every 120 seconds after that
     environment:
+      TZ: Europe/London
       LISTEN: /beszel_socket/beszel_socket
       DOCKER_HOST: tcp://127.0.0.1:2375
-      HUB_URL: http://localhost:8091
+      HUB_URL: http://localhost:8090
       TOKEN: ${hub_token}
       # Do not remove quotes around the key
       KEY: ${SSH_Key}

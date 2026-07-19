@@ -10,6 +10,7 @@ services:
 #    ports:
 #      - 9999:8080
     environment:
+      - TZ=Europe/London
       - DOZZLE_NO_ANALYTICS
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
       - DOZZLE_ENABLE_MCP=true

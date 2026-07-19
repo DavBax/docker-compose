@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    environment: 
+      - TZ=Europe/London
     volumes:
       - /home/davepifive/DockerData/uptimekuma:/app/data
 #     - /var/run/docker.sock:/var/run/docker.sock:ro # Add Docker containers in the UI, changing fromm socket to TCP

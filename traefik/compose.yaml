@@ -10,6 +10,8 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    environment: 
+      - TZ=Europe/London
     command:
       - '-loglevel=info' # set to debug for far more logging
       - '-allowfrom=traefik'
@@ -45,6 +47,8 @@ services:
       - no-new-privileges:true
     env_file:
       - .env
+    environment: #environment: variables take precdence over env_file variables
+      - TZ=Europe/London
     ports:
       - "80:80"  
       - "443:443" 
