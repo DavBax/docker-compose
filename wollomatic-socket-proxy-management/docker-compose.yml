@@ -33,12 +33,12 @@ services:
       - TZ=Europe/London
     command:
       # --- START HERE: broad allowlist for the observation period ---
-      - '-loglevel=debug'
+      - '-loglevel=info'
       - '-listenip=0.0.0.0'
       - '-allowfrom=dockge,arcane'
-      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|distribution.*|info|version|_ping)'
+      - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|distribution.*|exec.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
-      - '-allowPOST=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*)'
+      - '-allowPOST=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|exec.*)'
       - '-allowDELETE=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*)'
       - '-allowPUT=/(v1\..{1,2}/)?containers/[^/]+/archive'
       - '-allowhealthcheck'

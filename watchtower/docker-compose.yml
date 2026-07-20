@@ -13,7 +13,8 @@ services:
       TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
-      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
+#      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
+      WATCHTOWER_NOTIFICATION_URL: "generic://gotify.thehome.party/message?template=json&token=${gotify_token}"
       DOCKER_HOST: tcp://socket-proxy-watchtower:2375
 #      WATCHTOWER_NOTIFICATIONS: gotify
 #      WATCHTOWER_NOTIFICATION_GOTIFY_URL: http://192.168.66.5:8090

@@ -11,6 +11,15 @@ services:
       - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
       - UID='1000'
       - GID='1000'
+      - GOTIFY_OIDC_ENABLED=true
+      - GOTIFY_OIDC_ISSUER=https://sso.thehome.party #url of authelia
+      - GOTIFY_OIDC_CLIENTID=gotify
+      - GOTIFY_OIDC_CLIENTSECRET=onetwothreefourfivesix
+      - GOTIFY_OIDC_REDIRECTURL=https://gotify.thehome.party/auth/oidc/callback
+      - GOTIFY_OIDC_AUTOREGISTER=true
+      - GOTIFY_OIDC_USERNAMECLAIM=preferred_username
+      - GOTIFY_OIDC_LINK_BY_USERNAME=false
+      - GOTIFY_OIDC_SCOPES=openid,profile,email
     volumes:
       - /home/davepifive/DockerData/gotify/data:/app/data
 #    ports:
