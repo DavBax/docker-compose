@@ -18,6 +18,12 @@ services:
       - ENCRYPTION_KEY=${enc_key}
       - JWT_SECRET=${jwt}
       - DOCKER_HOST=tcp://socket-proxy-management:2375
+      - OIDC_ENABLED='true'
+      - OIDC_ISSUER_URL='https://sso.thehome.party'
+      - OIDC_CLIENT_ID='arcane'
+      - OIDC_CLIENT_SECRET=${oidc_client_secret}
+      - OIDC_SCOPES='openid email profile'
+      - OIDC_MERGE_ACCOUNTS='true'
     volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
       - /home/davepifive/DockerData/arcane/data:/app/data
