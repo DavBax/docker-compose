@@ -17,6 +17,8 @@ services:
       - /home/davepifive/DockerData:/source/docker-data:ro
       - /home/davepifive/DockerData-sqlite-snapshots:/source/sqlite-snapshots:ro
       - /home/davepifive/scripts:/source/scripts:ro
+      # directory to restore to, rather than direct to live locations
+      - /home/davepifive/duplicati-restore-point:/source/restore-point
 #    ports:
 #      - "8200:8200"
     labels:

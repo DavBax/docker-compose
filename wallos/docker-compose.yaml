@@ -9,7 +9,22 @@ services:
 #      - 8282:80/tcp
     environment:
       TZ: Europe/London
-    # Volumes store your data between container upgrades
+      OIDC_ENABLED: true
+      OIDC_PROVIDER_NAME: Authelia
+      OIDC_CLIENT_ID: wallos
+      OIDC_CLIENT_SECRET: ${oidc_client_secret}
+      OIDC_ISSUER: https://sso.thehome.party
+      OIDC_AUTH_URL: https://sso.thehome.party/api/oidc/authorization
+      OIDC_TOKEN_URL: https://sso.thehome.party/api/oidc/token
+      OIDC_USERINFO_URL: https://sso.thehome.party/api/oidc/userinfo
+      OIDC_REDIRECT_URL: https://wallos.thehome.party/index.php
+      OIDC_LOGOUT_URL: https://sso.thehome.party/logout
+      OIDC_USER_IDENTIFIER: preferred_username
+      OIDC_SCOPES: openid email profile
+      OIDC_AUTO_CREATE_USER: false
+      OIDC_DISABLE_PASSWORD_LOGIN: false
+      OIDC_REQUIRE_EMAIL_VERIFIED: false
+      SSRF_ALLOWLIST: sso.thehome.party
     volumes:
       - /home/davepifive/DockerData/wallos/db:/var/www/html/db
       - /home/davepifive/DockerData/wallos/logos:/var/www/html/images/uploads/logos
@@ -25,4 +40,3 @@ services:
 networks:
   traefik-internal:
     external: true
-    

@@ -22,7 +22,7 @@ services:
       - "traefik.http.routers.dufs.entrypoints=websecure"
       - "traefik.http.routers.dufs.tls=true"
       - "traefik.http.services.dufs.loadbalancer.server.port=5000"
-      - "traefik.http.routers.dufs.middlewares=authelia@docker"
+#      - "traefik.http.routers.dufs.middlewares=authelia@docker"
     networks:
 #      - default # removed, therefore dufs should have no internet access
       - traefik-internal
