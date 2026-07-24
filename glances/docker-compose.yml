@@ -25,7 +25,7 @@ services:
       - "traefik.http.routers.glances.entrypoints=websecure"
       - "traefik.http.routers.glances.tls=true"
       - "traefik.http.services.glances.loadbalancer.server.port=61208"
-      - "traefik.http.routers.glances.middlewares=authelia@docker"
+#      - "traefik.http.routers.glances.middlewares=authelia@docker" #not required, nothing sensitive
     networks:
       - default
       - traefik-internal

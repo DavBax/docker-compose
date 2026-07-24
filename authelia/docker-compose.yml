@@ -32,7 +32,7 @@ services:
       - "traefik.http.routers.authelia.entrypoints=websecure"
       - "traefik.http.routers.authelia.tls=true"
       - "traefik.http.services.authelia.loadbalancer.server.port=9091"
-      # This middleware is what OTHER services will reference later to
+      # This middleware is what OTHER services will reference to
       # protect themselves via forwardAuth - defined here since it lives
       # naturally alongside the service it points at.
       - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"

@@ -7,15 +7,24 @@ services:
       - no-new-privileges:true
     # user: '1000:1001'
     command: --interval 21600 #remove to default to 24hrs (43200=12hrs, 21600=6hrs)
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.watchtower.rule=Host(`watchtower.thehome.party`)"
+      - "traefik.http.routers.watchtower.entrypoints=websecure"
+      - "traefik.http.routers.watchtower.tls=true"
+      - "traefik.http.services.watchtower.loadbalancer.server.port=8080"
     environment:
 #     DOCKER_CONFIG: /home/dave/.docker/
 #     DOCKER_API-VERSION: "1.45"
       TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
-#      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
-      WATCHTOWER_NOTIFICATION_URL: "generic://gotify.thehome.party/message?template=json&token=${gotify_token}"
+      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
+#      WATCHTOWER_NOTIFICATION_URL: "generic://gotify.thehome.party/message?template=json&token=${gotify_token}" #used while shoutrrr was broken for gotify v3.0
       DOCKER_HOST: tcp://socket-proxy-watchtower:2375
+      WATCHTOWER_HTTP_API_UPDATE: true #enables the update API endpoint
+      WATCHTOWER_HTTP_API_PERIODIC_POLLS: true #keeps the scheduled polling enabled, usually switched off by the update API endpoint
+      WATCHTOWER_HTTP_API_TOKEN: ${watchtower_http_api_token}
 #      WATCHTOWER_NOTIFICATIONS: gotify
 #      WATCHTOWER_NOTIFICATION_GOTIFY_URL: http://192.168.66.5:8090
 #      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${gotify_token}
@@ -25,9 +34,12 @@ services:
     networks:
       - default
       - wollomatic-socket-proxy-watchtower_socket-proxy-watchtower-net
+      - traefik-internal
 networks:
   wollomatic-socket-proxy-watchtower_socket-proxy-watchtower-net:
     driver: bridge
+    external: true
+  traefik-internal:
     external: true
 
 # needed to docker login on nuc ubuntu to add creds to config.json
