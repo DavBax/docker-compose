@@ -1,0 +1,27 @@
+services:
+  dashboard-glance:
+    container_name: dashboard-glance
+    image: index.docker.io/glanceapp/glance:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/davepifive/DockerData/dashboard-glance/config:/app/config
+#    ports:
+#      - 8080:8080
+    user: 1000:1000
+    environment:
+      - TZ=Europe/London
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard-glance.rule=Host(`dashboard.thehome.party`)"
+      - "traefik.http.routers.dashboard-glance.entrypoints=websecure"
+      - "traefik.http.routers.dashboard-glance.tls=true"
+      - "traefik.http.services.dashboard-glance.loadbalancer.server.port=8080"
+#      - "traefik.http.routers.dashboard-glance.middlewares=authelia@docker" #not required, yet
+    networks:
+      - default #for internet
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true
