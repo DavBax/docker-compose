@@ -29,9 +29,9 @@ services:
     networks:
       - default
       - traefik-internal
-      - wollomatic-socket-proxy_socket-proxy-readonly-wm-net
+      - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
-  wollomatic-socket-proxy_socket-proxy-readonly-wm-net:
+  wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
     driver: bridge
     external: true
   traefik-internal:
