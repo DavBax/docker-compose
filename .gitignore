@@ -4,3 +4,4 @@
 # Optional but common companions worth excluding too
 *.env.local
 .DS_Store
+*.env.globL
