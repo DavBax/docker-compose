@@ -30,6 +30,10 @@ services:
       - "traefik.http.routers.ha-mcp.entrypoints=websecure"
       - "traefik.http.routers.ha-mcp.tls=true"
       - "traefik.http.services.ha-mcp.loadbalancer.server.port=8086"
+      - "glance.name=HA-MCP"
+      - "glance.icon=sh:home-assistant"
+      - "glance.url=https://ha-mcp.thehome.party"
+      - "glance.description=Home Assistant MCP"
     networks:
       - default # rewuired so ha-mcp can reach outbound to the ha server over the network
       - traefik-internal

@@ -38,6 +38,10 @@ services:
       - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
       - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
       - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+      - "glance.name=Authelia"
+      - "glance.icon=sh:authelia"
+      - "glance.url=https://authelia.thehome.party"
+      - "glance.description=SSO & Auth"
 networks:
   traefik-internal:
     external: true # same shared network Mealie/ha-mcp/etc. use to reach Traefik

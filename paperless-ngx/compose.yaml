@@ -1,0 +1,102 @@
+services:
+  paperless-broker:
+    image: index.docker.io/valkey/valkey:9-alpine
+    container_name: paperless-broker
+    restart: unless-stopped
+    user: '1000:1000'
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/davepifive/DockerData/paperless/valkey/data:/data
+    labels:
+      - glance.parent=paperless-ngx
+      - glance.name=Paperless-Broker
+      - glance.icon=sh:valkey
+     # - glance.url=https://arcane.thehome.party
+      - glance.description=Key=Value Workloads
+
+  paperless-webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-webserver
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+#    user: '1000:1000' #using USERMAP_ env vars instead
+    depends_on:
+      - paperless-broker
+      - paperless-gotenberg
+      - paperless-tika
+    env_file:
+      - .env
+    environment:
+      PAPERLESS_REDIS: redis://paperless-broker:6379
+      PAPERLESS_DBENGINE: sqlite
+      PAPERLESS_TIME_ZONE: Europe/London
+      PAPERLESS_OCR_LANGUAGE: eng
+      # Pi5 headroom tuning (per Raspberry Pi guidance)
+      PAPERLESS_WEBSERVER_WORKERS: 1
+      PAPERLESS_TASK_WORKERS: 2
+      PAPERLESS_THREADS_PER_WORKER: 1
+      PAPERLESS_ENABLE_NLTK: "false" #disable advanced language processing
+      # Behind Traefik TLS termination
+      PAPERLESS_URL: https://paperless.thehome.party
+      # OIDC Setup for Authelia, other env vars are in a single JSON line in .env file
+      PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
+      # Uncomment if enabling Tika/Gotenberg below
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
+    volumes:
+      - /home/davepifive/DockerData/paperless/data:/usr/src/paperless/data
+      - /home/davepifive/DockerData/paperless/media:/usr/src/paperless/media
+      - /home/davepifive/DockerData/paperless/export:/usr/src/paperless/export
+      - /home/davepifive/DockerData/paperless/consume:/usr/src/paperless/consume
+    networks:
+      - default
+      - traefik-internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.paperless.rule=Host(`paperless.thehome.party`)
+      - traefik.http.routers.paperless.entrypoints=websecure
+      - traefik.http.routers.paperless.tls=true
+      - traefik.http.services.paperless.loadbalancer.server.port=8000
+      - glance.name=Paperless-NGX
+      - glance.id=paperless-ngx
+      - glance.icon=sh:paperless-ngx
+      - glance.url=https://paperless.thehome.party
+      - glance.description=Document Management
+
+  # --- Optional: uncomment for Office-doc / .eml OCR support ---
+  paperless-gotenberg:
+    image: index.docker.io/gotenberg/gotenberg:8
+    container_name: paperless-gotenberg
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+    labels:
+      - glance.parent=paperless-ngx
+      - glance.name=Paperless-Gotenberg
+      - glance.icon=sh:paperless-ngx
+      #- glance.url=https://arcane.thehome.party
+      - glance.description=Convert to PDF
+  
+  paperless-tika:
+    image: index.docker.io/apache/tika:latest
+    container_name: paperless-tika
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - glance.parent=paperless-ngx
+      - glance.name=Paperless-Tika
+      - glance.icon=sh:paperless-ngx
+      #- glance.url=https://arcane.thehome.party
+      - glance.description=Metadata Extraction
+
+networks:
+  traefik-internal:
+    external: true

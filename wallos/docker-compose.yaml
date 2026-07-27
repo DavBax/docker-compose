@@ -34,6 +34,10 @@ services:
       - "traefik.http.routers.wallos.entrypoints=websecure"
       - "traefik.http.routers.wallos.tls=true"
       - "traefik.http.services.wallos.loadbalancer.server.port=80"
+      - "glance.name=Wallos"
+      - "glance.icon=sh:wallos"
+      - "glance.url=https://wallos.thehome.party"
+      - "glance.description=Subscription Management"
     networks:
       - default
       - traefik-internal

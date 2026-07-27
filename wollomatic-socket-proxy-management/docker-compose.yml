@@ -52,6 +52,11 @@ services:
       # wollomatic's default-deny behaviour. Do not add a flag for any of
       # these unless you've confirmed via the debug logs that Dockge or
       # Arcane genuinely needs it, and understand what granting it means.
+    labels:
+      - "glance.name=Socket Proxy Management"
+      - "glance.icon=sh:wollomatic"
+#      - "glance.url=https://arcane.thehome.party"
+      - "glance.description=Socket Proxy for Management"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:

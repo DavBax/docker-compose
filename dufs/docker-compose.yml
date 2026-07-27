@@ -23,6 +23,10 @@ services:
       - "traefik.http.routers.dufs.tls=true"
       - "traefik.http.services.dufs.loadbalancer.server.port=5000"
 #      - "traefik.http.routers.dufs.middlewares=authelia@docker"
+      - "glance.name=Dufs"
+      - "glance.icon=mdi:folder-network"
+      - "glance.url=https://dufs.thehome.party"
+      - "glance.description=File Server"
     networks:
 #      - default # removed, therefore dufs should have no internet access
       - traefik-internal

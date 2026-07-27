@@ -19,6 +19,10 @@ services:
       - "traefik.http.routers.uptimekuma.entrypoints=websecure"
       - "traefik.http.routers.uptimekuma.tls=true"
       - "traefik.http.services.uptimekuma.loadbalancer.server.port=3001"
+      - "glance.name=Uptime Kuma"
+      - "glance.icon=sh:uptime-kuma"
+      - "glance.url=https://uptimekuma.thehome.party"
+      - "glance.description=Service Status"
     networks:
       - default
       - traefik-internal

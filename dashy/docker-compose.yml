@@ -30,6 +30,10 @@ services:
       - "traefik.http.routers.dashy.entrypoints=websecure"
       - "traefik.http.routers.dashy.tls=true"
       - "traefik.http.services.dashy.loadbalancer.server.port=8080"
+      - "glance.name=Dashy"
+      - "glance.icon=sh:dashy"
+      - "glance.url=https://dashy.thehome.party"
+      - "glance.description=Dashboard"
     #Configure healthchecks
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck']

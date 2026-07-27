@@ -22,6 +22,12 @@ services:
       - '-shutdowngracetime=5'
       - '-watchdoginterval=3600'
       - '-stoponwatchdog'
+    labels:
+      - "glance.parent=traefik"
+      - "glance.name=Socket Proxy Traefik"
+      - "glance.icon=sh:socket"
+      #- "glance.url=https://arcane.thehome.party"
+      - "glance.description=Socket Proxy for Traefik"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:
@@ -67,6 +73,11 @@ services:
       - "traefik.http.routers.traefik-dashboard.tls=true"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=thehome.party"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.thehome.party"
+      - "glance.name=Traefik"
+      - "glance.id=traefik"
+      - "glance.icon=sh:traefik"
+      - "glance.url=https://traefik.thehome.party"
+      - "glance.description=Reverse Proxy"
     networks:
       - traefik-socket-internal
       - traefik-internal

@@ -10,6 +10,8 @@ services:
 #    ports:
 #      - 8080:8080
     user: 1000:1000
+    env_file:
+      - .env #to add env vars to any widgets in the glance.yml file in DockerData
     environment:
       - TZ=Europe/London
     labels:
@@ -19,9 +21,17 @@ services:
       - "traefik.http.routers.dashboard-glance.tls=true"
       - "traefik.http.services.dashboard-glance.loadbalancer.server.port=8080"
 #      - "traefik.http.routers.dashboard-glance.middlewares=authelia@docker" #not required, yet
+      - "glance.name=Glance"
+      - "glance.icon=sh:glance"
+      - "glance.url=https://dashboard.thehome.party"
+      - "glance.description=Dashboard"
     networks:
       - default #for internet
       - traefik-internal
+      - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
+  wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
+    driver: bridge
+    external: true
   traefik-internal:
     external: true

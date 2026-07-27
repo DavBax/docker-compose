@@ -27,6 +27,10 @@ services:
       - "traefik.http.routers.duplicati.entrypoints=websecure"
       - "traefik.http.routers.duplicati.tls=true"
       - "traefik.http.services.duplicati.loadbalancer.server.port=8200"
+      - "glance.name=Duplicati"
+      - "glance.icon=sh:duplicati"
+      - "glance.url=https://duplicati.thehome.party"
+      - "glance.description=Backups"
     networks:
       - default
       - traefik-internal

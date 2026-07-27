@@ -42,6 +42,11 @@ services:
       - '-watchdoginterval=3600'
       - '-stoponwatchdog'
       - '-shutdowngracetime=5'
+    labels:
+      - "glance.name=Socket Proxy Watchtower"
+      - "glance.icon=sh:wollomatic"
+#      - "glance.url=https://arcane.thehome.party"
+      - "glance.description=Watchtower's Socket Proxy"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # read-only for file operations, but not for http operations
     healthcheck:

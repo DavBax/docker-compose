@@ -30,6 +30,10 @@ services:
       - "traefik.http.routers.gotify.entrypoints=websecure"
       - "traefik.http.routers.gotify.tls=true"
       - "traefik.http.services.gotify.loadbalancer.server.port=80"
+      - "glance.name=Gotify"
+      - "glance.icon=sh:gotify"
+      - "glance.url=https://gotify.thehome.party"
+      - "glance.description=Notifications"
     networks:
       - default
       - traefik-internal

@@ -52,13 +52,18 @@ services:
     command:
       - '-loglevel=info'
       - '-listenip=0.0.0.0'
-      - '-allowfrom=uptimekuma,dozzle,glances,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
+      - '-allowfrom=uptimekuma,dozzle,glances,dashboard-glance,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
       - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|events.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowhealthcheck'
       - '-watchdoginterval=3600'
       - '-stoponwatchdog'
       - '-shutdowngracetime=5'
+    labels:
+      - "glance.name=Socket Proxy Read Only"
+      - "glance.icon=si:socket"
+#      - "glance.url=https://arcane.thehome.party"
+      - "glance.description=Read-Only Socket Proxy"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:

@@ -30,6 +30,10 @@ services:
       - "traefik.http.routers.dozzle.tls=true"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
 #      - "traefik.http.routers.dozzle.middlewares=authelia@docker"
+      - "glance.name=Dozzle"
+      - "glance.icon=sh:dozzle"
+      - "glance.url=https://dozzle.thehome.party"
+      - "glance.description=Logs"
     networks:
       - default
       - traefik-internal

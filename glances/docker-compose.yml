@@ -26,6 +26,10 @@ services:
       - "traefik.http.routers.glances.tls=true"
       - "traefik.http.services.glances.loadbalancer.server.port=61208"
 #      - "traefik.http.routers.glances.middlewares=authelia@docker" #not required, nothing sensitive
+      - "glance.name=Glances"
+      - "glance.icon=sh:glances"
+      - "glance.url=https://glances.thehome.party"
+      - "glance.description=System Peformance & Metrics"
     networks:
       - default
       - traefik-internal

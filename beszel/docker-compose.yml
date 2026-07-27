@@ -30,9 +30,15 @@ services:
       - "traefik.http.routers.beszel.entrypoints=websecure"
       - "traefik.http.routers.beszel.tls=true"
       - "traefik.http.services.beszel.loadbalancer.server.port=8090"
+      - "glance.name=Beszel"
+      - "glance.id=beszel"
+      - "glance.icon=sh:beszel"
+      - "glance.url=https://beszel.thehome.party"
+      - "glance.description=Server Resource Metrics"
     networks:
       - default
       - traefik-internal
+  
   beszel-agent:
     image: index.docker.io/henrygd/beszel-agent:latest
     container_name: beszel-agent
@@ -47,6 +53,12 @@ services:
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
       - /home/davepifive/DockerData/beszel/agent_data:/var/lib/beszel-agent
 #      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "glance.name=Beszel-Agent"
+      - "glance.parent=beszel"
+      - "glance.icon=sh:beszel"
+#      - "glance.url=https://beszel.thehome.party"
+      - "glance.description=Server Resource Metrics Agent"
     healthcheck:
       test:
         - CMD
@@ -59,7 +71,7 @@ services:
       TZ: Europe/London
       LISTEN: /beszel_socket/beszel_socket
       DOCKER_HOST: tcp://127.0.0.1:2375
-      HUB_URL: http://localhost:8090
+      HUB_URL: http://beszel:8090
       TOKEN: ${hub_token}
       # Do not remove quotes around the key
       KEY: ${SSH_Key}
