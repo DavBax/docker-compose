@@ -1,0 +1,20 @@
+services:
+  cloudflared:
+    image: index.docker.io/cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command: tunnel --no-autoupdate run #don't update voa cloudflare, watchtower will do it
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    labels:
+      - "glance.name=Cloudflared"
+      - "glance.icon=sh:cloudflared"
+      - "glance.description=Cloudflare Tunnel"
+    networks:
+      - default
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true

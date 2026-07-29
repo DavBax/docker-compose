@@ -29,11 +29,18 @@ services:
       - "traefik.http.routers.gotify.rule=Host(`gotify.thehome.party`)"
       - "traefik.http.routers.gotify.entrypoints=websecure"
       - "traefik.http.routers.gotify.tls=true"
-      - "traefik.http.services.gotify.loadbalancer.server.port=80"
+      - "traefik.http.routers.gotify.service=gotify-svc"
+      - "traefik.http.services.gotify-svc.loadbalancer.server.port=80"
       - "glance.name=Gotify"
       - "glance.icon=sh:gotify"
       - "glance.url=https://gotify.thehome.party"
       - "glance.description=Notifications"
+      # router for gotify webhooks, via cloudflare tunnel
+      - "traefik.http.routers.gotify-hooks.rule=Host(`gotify-hooks.thehome.party`) && PathPrefix(`/message`)"
+      - "traefik.http.routers.gotify-hooks.entrypoints=websecure"
+      - "traefik.http.routers.gotify-hooks.tls=true"
+      - "traefik.http.routers.gotify-hooks.service=gotify-hooks-svc"
+      - "traefik.http.services.gotify-hooks-svc.loadbalancer.server.port=80"
     networks:
       - default
       - traefik-internal
