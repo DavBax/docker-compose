@@ -8,6 +8,12 @@ services:
     command: tunnel --no-autoupdate run #don't update voa cloudflare, watchtower will do it
     environment:
       - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+      - TUNNEL_METRICS=0.0.0.0:60123
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     labels:
       - "glance.name=Cloudflared"
       - "glance.icon=sh:cloudflared"

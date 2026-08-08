@@ -57,7 +57,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
     command:
       - '-loglevel=info'
@@ -72,6 +72,7 @@ services:
       - '-stoponwatchdog'
       - '-shutdowngracetime=5'
     labels:
+      - "com.centurylinklabs.watchtower.enable=false"
       - "glance.parent=watchtower"
       - "glance.name=Socket Proxy Watchtower"
 #      - "glance.icon=sh:wollomatic"

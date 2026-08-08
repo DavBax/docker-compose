@@ -23,6 +23,7 @@ services:
       - TZ=Europe/London
       - HOMEASSISTANT_URL=https://ha.thehome.party
       - HOMEASSISTANT_TOKEN=${ha_token}
+      - MCP_HEALTHZ=true
     command: ha-mcp-web
     labels:
       - "traefik.enable=true"
@@ -34,6 +35,12 @@ services:
       - "glance.icon=sh:home-assistant"
       - "glance.url=https://ha-mcp.thehome.party"
       - "glance.description=Home Assistant MCP"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8086/healthz', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     networks:
       - default # rewuired so ha-mcp can reach outbound to the ha server over the network
       - traefik-internal

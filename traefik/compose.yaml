@@ -55,9 +55,11 @@ services:
       - .env
     environment: #environment: variables take precdence over env_file variables
       - TZ=Europe/London
+    command:
+      - '--ping' #used by healthcheck
     ports:
-      - "80:80"  
-      - "443:443" 
+      - "80:80"
+      - "443:443"
     volumes:
       - /home/davepifive/DockerData/traefik/traefik.yml:/etc/traefik/traefik.yml:ro    # Static Traefik Configuration
       - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro            # Folder to store dynamic configuration file provider
@@ -78,6 +80,12 @@ services:
       - "glance.icon=sh:traefik"
       - "glance.url=https://traefik.thehome.party"
       - "glance.description=Reverse Proxy"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping", "--ping.entrypoint=web"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - traefik-socket-internal
       - traefik-internal

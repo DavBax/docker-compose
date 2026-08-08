@@ -27,6 +27,14 @@ services:
       - "glance.icon=mdi:folder-network"
       - "glance.url=https://dufs.thehome.party"
       - "glance.description=File Server"
+    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/__dufs__/health"]
+      test: ["CMD", "/bin/dufs", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
     networks:
 #      - default # removed, therefore dufs should have no internet access
       - traefik-internal

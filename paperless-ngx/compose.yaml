@@ -14,6 +14,12 @@ services:
       - glance.icon=sh:valkey
      # - glance.url=https://arcane.thehome.party
       - glance.description=Key=Value Workloads
+    healthcheck:
+      test: ["CMD-SHELL", "valkey-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   paperless-webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
@@ -23,9 +29,12 @@ services:
       - no-new-privileges:true
 #    user: '1000:1000' #using USERMAP_ env vars instead
     depends_on:
-      - paperless-broker
-      - paperless-gotenberg
-      - paperless-tika
+      paperless-broker:
+        condition: service_healthy
+      paperless-gotenberg:
+        condition: service_healthy
+      paperless-tika:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -83,6 +92,12 @@ services:
       - glance.icon=sh:paperless-ngx
       #- glance.url=https://arcane.thehome.party
       - glance.description=Convert to PDF
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
   
   paperless-tika:
     image: index.docker.io/apache/tika:latest
@@ -96,6 +111,12 @@ services:
       - glance.icon=sh:paperless-ngx
       #- glance.url=https://arcane.thehome.party
       - glance.description=Metadata Extraction
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/9998' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 networks:
   traefik-internal:

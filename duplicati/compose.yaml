@@ -31,6 +31,12 @@ services:
       - "glance.icon=sh:duplicati"
       - "glance.url=https://duplicati.thehome.party"
       - "glance.description=Backups"
+    healthcheck:
+      test: /opt/duplicati/duplicati-server-util health
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 1m
     networks:
       - default
       - traefik-internal
