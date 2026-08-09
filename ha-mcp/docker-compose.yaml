@@ -4,9 +4,10 @@ services:
     container_name: ha-mcp
     restart: unless-stopped
     # read_only: true pairs with tmpfs: /tmp because the Python runtime writes temporary files there;
-    read_only: true
-    tmpfs:
-      - /tmp
+#    read_only: true
+#    tmpfs:
+#      - /tmp
+#      - /home/mcpuser/.local
     # cap_drop: [ALL] drops every Linux kernel capability the container would otherwise inherit;
     cap_drop:
       - ALL
@@ -24,23 +25,47 @@ services:
       - HOMEASSISTANT_URL=https://ha.thehome.party
       - HOMEASSISTANT_TOKEN=${ha_token}
       - MCP_HEALTHZ=true
-    command: ha-mcp-web
+      # --- for OIDC --- #
+      - MCP_BASE_URL=https://ha-mcp.thehome.party
+      - OIDC_CONFIG_URL=https://sso.thehome.party/.well-known/openid-configuration
+      - OIDC_CLIENT_ID=ha-mcp
+      - OIDC_CLIENT_SECRET=${oidc_client_secret}
+      # Loosely scoped for now since fastmcp-remote/Claude Desktop's local
+      # callback port varies; tighten once you confirm the actual port(s) used.
+      - OIDC_ALLOWED_CLIENT_REDIRECT_URIS=http://localhost:*
+      #- OIDC_AUDIENCE=https://ha-mcp.thehome.party/mcp
+#      - OIDC_JWT_SIGNING_KEY=${oidc_jwt_signing_key}
+#      - OIDC_VERIFY_ID_TOKEN=true #authelia isses opaque access tokens, so this line is needed
+      # Fixed rather than auto-generated, so the Traefik path rule below has
+      # something stable to match.
+      - MCP_SETTINGS_SECRET_PATH=/private_hamcpsettingspage123
+    command: ha-mcp-oidc
     labels:
       - "traefik.enable=true"
+      # --- MCP Server, will use OIDC --- #
       - "traefik.http.routers.ha-mcp.rule=Host(`ha-mcp.thehome.party`)"
       - "traefik.http.routers.ha-mcp.entrypoints=websecure"
       - "traefik.http.routers.ha-mcp.tls=true"
+      - "traefik.http.routers.ha-mcp.priority=1"
       - "traefik.http.services.ha-mcp.loadbalancer.server.port=8086"
+      # --- Settings UI, not OIDC, using Authelia forwardAuth --- #
+      - "traefik.http.routers.ha-mcp-settings.rule=Host(`ha-mcp.thehome.party`) && PathPrefix(`/private_hamcpsettingspage123`)"
+      - "traefik.http.routers.ha-mcp-settings.entrypoints=websecure"
+      - "traefik.http.routers.ha-mcp-settings.tls=true"
+      - "traefik.http.routers.ha-mcp-settings.priority=10"
+      - "traefik.http.routers.ha-mcp-settings.middlewares=authelia"
+      - "traefik.http.routers.ha-mcp-settings.service=ha-mcp"
+      # --- Glance Dashboard values --- #
       - "glance.name=HA-MCP"
       - "glance.icon=sh:home-assistant"
       - "glance.url=https://ha-mcp.thehome.party"
       - "glance.description=Home Assistant MCP"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8086/healthz', timeout=3).status == 200 else 1)"]
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+#    healthcheck:
+#      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8086/healthz', timeout=3).status == 200 else 1)"]
+#      interval: 15s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 10s
     networks:
       - default # rewuired so ha-mcp can reach outbound to the ha server over the network
       - traefik-internal
