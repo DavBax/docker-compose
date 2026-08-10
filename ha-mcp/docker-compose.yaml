@@ -9,8 +9,8 @@ services:
 #      - /tmp
 #      - /home/mcpuser/.local
     # cap_drop: [ALL] drops every Linux kernel capability the container would otherwise inherit;
-    cap_drop:
-      - ALL
+#    cap_drop:
+#      - ALL
     # no-new-privileges:true blocks privilege escalation via setuid binaries.
     security_opt:
       - no-new-privileges:true
@@ -24,22 +24,23 @@ services:
       - TZ=Europe/London
       - HOMEASSISTANT_URL=https://ha.thehome.party
       - HOMEASSISTANT_TOKEN=${ha_token}
-      - MCP_HEALTHZ=true
+#      - MCP_HEALTHZ=true
       # --- for OIDC --- #
-      - MCP_BASE_URL=https://ha-mcp.thehome.party
-      - OIDC_CONFIG_URL=https://sso.thehome.party/.well-known/openid-configuration
-      - OIDC_CLIENT_ID=ha-mcp
-      - OIDC_CLIENT_SECRET=${oidc_client_secret}
+      - MCP_BASE_URL=https://ha-mcp.thehome.party/
+#      - OIDC_CONFIG_URL=https://sso.thehome.party/.well-known/openid-configuration
+#      - OIDC_CLIENT_ID=ha-mcp
+#      - OIDC_CLIENT_SECRET=${oidc_client_secret}
       # Loosely scoped for now since fastmcp-remote/Claude Desktop's local
       # callback port varies; tighten once you confirm the actual port(s) used.
-      - OIDC_ALLOWED_CLIENT_REDIRECT_URIS=http://localhost:*
-      #- OIDC_AUDIENCE=https://ha-mcp.thehome.party/mcp
+#      - OIDC_ALLOWED_CLIENT_REDIRECT_URIS=http://localhost:*
+#      - OIDC_AUDIENCE=https://ha-mcp.thehome.party/mcp
 #      - OIDC_JWT_SIGNING_KEY=${oidc_jwt_signing_key}
 #      - OIDC_VERIFY_ID_TOKEN=true #authelia isses opaque access tokens, so this line is needed
       # Fixed rather than auto-generated, so the Traefik path rule below has
       # something stable to match.
       - MCP_SETTINGS_SECRET_PATH=/private_hamcpsettingspage123
-    command: ha-mcp-oidc
+#      - LOG_LEVEL=DEBUG
+    command: ha-mcp-oauth
     labels:
       - "traefik.enable=true"
       # --- MCP Server, will use OIDC --- #
@@ -67,7 +68,7 @@ services:
 #      retries: 3
 #      start_period: 10s
     networks:
-      - default # rewuired so ha-mcp can reach outbound to the ha server over the network
+      - default # required so ha-mcp can reach outbound to the ha server over the network
       - traefik-internal
 networks:
   traefik-internal:
