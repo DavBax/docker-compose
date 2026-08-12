@@ -16,7 +16,7 @@ services:
       retries: 3
     labels:
       - "glance.name=Cloudflared"
-      - "glance.icon=sh:cloudflared"
+      - "glance.icon=sh:cloudflare"
       - "glance.description=Cloudflare Tunnel"
     networks:
       - default

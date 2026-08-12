@@ -3,7 +3,7 @@ services:
     image: index.docker.io/lissy93/dashy:latest
     container_name: dashy
     restart: unless-stopped
-#    user: 1000:1000 #using UID/GID env var instead
+    user: 1000:1000 #using UID/GID env var instead
     security_opt:
         - no-new-privileges:true
     # Pass in your config file below, by specifying the path on your host machine
@@ -31,7 +31,7 @@ services:
       - "traefik.http.routers.dashy.tls=true"
       - "traefik.http.services.dashy.loadbalancer.server.port=8080"
       - "glance.name=Dashy"
-      - "glance.icon=sh:dashy"
+      - "glance.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/dashy.png" #icon hosted on selfhst is only png, glance looks for svg and fails if not found
       - "glance.url=https://dashy.thehome.party"
       - "glance.description=Dashboard"
     #Configure healthchecks
