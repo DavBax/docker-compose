@@ -52,7 +52,7 @@ services:
     command:
       - '-loglevel=info'
       - '-listenip=0.0.0.0'
-      - '-allowfrom=uptimekuma,dozzle,glances,dashboard-glance,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
+      - '-allowfrom=uptimekuma,dozzle,glances,dashboard-glance,crowdsec,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
       - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|events.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowhealthcheck'

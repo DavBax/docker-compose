@@ -1,0 +1,29 @@
+services:
+  whoami:
+    container_name: whoami
+    image: index.docker.io/traefik/whoami:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+       # It tells whoami to start listening on 2001 instead of 80
+       - --port=2001
+       - --name=whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.thehome.party`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.services.whoami.loadbalancer.server.port=2001"
+      - "traefik.http.routers.whoami.middlewares=crowdsec@file"
+      - "glance.name=WhoAmI"
+      - "glance.icon=sh:traefik"
+      - "glance.url=https://whoami.thehome.party"
+      - "glance.description=HTTP echo"
+    networks:
+#      - default
+      - traefik-internal
+
+networks:
+  traefik-internal:
+    external: true

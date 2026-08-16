@@ -66,6 +66,7 @@ services:
 #      - ./config/authusers.txt:/etc/traefik/authusers.txt:ro  # userfile for basic auth
 #      - ./config/acme/acme.json:/etc/traefik/acme.json        # certificate storage
       - /home/davepifive/DockerData/traefik/letsencrypt/acme.json:/letsencrypt/acme.json # certificate storage
+      - /home/davepifive/DockerData/traefik/plugins:/plugins-storage
     labels:
       - "traefik.enable=true" #traefik.yml sets "exposedByDefault: false", so every container is ignored, unless this line is present
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.thehome.party`)" #router, named traefik-dashboard, looking for traffic matching that url
@@ -86,11 +87,15 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+    secrets:
+      - bouncer_key_traefik
     networks:
       - traefik-socket-internal
       - traefik-internal
       - default
-
+secrets:
+  bouncer_key_traefik:
+    file: /home/davepifive/docker-compose/crowdsec/secrets/bouncer_key_traefik
 networks:
   traefik-socket-internal: # this should be restricted to only traefik and socket-proxy-traefik
     driver: bridge

@@ -5,22 +5,34 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    network_mode: bridge
-    ports:
-      - "7422:7422"
-      - "8080:8080"
+#    ports:
+#      - "7422:7422"
+#      - "8080:8080"
     environment:
-      - "TZ=Europe/Londone"
-      - "COLLECTIONS=ZoeyVid/npmplus"
+      - TZ=Europe/London
+      - COLLECTIONS=crowdsecurity/traefik
+#      - BOUNCER_KEY_traefik=${BOUNCER_KEY_traefik}
+      - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
     volumes:
-      - "/home/davepifive/DockerData/crowdsec/conf:/etc/crowdsec"
-      - "/home/davepifive/DockerData/crowdsec/data:/var/lib/crowdsec/data"
-      - "/home/davepifive/DockerData/npmplus/data/nginx:/opt/npmplus/nginx:ro"
-      - "/home/davepifive/DockerData/crowdsec/logs:/var/log/nginx"
-#      - "/opt/openappsec/logs:/opt/openappsec/logs:ro" # only uncomment if you also use the openappsec-agent container
+      - /home/davepifive/DockerData/crowdsec/config:/etc/crowdsec #includes acquis.yaml
+      - /home/davepifive/DockerData/crowdsec/config/acquis.d:/etc/crowdsec/acquis.d #directory, not a file
+      - /home/davepifive/DockerData/crowdsec/data:/var/lib/crowdsec/data
+    labels:
+      - "glance.name=Crowdsec"
+      - "glance.icon=sh:crowdsec"
+#      - "glance.url=https://dozzle.thehome.party"
+      - "glance.description=WAF + Blocklists"
+    secrets:
+      - bouncer_key_traefik #match name in top level secrets reference
     networks:
-      - myNUCNetwork
+      - default #required to reach Crowdsec console
+      - traefik-internal
+      - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
-  myNUCNetwork:
-    name: myNUCNetwork
+  traefik-internal:
     external: true
+  wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
+    external: true
+secrets:
+  bouncer_key_traefik:
+    file: ./secrets/bouncer_key_traefik

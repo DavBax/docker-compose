@@ -26,6 +26,7 @@ services:
       TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
+      WATCHTOWER_NOTIFICATIONS_DELAY: 30 #30sec delay before notifying, to allow dependant containers to reboot (traefik, gotify etc)
       WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
 #      WATCHTOWER_NOTIFICATION_URL: "generic://gotify.thehome.party/message?template=json&token=${gotify_token}" #used while shoutrrr was broken for gotify v3.0
       DOCKER_HOST: tcp://socket-proxy-watchtower:2375
