@@ -11,6 +11,9 @@ services:
     environment:
       - TZ=Europe/London
       - COLLECTIONS=crowdsecurity/traefik
+      - COLLECTIONS=crowdsecurity/appsec-virtual-patching
+      - COLLECTIONS=crowdsecurity/appsec-crs-inband
+      - COLLECTIONS=crowdsecurity/appsec-generic-rules
 #      - BOUNCER_KEY_traefik=${BOUNCER_KEY_traefik}
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
     volumes:

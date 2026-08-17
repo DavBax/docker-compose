@@ -35,7 +35,7 @@ services:
       - "glance.url=https://dozzle.thehome.party"
       - "glance.description=Logs"
     networks:
-      - default
+      - default #required, for access to mcp, from external ai clients.
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
