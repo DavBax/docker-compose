@@ -31,6 +31,10 @@ services:
       - "traefik.http.routers.changedetection.entrypoints=websecure"
       - "traefik.http.routers.changedetection.tls=true"
       - "traefik.http.services.changedetection.loadbalancer.server.port=5000"
+      #middleware required to tell changedetection that it IS being served over HTTPS, removes a /socket.io 400 error
+      - "traefik.http.routers.changedetection.middlewares=changedetection-headers"
+      - "traefik.http.middlewares.changedetection-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.changedetection-headers.headers.customrequestheaders.X-Forwarded-Host=changedetection.thehome.party"
       - "glance.name=ChangeDetection.io"
       - "glance.id=ChangeDetection.io"
       - "glance.icon=sh:changedetection"
