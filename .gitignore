@@ -5,3 +5,6 @@
 *.env.local
 .DS_Store
 .env.global
+
+# Ignore all secret files (no extensions) in ./secrets/
+**/secrets/

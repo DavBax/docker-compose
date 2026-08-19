@@ -72,9 +72,19 @@ services:
       LISTEN: /beszel_socket/beszel_socket
       DOCKER_HOST: tcp://127.0.0.1:2375
       HUB_URL: https://beszel.thehome.party
-      TOKEN: ${hub_token}
+      TOKEN_FILE: /run/secrets/beszel_agent_token
+      KEY_FILE: /run/secrets/beszel_agent_key
+    secrets:
+      - beszel_agent_token
+      - beszel_agent_key
+#      TOKEN: ${hub_token}
       # Do not remove quotes around the key
-      KEY: ${SSH_Key}
+#      KEY: ${SSH_Key}
 networks:
   traefik-internal:
     external: true
+secrets:
+  beszel_agent_token:
+    file: ./secrets/beszel_agent_token
+  beszel_agent_key:
+    file: ./secrets/beszel_agent_key
