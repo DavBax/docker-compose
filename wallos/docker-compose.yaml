@@ -12,7 +12,8 @@ services:
       OIDC_ENABLED: true
       OIDC_PROVIDER_NAME: Authelia
       OIDC_CLIENT_ID: wallos
-      OIDC_CLIENT_SECRET: ${oidc_client_secret}
+#      OIDC_CLIENT_SECRET: ${oidc_client_secret}
+      OIDC_CLIENT_SECRET_FILE: /run/secrets/wallos_oidc_client_secret
       OIDC_ISSUER: https://sso.thehome.party
       OIDC_AUTH_URL: https://sso.thehome.party/api/oidc/authorization
       OIDC_TOKEN_URL: https://sso.thehome.party/api/oidc/token
@@ -25,6 +26,8 @@ services:
       OIDC_DISABLE_PASSWORD_LOGIN: false
       OIDC_REQUIRE_EMAIL_VERIFIED: false
       SSRF_ALLOWLIST: sso.thehome.party
+    secrets:
+      - wallos_oidc_client_secret
     volumes:
       - /home/davepifive/DockerData/wallos/db:/var/www/html/db
       - /home/davepifive/DockerData/wallos/logos:/var/www/html/images/uploads/logos
@@ -41,6 +44,9 @@ services:
     networks:
       - default
       - traefik-internal
+secrets:
+  wallos_oidc_client_secret:
+    file: ./secrets/wallos_oidc_client_secret
 networks:
   traefik-internal:
     external: true

@@ -39,6 +39,7 @@ services:
       - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
       - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
       - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+      - "traefik.http.middlewares.authelia.forwardauth.maxResponseBodySize=1000000" #1MB, responses are tiny
       - "glance.name=Authelia"
       - "glance.icon=sh:authelia"
       - "glance.url=https://authelia.thehome.party"

@@ -21,26 +21,20 @@ services:
 #      - "glance.url=https://arcane.thehome.party"
       - "glance.description=Container Updates"
     environment:
-#     DOCKER_CONFIG: /home/dave/.docker/
-#     DOCKER_API-VERSION: "1.45"
       TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
       WATCHTOWER_NOTIFICATIONS_DELAY: 30 #30sec delay before notifying, to allow dependant containers to reboot (traefik, gotify etc)
-      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
-#      WATCHTOWER_NOTIFICATION_URL: "generic://gotify.thehome.party/message?template=json&token=${gotify_token}" #used while shoutrrr was broken for gotify v3.0
+#      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
+      WATCHTOWER_NOTIFICATION_URL: /run/secrets/watchtower_notification_url
       DOCKER_HOST: tcp://socket-proxy-watchtower:2375
       WATCHTOWER_HTTP_API_ENDPOINTS: containers,update,swagger
-#      WATCHTOWER_HTTP_API_UPDATE: true #enables the update API endpoint
       WATCHTOWER_HTTP_API_PERIODIC_POLLS: true #keeps the scheduled polling enabled, usually switched off by the update API endpoint
-      WATCHTOWER_HTTP_API_TOKEN: ${watchtower_http_api_token}
-#      WATCHTOWER_HTTP_API_CONTAINERS: true #enable <GET Containers>, used by HA
-#      WATCHTOWER_NOTIFICATIONS: gotify
-#      WATCHTOWER_NOTIFICATION_GOTIFY_URL: http://192.168.66.5:8090
-#      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${gotify_token}
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - $HOME/.docker/config.json:/config.json #check dir of file
+#      WATCHTOWER_HTTP_API_TOKEN: ${watchtower_http_api_token}
+      WATCHTOWER_HTTP_API_TOKEN: /run/secrets/watchtower_http_api_token
+    secrets:
+      - watchtower_notification_url
+      - watchtower_http_api_token
     networks:
       - default
       - socket-proxy-watchtower-net
@@ -91,6 +85,11 @@ services:
     # No port published - only reachable by containers on
     # socket-proxy-watchtower-net, and even then, only "watchtower" per
     # -allowfrom above.
+secrets:
+  watchtower_notification_url:
+    file: ./secrets/watchtower_notification_url
+  watchtower_http_api_token:
+    file: ./secrets/watchtower_http_api_token
 
 networks:
   socket-proxy-watchtower-net:

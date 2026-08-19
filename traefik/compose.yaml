@@ -55,6 +55,7 @@ services:
       - .env
     environment: #environment: variables take precdence over env_file variables
       - TZ=Europe/London
+      - CF_DNS_API_TOKEN=/run/secrets/cf_dns_api_token
     command:
       - '--ping' #used by healthcheck
     ports:
@@ -89,6 +90,7 @@ services:
       start_period: 5s
     secrets:
       - bouncer_key_traefik
+      - cf_dns_api_token
     networks:
       - traefik-socket-internal
       - traefik-internal
@@ -96,6 +98,8 @@ services:
 secrets:
   bouncer_key_traefik:
     file: /home/davepifive/docker-compose/crowdsec/secrets/bouncer_key_traefik
+  cf_dns_api_token:
+    file: ./secrets/cf_dns_api_token
 networks:
   traefik-socket-internal: # this should be restricted to only traefik and socket-proxy-traefik
     driver: bridge

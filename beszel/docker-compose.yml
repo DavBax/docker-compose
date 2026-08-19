@@ -77,9 +77,6 @@ services:
     secrets:
       - beszel_agent_token
       - beszel_agent_key
-#      TOKEN: ${hub_token}
-      # Do not remove quotes around the key
-#      KEY: ${SSH_Key}
 networks:
   traefik-internal:
     external: true

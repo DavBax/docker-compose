@@ -8,13 +8,15 @@ services:
       - no-new-privileges:true
     environment:
       - TZ=Europe/London
-      - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
+#      - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
+      - GOTIFY_DEFAULTUSER_PASS_FILE=/run/secrets/gotify_def_user_pass
       - UID='1000'
       - GID='1000'
       - GOTIFY_OIDC_ENABLED=true
       - GOTIFY_OIDC_ISSUER=https://sso.thehome.party #url of authelia
       - GOTIFY_OIDC_CLIENTID=gotify
-      - GOTIFY_OIDC_CLIENTSECRET=${oidc_client_secret}
+#      - GOTIFY_OIDC_CLIENTSECRET=${oidc_client_secret}
+      - GOTIFY_OIDC_CLIENTSECRET_FILE=/run/secrets/gotify_oidc_client_secret
       - GOTIFY_OIDC_REDIRECTURL=https://gotify.thehome.party/auth/oidc/callback
       - GOTIFY_OIDC_AUTOREGISTER=true
       - GOTIFY_OIDC_USERNAMECLAIM=preferred_username
@@ -42,9 +44,17 @@ services:
       - "traefik.http.routers.gotify-hooks.service=gotify-hooks-svc"
       - "traefik.http.services.gotify-hooks-svc.loadbalancer.server.port=80"
       - "traefik.http.routers.gotify-hooks.middlewares=crowdsec@file"
+    secrets:
+      - gotify_def_user_pass
+      - gotify_oidc_client_secret
     networks:
       - default
       - traefik-internal
 networks:
   traefik-internal:
     external: true
+secrets:
+  gotify_def_user_pass:
+    file: ./secrets/gotify_def_user_pass
+  gotify_oidc_client_secret:
+    file: ./secrets/gotify_oidc_client_secret

@@ -27,10 +27,13 @@ services:
       OIDC_PROVIDER_NAME: 'Authelia'
       OIDC_CONFIGURATION_URL: 'https://sso.thehome.party/.well-known/openid-configuration'
       OIDC_CLIENT_ID: 'mealie'
-      OIDC_CLIENT_SECRET: '${client_secret}'
+#      OIDC_CLIENT_SECRET: '${client_secret}'
+      OIDC_CLIENT_SECRET_FILE: /run/secrets/mealie_oidc_client_secret
       OIDC_AUTO_REDIRECT: 'false'
       OIDC_ADMIN_GROUP: 'admins'
       OIDC_USER_GROUP: 'users'
+    secrets:
+      - mealie_oidc_client_secret
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mealie.rule=Host(`mealie.thehome.party`)"
@@ -44,6 +47,9 @@ services:
     networks:
       - default
       - traefik-internal
+secrets:
+  mealie_oidc_client_secret:
+    file: ./secrets/mealie_oidc_client_secret
 networks:
   traefik-internal:
     external: true
