@@ -1,0 +1,37 @@
+services:
+  github-release-monitor:
+    container_name: github-release-monitor
+    image: ghcr.io/iamspido/github-release-monitor:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    env_file:
+      - .env
+    volumes:
+      - /home/davepifive/DockerData/github-release/data:/app/data
+#    ports:
+#      - "8080:3000"
+    mem_limit: 256M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.github-release-monitor.rule=Host(`gh-release.thehome.party`)"
+      - "traefik.http.routers.github-release-monitor.entrypoints=websecure"
+      - "traefik.http.routers.github-release-monitor.tls=true"
+      - "traefik.http.services.github-release-monitor.loadbalancer.server.port=3000"
+      - "traefik.http.routers.github-release-monitor.middlewares=authelia@docker"
+      - "glance.name=Github Release Monitor"
+      - "glance.icon=sh:github"
+      - "glance.url=https://gh-release.thehome.party"
+      - "glance.description=Github Release Monitoring"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - traefik-internal
+
+networks:
+  traefik-internal:
+    external: true

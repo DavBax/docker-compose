@@ -1,0 +1,51 @@
+services:
+  yaade:
+    container_name: yaade
+    image: index.docker.io/esperotech/yaade:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+#    user: "1000:1000"
+#    cap_drop:
+#      - ALL
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yaade.rule=Host(`yaade.thehome.party`)"
+      - "traefik.http.routers.yaade.entrypoints=websecure"
+      - "traefik.http.routers.yaade.tls=true"
+      - "traefik.http.services.yaade.loadbalancer.server.port=9339"
+#      - "traefik.http.routers.yaade.middlewares=authelia@docker"
+      - "glance.name=Yaade"
+      - "glance.id=yaade"
+      - "glance.icon=sh:yaade"
+      - "glance.url=https://yaade.thehome.party"
+      - "glance.description=API client for interacting with homelab container APIs"
+#    ports:
+#      - "9339:9339"
+    environment:
+      - TZ=Europe/London
+      - YAADE_ADMIN_USERNAME=${yaade_admin_username}
+      - YAADE_ADMIN_PASSWORD=${yaade_admin_password}
+    volumes:
+      - /home/davepifive/DockerData/yaade/data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://127.0.0.1:9339 >/dev/null || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - traefik-internal
+
+networks:
+  traefik-internal:
+    external: true
