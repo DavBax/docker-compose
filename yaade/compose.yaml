@@ -10,6 +10,7 @@ services:
 #      - ALL
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.yaade.rule=Host(`yaade.thehome.party`)"
       - "traefik.http.routers.yaade.entrypoints=websecure"
       - "traefik.http.routers.yaade.tls=true"
