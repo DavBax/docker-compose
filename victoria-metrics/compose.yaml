@@ -1,0 +1,194 @@
+# ~/docker-compose/victoriametrics/compose.yml
+#
+services:
+  # ---------------------------------------------------------------------------
+  # vmagent — scrapes targets defined in the mounted scrape config and forwards
+  # them to VictoriaMetrics via remote write. Has its own small debug UI
+  # (/targets etc.) so it's included on traefik-internal.
+  # ---------------------------------------------------------------------------
+  vmagent:
+    image: index.docker.io/victoriametrics/vmagent:latest
+    container_name: vmagent
+    depends_on:
+      - victoriametrics
+#    user: "1000:1000"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+    # ports:
+    #   - "8429:8429"   # not published — Traefik reaches this over traefik-internal
+    volumes:
+      - /home/davepifive/DockerData/victoriametrics/vmagent/data:/vmagentdata
+      - /home/davepifive/DockerData/victoriametrics/vmagent/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--promscrape.config=/etc/prometheus/prometheus.yml"
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+      # If you later add auth on the remoteWrite endpoint, put creds here
+      # - "--remoteWrite.basicAuth.username=vmagent"
+      # - "--remoteWrite.basicAuth.passwordFile=/run/secrets/vm_remote_write_password"
+    # secrets:
+    #   - vm_remote_write_password
+    networks:
+      - traefik-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vmagent.rule=Host(`vmagent.thehome.party`)"
+      - "traefik.http.routers.vmagent.entrypoints=websecure"
+      - "traefik.http.routers.vmagent.tls=true"
+      - "traefik.http.services.vmagent.loadbalancer.server.port=8429"
+      # - "traefik.http.routers.vmagent.middlewares=authelia@docker"
+      - "glance.name=vmagent"
+      - "glance.parent=victoriametrics"
+      - "glance.icon=sh:victoriametrics"
+      - "glance.url=https://vmagent.thehome.party"
+      - "glance.description=Metrics scraper / remote-write agent"
+
+  # ---------------------------------------------------------------------------
+  # victoriametrics — single-process metrics storage + query API (vmui).
+  # ---------------------------------------------------------------------------
+  victoriametrics:
+    image: index.docker.io/victoriametrics/victoria-metrics:latest
+    container_name: victoriametrics
+    user: "1000:1000"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+    # ports:
+    #   - "8428:8428"   # HTTP API / vmui — not published, via Traefik only
+    #   - "8089:8089"   # InfluxDB line protocol listener — unused, left commented
+    #   - "8089:8089/udp"
+    #   - "2003:2003"   # Graphite listener — unused, left commented
+    #   - "2003:2003/udp"
+    #   - "4242:4242"   # OpenTSDB listener — unused, left commented
+    volumes:
+      - /home/davepifive/DockerData/victoriametrics/storage:/storage
+    command:
+      - "--storageDataPath=/storage"
+      - "--httpListenAddr=:8428"
+      - "--vmalert.proxyURL=http://vmalert:8880"
+      # Graphite/OpenTSDB/InfluxDB ingestion protocols are disabled by default
+      # since nothing in your stack currently pushes those formats. Re-add if
+      # that changes:
+      # - "--graphiteListenAddr=:2003"
+      # - "--opentsdbListenAddr=:4242"
+      # - "--influxListenAddr=:8089"
+    networks:
+      - traefik-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.victoriametrics.rule=Host(`vm.thehome.party`)"
+      - "traefik.http.routers.victoriametrics.entrypoints=websecure"
+      - "traefik.http.routers.victoriametrics.tls=true"
+      - "traefik.http.services.victoriametrics.loadbalancer.server.port=8428"
+      # - "traefik.http.routers.victoriametrics.middlewares=authelia@docker"
+      - "glance.name=VictoriaMetrics"
+      - "glance.id=victoriametrics"
+      - "glance.icon=sh:victoriametrics"
+      - "glance.url=https://vm.thehome.party"
+      - "glance.description=Metrics storage & query UI (vmui)"
+
+  # ---------------------------------------------------------------------------
+  # vmalert — evaluates alerting/recording rules against VictoriaMetrics.
+  # ---------------------------------------------------------------------------
+  vmalert:
+    image: index.docker.io/victoriametrics/vmalert:latest
+    container_name: vmalert
+    depends_on:
+      - victoriametrics
+      - alertmanager
+    user: "1000:1000"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+    # ports:
+    #   - "8880:8880"   # not published — Traefik reaches this over traefik-internal
+    volumes:
+      - /home/davepifive/DockerData/victoriametrics/vmalert/rules:/etc/alerts:ro
+    command:
+      - "--datasource.url=http://victoriametrics:8428/"
+      - "--remoteRead.url=http://victoriametrics:8428/"
+      - "--remoteWrite.url=http://vmagent:8429/"
+      - "--notifier.url=http://alertmanager:9093/"
+      - "--rule=/etc/alerts/*.yml"
+      - "--external.url=https://vmalert.thehome.party"
+      - '--external.alert.source=explore?orgId=1&left={"datasource":"VictoriaMetrics","queries":[{"expr":{{.Expr|jsonEscape|queryEscape}},"refId":"A"}],"range":{"from":"{{ .ActiveAt.UnixMilli }}","to":"now"}}'
+    networks:
+      - traefik-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vmalert.rule=Host(`vmalert.thehome.party`)"
+      - "traefik.http.routers.vmalert.entrypoints=websecure"
+      - "traefik.http.routers.vmalert.tls=true"
+      - "traefik.http.services.vmalert.loadbalancer.server.port=8880"
+      # - "traefik.http.routers.vmalert.middlewares=authelia@docker"
+      - "glance.name=vmalert"
+      - "glance.parent=victoriametrics"
+      - "glance.icon=sh:victoriametrics"
+      - "glance.url=https://vmalert.thehome.party"
+      - "glance.description=Alert rule evaluation"
+
+  # ---------------------------------------------------------------------------
+  # alertmanager — receives firing alerts from vmalert, routes notifications.
+  # ---------------------------------------------------------------------------
+  alertmanager:
+    image: index.docker.io/prom/alertmanager:latest
+    container_name: alertmanager
+#    user: "1000:1000"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+    # ports:
+    #   - "9093:9093"   # not published — Traefik reaches this over traefik-internal
+    volumes:
+      - /home/davepifive/DockerData/victoriametrics/alertmanager/alertmanager.yml:/config/alertmanager.yml:ro
+    command:
+      - "--config.file=/config/alertmanager.yml"
+    # No Docker-secrets env wiring exists for Alertmanager (it's config-file driven,
+    # not env-var driven). If you add a receiver needing a credential (e.g. an
+    # Apprise webhook token, SMTP password), Alertmanager's config format supports
+    # "_file" suffixed fields directly (e.g. smtp_auth_password_file,
+    # bearer_token_file in http_config) — point those at a Docker-secret-mounted
+    # path under /run/secrets/ rather than writing the credential into
+    # alertmanager.yml in plaintext.
+    # secrets:
+    #   - alertmanager_smtp_password
+    networks:
+      - traefik-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.thehome.party`)"
+      - "traefik.http.routers.alertmanager.entrypoints=websecure"
+      - "traefik.http.routers.alertmanager.tls=true"
+      - "traefik.http.services.alertmanager.loadbalancer.server.port=9093"
+      # - "traefik.http.routers.alertmanager.middlewares=authelia@docker"
+      - "glance.name=Alertmanager"
+      - "glance.parent=victoriametrics"
+      - "glance.icon=sh:prometheus"
+      - "glance.url=https://alertmanager.thehome.party"
+      - "glance.description=Alert routing & silencing"
+networks:
+  traefik-internal:
+    external: true
+
+# Example of the Docker secrets block referenced above, if/when you need it:
+# secrets:
+#   vm_remote_write_password:
+#     file: ./secrets/vm_remote_write_password
+#   alertmanager_smtp_password:
+#     file: ./secrets/alertmanager_smtp_password

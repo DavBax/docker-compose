@@ -1,0 +1,87 @@
+# ~/docker-compose/grafana/compose.yml
+#
+# Decoupled from the VictoriaMetrics stack per your request — this talks to
+# VictoriaMetrics purely over the shared traefik-internal network by container
+# name (victoriametrics:8428), so no explicit dependency/network coupling to
+# the other compose file is needed beyond both being attached to the same
+# external network.
+#
+# NOTE ON ASSUMPTIONS:
+#   - glance.icon slug is a best guess — verify it resolves to something
+#     sensible in your icon set and swap if not.
+#   - Subdomain (grafana.thehome.party) is a suggestion — rename as you like.
+#   - All bind mounts now use the literal path /home/davepifive/ instead of
+#     ${HOME} — adjust if that's not the right home directory.
+#   - GF_PLUGINS_PREINSTALL (yesoreyeram-infinity-datasource) requires Grafana
+#     to reach the public Grafana plugin catalog at container startup to
+#     download the plugin, AND the Infinity datasource is typically used to
+#     query external REST APIs at runtime. Both need real internet egress —
+#     that's why, unlike the VictoriaMetrics stack, this one DOES get a
+#     "default" network. If you don't need the Infinity datasource, drop
+#     GF_PLUGINS_PREINSTALL and the default network entirely and keep this
+#     fully internal like the others.
+
+services:
+  grafana:
+    image: index.docker.io/grafana/grafana-enterprise:latest
+    container_name: grafana
+    user: "1000:1000"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+#    logging:
+#      driver: json-file
+#      options:
+#        max-size: "50m"
+    # ports:
+    #   - "3000:3000"   # not published — Traefik reaches this over traefik-internal
+    env_file: ".env"
+    environment:
+      - TZ=Europe/London
+      - GF_SERVER_ROOT_URL=https://grafana.thehome.party
+      - GF_PLUGINS_PREINSTALL=yesoreyeram-infinity-datasource
+      # Grafana's Docker image supports reading env vars from a file when suffixed
+      # with a DOUBLE underscore + _FILE (confirmed against Grafana's own docs —
+      # single underscore is a common but incorrect assumption people trip on).
+      # This reads the admin password from the Docker-secret-mounted file below
+      # instead of ever putting it in this compose file or .env in plaintext.
+      - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_admin_password
+    secrets:
+      - grafana_admin_password
+      - grafana_oidc_client_secret
+    volumes:
+      - /home/davepifive/DockerData/grafana/data:/var/lib/grafana
+      - /home/davepifive/DockerData/grafana/provisioning:/etc/grafana/provisioning
+      # dashboards is inside same dir as data, it should be auto created 
+#      - /home/davepifive/DockerData/grafana/provisioning/datasources/single.yml:/etc/grafana/provisioning/datasources/single.yml:ro
+#      - /home/davepifive/DockerData/grafana/provisioning/datasources/infinity-single.yml:/etc/grafana/provisioning/datasources/infinity-single.yml:ro
+#      - /home/davepifive/DockerData/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+#      - /home/davepifive/DockerData/grafana/dashboards/victoriametrics.json:/var/lib/grafana/dashboards/vm.json:ro
+#      - /home/davepifive/DockerData/grafana/dashboards/vmagent.json:/var/lib/grafana/dashboards/vmagent.json:ro
+#      - /home/davepifive/DockerData/grafana/dashboards/vmalert.json:/var/lib/grafana/dashboards/vmalert.json:ro
+#      - /home/davepifive/DockerData/grafana/dashboards/alert-statistics.json:/var/lib/grafana/dashboards/alert-statistics.json:ro
+#      - /home/davepifive/DockerData/grafana/dashboards/metrics-explorer.json:/var/lib/grafana/dashboards/metrics-explorer.json:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.thehome.party`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      # - "traefik.http.routers.grafana.middlewares=authelia@docker"
+      - "glance.name=Grafana"
+      - "glance.icon=sh:grafana"
+      - "glance.url=https://grafana.thehome.party"
+      - "glance.description=Dashboards & alerting UI"
+    networks:
+      - traefik-internal
+      - default
+networks:
+  traefik-internal:
+    external: true
+  default: {}
+secrets:
+  grafana_admin_password:
+    file: ./secrets/grafana_admin_password
+  grafana_oidc_client_secret:
+    file: ./secrets/grafana_oidc_client_secret
