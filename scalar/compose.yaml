@@ -1,0 +1,36 @@
+services:
+  scalar:
+    image: index.docker.io/scalarapi/api-reference:latest
+    container_name: scalar
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+#    cap_drop:
+#      - ALL
+    volumes:
+      - /home/davepifive/DockerData/scalar/docs:/docs:ro
+    environment:
+      - TZ=Europe/London
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scalar.rule=Host(`scalar.thehome.party`)"
+      - "traefik.http.routers.scalar.entrypoints=websecure"
+      - "traefik.http.routers.scalar.tls=true"
+      - "traefik.http.services.scalar.loadbalancer.server.port=8080"
+#      - "traefik.http.routers.scalar.middlewares=authelia@docker"
+      - "glance.name=Scalar"
+      - "glance.icon=sh:scalar"
+      - "glance.url=https://scalar.thehome.party"
+      - "glance.description=API UI"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - traefik-internal
+networks: 
+  traefik-internal:
+    external: true

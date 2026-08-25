@@ -12,7 +12,7 @@ services:
     depends_on:
       - victoriametrics
 #    user: "1000:1000"
-    restart: always
+    restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
     logging:
@@ -54,7 +54,7 @@ services:
     image: index.docker.io/victoriametrics/victoria-metrics:latest
     container_name: victoriametrics
     user: "1000:1000"
-    restart: always
+    restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
     logging:
@@ -105,7 +105,7 @@ services:
       - victoriametrics
       - alertmanager
     user: "1000:1000"
-    restart: always
+    restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
     logging:
@@ -146,7 +146,7 @@ services:
     image: index.docker.io/prom/alertmanager:latest
     container_name: alertmanager
 #    user: "1000:1000"
-    restart: always
+    restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
     logging:
@@ -182,6 +182,20 @@ services:
       - "glance.icon=sh:prometheus"
       - "glance.url=https://alertmanager.thehome.party"
       - "glance.description=Alert routing & silencing"
+  alertmanager-gotify-bridge:
+    image: ghcr.io/druggeri/alertmanager_gotify_bridge:latest
+    container_name: alertmanager-gotify-bridge
+    restart: unless-stopped
+    security_opt:
+      - "no-new-privileges:true"
+    environment:
+      - GOTIFY_TOKEN=${gotify_token}
+      - GOTIFY_ENDPOINT=http://gotify:80/message
+      - EXTENDED_DETAILS=true
+#    ports:
+#      - 8080:8080
+    networks:
+      - traefik-internal
 networks:
   traefik-internal:
     external: true

@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    user: "1000:1000"
+    user: "1000:1000"
 #    cap_drop:
 #      - ALL
     labels:
@@ -25,6 +25,8 @@ services:
 #      - "9339:9339"
     environment:
       - TZ=Europe/London
+      #- PUID="1000"
+      #- PGID="1000"
       - YAADE_ADMIN_USERNAME=${yaade_admin_username}
       - YAADE_ADMIN_PASSWORD=${yaade_admin_password}
     volumes:

@@ -11,11 +11,12 @@ services:
 # traefik uses traefik-internal network instead
 #    ports:
 #      - "3552:3552"
+    cgroup: host #Use the host cgroup namespace so Arcane can detect its own container ID more reliably — this matters for self-upgrades.
     environment:
       - TZ=Europe/London
       - APP_URL=https://arcane.thehome.party
-      - PUID=1000
-      - PGID=1000
+      - PUID="1000"
+      - PGID="1000"
       - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
       - ENCRYPTION_KEY=${enc_key}
       - JWT_SECRET=${jwt}
