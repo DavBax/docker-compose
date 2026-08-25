@@ -1,0 +1,45 @@
+name: Validate compose files
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/compose.yaml'
+      - '**/compose.yml'
+      - '**/docker-compose.yml'
+      - '**/docker-compose.yaml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed compose files
+        id: changed
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            **/compose.yaml
+            **/compose.yml
+            **/docker-compose.yml
+            **/docker-compose.yaml
+
+      - name: Set up Python
+        if: steps.changed.outputs.any_changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyYAML
+        if: steps.changed.outputs.any_changed == 'true'
+        run: pip install pyyaml
+
+      - name: Validate changed compose files
+        if: steps.changed.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: python3 .github/scripts/validate_compose.py $CHANGED_FILES
