@@ -27,6 +27,7 @@ services:
         condition: service_started
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.changedetection.rule=Host(`changedetection.thehome.party`)"
       - "traefik.http.routers.changedetection.entrypoints=websecure"
       - "traefik.http.routers.changedetection.tls=true"

@@ -28,6 +28,7 @@ services:
 #      - 8090:80
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.gotify.rule=Host(`gotify.thehome.party`)"
       - "traefik.http.routers.gotify.entrypoints=websecure"
       - "traefik.http.routers.gotify.tls=true"

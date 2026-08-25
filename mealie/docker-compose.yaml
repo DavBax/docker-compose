@@ -36,6 +36,7 @@ services:
       - mealie_oidc_client_secret
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.mealie.rule=Host(`mealie.thehome.party`)"
       - "traefik.http.routers.mealie.entrypoints=websecure"
       - "traefik.http.routers.mealie.tls=true"

@@ -16,6 +16,7 @@ services:
       - TZ=Europe/London
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.dashboard-glance.rule=Host(`dashboard.thehome.party`)"
       - "traefik.http.routers.dashboard-glance.entrypoints=websecure"
       - "traefik.http.routers.dashboard-glance.tls=true"
