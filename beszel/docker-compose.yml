@@ -26,6 +26,7 @@ services:
       interval: 120s # Then check every 120 seconds after that
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.beszel.rule=Host(`beszel.thehome.party`)"
       - "traefik.http.routers.beszel.entrypoints=websecure"
       - "traefik.http.routers.beszel.tls=true"

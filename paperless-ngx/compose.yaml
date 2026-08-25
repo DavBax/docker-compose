@@ -65,6 +65,7 @@ services:
       - traefik-internal
     labels:
       - traefik.enable=true
+      - traefik.docker.network=traefik-internal
       - traefik.http.routers.paperless.rule=Host(`paperless.thehome.party`)
       - traefik.http.routers.paperless.entrypoints=websecure
       - traefik.http.routers.paperless.tls=true
