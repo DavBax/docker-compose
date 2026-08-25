@@ -11,6 +11,7 @@ services:
       - socket-proxy-watchtower
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.watchtower.rule=Host(`watchtower.thehome.party`)"
       - "traefik.http.routers.watchtower.entrypoints=websecure"
       - "traefik.http.routers.watchtower.tls=true"

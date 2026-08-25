@@ -43,6 +43,7 @@ services:
     command: ha-mcp-oauth
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       # --- MCP Server, will use OIDC --- #
       - "traefik.http.routers.ha-mcp.rule=Host(`ha-mcp.thehome.party`)"
       - "traefik.http.routers.ha-mcp.entrypoints=websecure"

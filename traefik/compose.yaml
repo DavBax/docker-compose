@@ -70,6 +70,7 @@ services:
       - /home/davepifive/DockerData/traefik/plugins:/plugins-storage
     labels:
       - "traefik.enable=true" #traefik.yml sets "exposedByDefault: false", so every container is ignored, unless this line is present
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.thehome.party`)" #router, named traefik-dashboard, looking for traffic matching that url
       - "traefik.http.routers.traefik-dashboard.service=api@internal" #the service to send matching traffic to, in this case traefik's built in service for its own dashhboard
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure" #serve via https, using the entrypoint in traefik.yml matching web-secure

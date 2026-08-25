@@ -33,6 +33,7 @@ services:
       - /home/davepifive/DockerData/wallos/logos:/var/www/html/images/uploads/logos
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
       - "traefik.http.routers.wallos.rule=Host(`wallos.thehome.party`)"
       - "traefik.http.routers.wallos.entrypoints=websecure"
       - "traefik.http.routers.wallos.tls=true"
