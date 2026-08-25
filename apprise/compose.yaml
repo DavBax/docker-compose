@@ -72,7 +72,7 @@ services:
       - APPRISE_WORKER_COUNT=1
       - APPRISE_ADMIN=y
     volumes:
-      - /home/davepifive/DockerData/apprise/config:/config
+      - /home/davepifive/DockerData/apprise/config:/config #this dir contains .cfg files with the details for notifications
       - /home/davepifive/DockerData/apprise/attach:/attach
       - /home/davepifive/DockerData/apprise/plugin:/plugin
       - /home/davepifive/DockerData/apprise/tmp:/tmp
