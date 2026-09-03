@@ -22,6 +22,7 @@ services:
       - GOTIFY_OIDC_USERNAMECLAIM=preferred_username
       - GOTIFY_OIDC_LINK_BY_USERNAME=false
       - GOTIFY_OIDC_SCOPES=openid,profile,email
+      - GOTIFY_OIDC_IDP_NAME=Authelia
     volumes:
       - /home/davepifive/DockerData/gotify/data:/app/data
 #    ports:
