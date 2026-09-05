@@ -1,6 +1,6 @@
 services:
   paperless-broker:
-    image: index.docker.io/valkey/valkey:9-alpine
+    image: index.docker.io/valkey/valkey:9.1.2-alpine
     container_name: paperless-broker
     restart: unless-stopped
     user: '1000:1000'
@@ -22,7 +22,7 @@ services:
       start_period: 10s
 
   paperless-webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.1.3
     container_name: paperless-webserver
     restart: unless-stopped
     security_opt:
@@ -78,7 +78,7 @@ services:
 
   # --- Optional: uncomment for Office-doc / .eml OCR support ---
   paperless-gotenberg:
-    image: index.docker.io/gotenberg/gotenberg:8
+    image: index.docker.io/gotenberg/gotenberg:8.36.0
     container_name: paperless-gotenberg
     restart: unless-stopped
     security_opt:
@@ -101,7 +101,7 @@ services:
       start_period: 5s
   
   paperless-tika:
-    image: index.docker.io/apache/tika:latest
+    image: index.docker.io/apache/tika:4.0.0
     container_name: paperless-tika
     restart: unless-stopped
     security_opt:

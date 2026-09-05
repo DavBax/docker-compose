@@ -34,7 +34,7 @@
 
 services:
   socket-proxy-readonly-wm:
-    image: index.docker.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1
     container_name: socket-proxy-readonly-wm
     restart: unless-stopped
     # Runs as the "nobody" user (65534) plus the host's docker group, so it

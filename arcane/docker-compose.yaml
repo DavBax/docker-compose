@@ -1,6 +1,6 @@
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/arcane:2.10.2
     container_name: arcane
     restart: unless-stopped
     security_opt:
@@ -18,15 +18,17 @@ services:
       - PUID="1000"
       - PGID="1000"
       - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
-      - ENCRYPTION_KEY=${enc_key}
-      - JWT_SECRET=${jwt}
+      - ENCRYPTION_KEY__FILE=/run/secrets/arcane_encryption_key
       - DOCKER_HOST=tcp://socket-proxy-management:2375
       - OIDC_ENABLED='true'
       - OIDC_ISSUER_URL='https://sso.thehome.party'
       - OIDC_CLIENT_ID='arcane'
-      - OIDC_CLIENT_SECRET=${oidc_client_secret}
+      - OIDC_CLIENT_SECRET__FILE=/run/secrets/arcane_oidc_client_secret
       - OIDC_SCOPES='openid email profile'
       - OIDC_MERGE_ACCOUNTS='true'
+    secrets:
+      - arcane_encryption_key
+      - arcane_oidc_client_secret
     volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
       - /home/davepifive/DockerData/arcane/data:/app/data
@@ -54,7 +56,7 @@ services:
       - socket-proxy-management-net
 
   socket-proxy-management:
-    image: index.docker.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1.13.1
     container_name: socket-proxy-management
     restart: unless-stopped
     # Find your docker group's GID with: getent group docker
@@ -71,7 +73,7 @@ services:
       # --- START HERE: broad allowlist for the observation period ---
       - '-loglevel=info'
       - '-listenip=0.0.0.0'
-      - '-allowfrom=arcane,komodo-periphery'
+      - '-allowfrom=arcane'
       - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|distribution.*|exec.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowPOST=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|exec.*)'
@@ -106,6 +108,12 @@ services:
     # No port published - only reachable by containers on
     # socket-proxy-management-net, and even then, only "dockge"/"arcane"
     # per -allowfrom above.
+
+secrets:
+  arcane_encryption_key:
+    file: ./secrets/arcane_encryption_key
+  arcane_oidc_client_secret:
+    file: ./secrets/arcane_oidc_client_secret
 
 networks:
   socket-proxy-management-net:

@@ -1,6 +1,6 @@
 services:
   socket-proxy-traefik:
-    image: index.docker.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1
     container_name: socket-proxy-traefik
     restart: unless-stopped
     user: "65534:990" # Find your docker group's GID with: getent group docker

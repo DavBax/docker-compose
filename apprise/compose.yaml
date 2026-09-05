@@ -1,7 +1,7 @@
 services:
   apprise-api-swagger-ui:
     container_name: apprise-api-swagger-ui
-    image: index.docker.io/swaggerapi/swagger-ui
+    image: index.docker.io/swaggerapi/swagger-ui:v5.32.15
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -30,7 +30,7 @@ services:
 
   apprise:
     container_name: apprise
-    image: index.docker.io/caronc/apprise:latest
+    image: ghcr.io/caronc/apprise:1.5.4
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

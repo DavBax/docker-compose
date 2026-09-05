@@ -1,7 +1,7 @@
 services:
   crowdsec:
     container_name: crowdsec
-    image: index.docker.io/crowdsecurity/crowdsec:latest
+    image: ghcr.io/crowdsecurity/crowdsec:latest
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

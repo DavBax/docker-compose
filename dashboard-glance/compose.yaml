@@ -10,10 +10,24 @@ services:
 #    ports:
 #      - 8080:8080
     user: 1000:1000
-    env_file:
-      - .env #to add env vars to any widgets in the glance.yml file in DockerData
-    environment:
+    environment: #these env vars are referenced in the glance.yml file in DockerData
       - TZ=Europe/London
+      # 1. General & Domain Settings
+      - HOMELAB_DOMAIN=thehome.party
+      - TIMEZONE=Europe/London
+      - WEATHER_LOCATION=Belfast, United Kingdom
+      # 2. Docker Daemon / Proxy Access
+      - DOCKER_SOCKET=tcp://socket-proxy-readonly-wm:2375
+      # 3. GitHub API (Optional: Prevents rate limits on release updates)
+      - GLANCE_GITHUB_TOKEN=/run/secrets/GLANCE_GITHUB_TOKEN
+      # 4. OpenSky Aircraft Bounding Box Coordinates (Decimal Degrees)
+      # Define a geographic square around your location
+      - MY_LAT_MIN=54.40
+      - MY_LAT_MAX=54.75
+      - MY_LON_MIN=-6.15
+      - MY_LON_MAX=-5.75
+    secrets:
+      - GLANCE_GITHUB_TOKEN
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-internal"
@@ -37,6 +51,9 @@ services:
       - default #for internet
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
+secrets:
+  GLANCE_GITHUB_TOKEN:
+    file: ./secrets/GLANCE_GITHUB_TOKEN
 networks:
   wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
     driver: bridge
