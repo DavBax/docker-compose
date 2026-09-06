@@ -1,7 +1,7 @@
 services:
   wallos:
     container_name: wallos
-    image: index.docker.io/bellamy/wallos:5.5.0
+    image: index.docker.io/bellamy/wallos:latest
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

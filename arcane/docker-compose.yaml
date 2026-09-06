@@ -1,6 +1,6 @@
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:2.10.2
+    image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     restart: unless-stopped
     security_opt:
@@ -18,12 +18,12 @@ services:
       - PUID="1000"
       - PGID="1000"
       - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
-      - ENCRYPTION_KEY__FILE=/run/secrets/arcane_encryption_key
+      - ENCRYPTION_KEY_FILE=/run/secrets/arcane_encryption_key
       - DOCKER_HOST=tcp://socket-proxy-management:2375
       - OIDC_ENABLED='true'
       - OIDC_ISSUER_URL='https://sso.thehome.party'
       - OIDC_CLIENT_ID='arcane'
-      - OIDC_CLIENT_SECRET__FILE=/run/secrets/arcane_oidc_client_secret
+      - OIDC_CLIENT_SECRET_FILE=/run/secrets/arcane_oidc_client_secret
       - OIDC_SCOPES='openid email profile'
       - OIDC_MERGE_ACCOUNTS='true'
     secrets:
@@ -56,7 +56,7 @@ services:
       - socket-proxy-management-net
 
   socket-proxy-management:
-    image: ghcr.io/wollomatic/socket-proxy:1.13.1
+    image: ghcr.io/wollomatic/socket-proxy:1
     container_name: socket-proxy-management
     restart: unless-stopped
     # Find your docker group's GID with: getent group docker
