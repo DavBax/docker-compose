@@ -35,9 +35,20 @@ services:
         condition: service_healthy
       paperless-tika:
         condition: service_healthy
-    env_file:
-      - .env
+#    env_file:
+#      - .env
+    secrets:
+      - paperless_secret_key
+      - paperless_admin_user
+      - paperless_admin_password
+      - paperless_socialaccount_providers
     environment:
+      PAPERLESS_SECRET_KEY_FILE: /run/secrets/paperless_secret_key
+      PAPERLESS_ADMIN_USER_FILE: /run/secrets/paperless_admin_user
+      PAPERLESS_ADMIN_PASSWORD_FILE: /run/secrets/paperless_admin_password
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS_FILE: /run/secrets/paperless_socialaccount_providers
+      USERMAP_UID: 1000
+      USERMAP_GID: 1000
       PAPERLESS_REDIS: redis://paperless-broker:6379
       PAPERLESS_DBENGINE: sqlite
       PAPERLESS_TIME_ZONE: Europe/London
@@ -118,6 +129,16 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+secrets:
+  paperless_secret_key:
+    file: ./secrets/paperless_secret_key
+  paperless_admin_user:
+    file: ./secrets/paperless_admin_user
+  paperless_admin_password:
+    file: ./secrets/paperless_admin_password
+  paperless_socialaccount_providers:
+    file: ./secrets/paperless_socialaccount_providers
 
 networks:
   traefik-internal:
