@@ -1,0 +1,23 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/London",
+  "onboarding": false,
+  "requireConfig": "optional",
+  "dependencyDashboard": true,
+  "labels": ["renovate"],
+  "prConcurrentLimit": 5,
+
+  "docker-compose": {
+    "fileMatch": ["(^|/)docker-compose\\.ya?ml$", "(^|/)compose\\.ya?ml$"]
+  },
+
+  "packageRules": [
+    {
+      "description": "SANDBOX MODE: nothing auto-merges yet, even patch/minor",
+      "matchManagers": ["docker-compose"],
+      "matchUpdateTypes": ["patch", "minor", "major", "digest"],
+      "automerge": false
+    }
+  ]
+} 
