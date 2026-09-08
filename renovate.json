@@ -14,7 +14,7 @@
 
      "packageRules": [
      {
-       "description": "Auto-merge patch and minor bumps once CI passes",
+       "description": "Review patch and minor bumps once CI passes",
        "matchManagers": ["docker-compose"],
        "matchUpdateTypes": ["patch", "minor"],
        "automerge": false,
