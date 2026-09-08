@@ -9,7 +9,11 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
-      - SETTINGS_ENCRYPTION_KEY=${enc_key}
+      - DUPLICATI__SECRET_PROVIDER=file-secret:///run/secrets/secretprovider
+      - SETTINGS_ENCRYPTION_KEY=$$settings-key
+#      - SETTINGS_ENCRYPTION_KEY=${enc_key}
+    secrets:
+      - secretprovider
     volumes:
       - /home/davepifive/DockerData/duplicati/config:/config #config files
       - /home/davepifive/DockerData/duplicati/data:/data #config files
@@ -41,6 +45,9 @@ services:
     networks:
       - default
       - traefik-internal
+secrets:
+  secretprovider:
+    file: /home/davepifive/DockerData/duplicati/secrets/secrets.json
 networks:
   traefik-internal:
     external: true

@@ -132,13 +132,13 @@ services:
 
 secrets:
   paperless_secret_key:
-    file: ./secrets/paperless_secret_key
+    file: /home/davepifive/DockerData/paperless/secrets/paperless_secret_key
   paperless_admin_user:
-    file: ./secrets/paperless_admin_user
+    file: /home/davepifive/DockerData/paperless/secrets/paperless_admin_user
   paperless_admin_password:
-    file: ./secrets/paperless_admin_password
+    file: /home/davepifive/DockerData/paperless/secrets/paperless_admin_password
   paperless_socialaccount_providers:
-    file: ./secrets/paperless_socialaccount_providers
+    file: /home/davepifive/DockerData/paperless/secrets/paperless_socialaccount_providers
 
 networks:
   traefik-internal:

@@ -38,4 +38,4 @@ networks:
     external: true
 secrets:
   bouncer_key_traefik:
-    file: ./secrets/bouncer_key_traefik
+    file: /home/davepifive/DockerData/crowdsec/secrets/bouncer_key_traefik

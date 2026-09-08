@@ -88,9 +88,9 @@ services:
     # -allowfrom above.
 secrets:
   watchtower_notification_url:
-    file: ./secrets/watchtower_notification_url
+    file: /home/davepifive/DockerData/watchtower/secrets/watchtower_notification_url
   watchtower_http_api_token:
-    file: ./secrets/watchtower_http_api_token
+    file: /home/davepifive/DockerData/watchtower/secrets/watchtower_http_api_token
 
 networks:
   socket-proxy-watchtower-net:

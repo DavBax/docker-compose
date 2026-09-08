@@ -111,9 +111,9 @@ services:
 
 secrets:
   arcane_encryption_key:
-    file: ./secrets/arcane_encryption_key
+    file: /home/davepifive/DockerData/arcane/secrets/arcane_encryption_key
   arcane_oidc_client_secret:
-    file: ./secrets/arcane_oidc_client_secret
+    file: /home/davepifive/DockerData/arcane/secrets/arcane_oidc_client_secret
 
 networks:
   socket-proxy-management-net:

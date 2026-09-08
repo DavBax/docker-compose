@@ -83,6 +83,6 @@ networks:
     external: true
 secrets:
   beszel_agent_token:
-    file: ./secrets/beszel_agent_token
+    file: /home/davepifive/DockerData/beszel/secrets/beszel_agent_token
   beszel_agent_key:
-    file: ./secrets/beszel_agent_key
+    file: /home/davepifive/DockerData/beszel/secrets/beszel_agent_key

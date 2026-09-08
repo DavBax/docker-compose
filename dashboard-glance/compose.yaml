@@ -53,7 +53,7 @@ services:
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 secrets:
   GLANCE_GITHUB_TOKEN:
-    file: ./secrets/GLANCE_GITHUB_TOKEN
+    file: /home/davepifive/DockerData/dashboard-glance/secrets/GLANCE_GITHUB_TOKEN
 networks:
   wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
     driver: bridge

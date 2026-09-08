@@ -57,6 +57,6 @@ networks:
     external: true
 secrets:
   gotify_def_user_pass:
-    file: ./secrets/gotify_def_user_pass
+    file: /home/davepifive/DockerData/gotify/secrets/gotify_def_user_pass
   gotify_oidc_client_secret:
-    file: ./secrets/gotify_oidc_client_secret
+    file: /home/davepifive/DockerData/gotify/secrets/gotify_oidc_client_secret

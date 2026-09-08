@@ -50,7 +50,7 @@ services:
       - traefik-internal
 secrets:
   mealie_oidc_client_secret:
-    file: ./secrets/mealie_oidc_client_secret
+    file: /home/davepifive/DockerData/mealie/secrets/mealie_oidc_client_secret
 networks:
   traefik-internal:
     external: true

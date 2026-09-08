@@ -29,4 +29,4 @@ networks:
     external: true
 secrets:
   cloudflared_tunnel_token:
-    file: ./secrets/cloudflared_tunnel_token
+    file: /home/davepifive/DockerData/cloudflared/secrets/cloudflared_tunnel_token

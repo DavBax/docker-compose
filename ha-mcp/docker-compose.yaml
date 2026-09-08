@@ -23,7 +23,8 @@ services:
     environment:
       - TZ=Europe/London
       - HOMEASSISTANT_URL=https://ha.thehome.party
-      - HOMEASSISTANT_TOKEN=${ha_token}
+#      - HOMEASSISTANT_TOKEN=${ha_token}
+      - HOMEASSISTANT_TOKEN=123
 #      - MCP_HEALTHZ=true
       # --- for OIDC --- #
       - MCP_BASE_URL=https://ha-mcp.thehome.party/
@@ -38,7 +39,7 @@ services:
 #      - OIDC_VERIFY_ID_TOKEN=true #authelia isses opaque access tokens, so this line is needed
       # Fixed rather than auto-generated, so the Traefik path rule below has
       # something stable to match.
-      - MCP_SETTINGS_SECRET_PATH=/private_hamcpsettingspage123
+      - MCP_SETTINGS_SECRET_PATH=/private_hamcpsettingspage123 #add /settings on the end of this path to reach the settings page
 #      - LOG_LEVEL=DEBUG
     command: ha-mcp-oauth
     labels:

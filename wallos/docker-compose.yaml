@@ -47,7 +47,7 @@ services:
       - traefik-internal
 secrets:
   wallos_oidc_client_secret:
-    file: ./secrets/wallos_oidc_client_secret
+    file: /home/davepifive/DockerData/wallos/secrets/wallos_oidc_client_secret
 networks:
   traefik-internal:
     external: true
