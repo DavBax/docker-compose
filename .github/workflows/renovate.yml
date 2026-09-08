@@ -19,3 +19,5 @@ jobs:
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
           RENOVATE_REPOSITORIES: DavBax/docker-compose
+          LOG_LEVEL: debug
+  
