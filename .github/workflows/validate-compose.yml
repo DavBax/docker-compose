@@ -2,7 +2,7 @@ name: Validate compose files
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, renovate-sandbox]
     paths:
       - '**/compose.yaml'
       - '**/compose.yml'
