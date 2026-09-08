@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          ref: renovate-sandbox
 
       - name: Self-hosted Renovate
         uses: renovatebot/github-action@v46.2.5
