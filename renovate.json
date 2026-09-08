@@ -12,12 +12,27 @@
     "fileMatch": ["(^|/)docker-compose\\.ya?ml$", "(^|/)compose\\.ya?ml$"]
   },
 
-  "packageRules": [
-    {
-      "description": "SANDBOX MODE: nothing auto-merges yet, even patch/minor",
-      "matchManagers": ["docker-compose"],
-      "matchUpdateTypes": ["patch", "minor", "major", "digest"],
-      "automerge": false
-    }
-  ]
+     "packageRules": [
+     {
+       "description": "Auto-merge patch and minor bumps once CI passes",
+       "matchManagers": ["docker-compose"],
+       "matchUpdateTypes": ["patch", "minor"],
+       "automerge": false,
+       "labels": ["patch/minor-update", "needs-review"]
+     },
+     {
+       "description": "Major bumps always need manual review",
+       "matchManagers": ["docker-compose"],
+       "matchUpdateTypes": ["major"],
+       "automerge": false,
+       "labels": ["major-update", "needs-review"]
+     },
+     {
+       "description": "Stacks still on 'latest': digest-only tracking, always reviewed",
+       "matchManagers": ["docker-compose"],
+       "matchUpdateTypes": ["digest"],
+       "automerge": false,
+       "labels": ["latest-tag-tracking"]
+     }
+   ]
 }
