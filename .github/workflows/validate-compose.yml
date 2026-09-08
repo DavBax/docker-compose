@@ -20,7 +20,7 @@ jobs:
 
       - name: Get changed compose files
         id: changed
-        uses: tj-actions/changed-files@latest
+        uses: tj-actions/changed-files@v47.0.6
         with:
           files: |
             **/compose.yaml
@@ -30,7 +30,7 @@ jobs:
 
       - name: Set up Python
         if: steps.changed.outputs.any_changed == 'true'
-        uses: actions/setup-python@latest
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.12'
 
