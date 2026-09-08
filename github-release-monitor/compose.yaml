@@ -8,6 +8,26 @@ services:
     user: "1000:1000"
     env_file:
       - .env
+    environment: 
+      - TZ=Europe/London
+      - LOG_LEVEL=info
+      - HTTPS='true' # Behind Traefik with TLS termination, so this stays true.
+      - AUTHENTICATION_METHOD=External #using authelia
+      - APPRISE_URL=http://apprise:8000/notify/apprise
+      - BETTER_AUTH_URL=https://gh-release.thehome.party #full public URL this app will be reached at
+      # Not relevant since Authelia + External auth replaces internal login,
+      # but leaving at defaults is harmless:
+      - AUTH_ENABLE_SIGNUP=false
+      - AUTH_ENABLE_PASSKEY=true
+      # Not using
+      - AUTH_GITHUB_CLIENT_ID=
+      - AUTH_GITHUB_CLIENT_SECRET=
+      - AUTH_GOOGLE_CLIENT_ID=
+      - AUTH_GOOGLE_CLIENT_SECRET=
+      - GITLAB_ACCESS_TOKENS=
+      - GITLAB_DEPLOY_TOKENS=
+      - GITLAB_ADDITIONAL_HOSTS=
+      - CODEBERG_ACCESS_TOKEN=
     volumes:
       - /home/davepifive/DockerData/github-release/data:/app/data
 #    ports:
