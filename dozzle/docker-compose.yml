@@ -1,7 +1,7 @@
 services:
   dozzle:
     container_name: dozzle
-    image: ghcr.io/amir20/dozzle:latest
+    image: ghcr.io/amir20/dozzle:10.10.0
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
