@@ -5,10 +5,6 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
-#    ports:
-#      - 9999:8080
     environment:
       - TZ=Europe/London
       - DOZZLE_NO_ANALYTICS
@@ -30,13 +26,13 @@ services:
       - "traefik.http.routers.dozzle.entrypoints=websecure"
       - "traefik.http.routers.dozzle.tls=true"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
-#      - "traefik.http.routers.dozzle.middlewares=authelia@docker"
+     # - "traefik.http.routers.dozzle.middlewares=authelia@docker"
       - "glance.name=Dozzle"
       - "glance.icon=sh:dozzle"
       - "glance.url=https://dozzle.thehome.party"
       - "glance.description=Logs"
     networks:
-      - default #required, for access to mcp, from external ai clients.
+      - default  # required, for access to mcp, from external ai clients.
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
