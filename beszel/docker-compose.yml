@@ -5,15 +5,13 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
-#    ports:
-#      - 8091:8090
+    # ports:
+      # - 8091:8090
     volumes:
       - /home/davepifive/DockerData/beszel/data:/beszel_data
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
-    #    networks:
-    #      - myNUCNetwork
     healthcheck:
       # The URL is relative to the container, not the host
       test:
@@ -22,8 +20,8 @@ services:
         - health
         - --url
         - http://localhost:8090
-      start_period: 5s # Check 5 seconds after the container starts
-      interval: 120s # Then check every 120 seconds after that
+      start_period: 5s  # Check 5 seconds after the container starts
+      interval: 120s  # Then check every 120 seconds after that
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-internal"
@@ -39,7 +37,7 @@ services:
     networks:
       - default
       - traefik-internal
-  
+
   beszel-agent:
     image: index.docker.io/henrygd/beszel-agent:0.19.0
     container_name: beszel-agent
@@ -53,12 +51,11 @@ services:
     volumes:
       - /home/davepifive/DockerData/beszel/socket:/beszel_socket
       - /home/davepifive/DockerData/beszel/agent_data:/var/lib/beszel-agent
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - "glance.name=Beszel-Agent"
       - "glance.parent=beszel"
       - "glance.icon=sh:beszel"
-#      - "glance.url=https://beszel.thehome.party"
       - "glance.description=Server Resource Metrics Agent"
     healthcheck:
       test:
@@ -66,8 +63,8 @@ services:
         - /agent
         - health
         # Run the health command
-      start_period: 5s # Check 5 seconds after the container starts
-      interval: 120s # Then check every 120 seconds after that
+      start_period: 5s  # Check 5 seconds after the container starts
+      interval: 120s  # Then check every 120 seconds after that
     environment:
       TZ: Europe/London
       LISTEN: /beszel_socket/beszel_socket
