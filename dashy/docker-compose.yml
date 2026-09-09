@@ -1,6 +1,6 @@
 services:
   dashy:
-    image: ghcr.io/lissy93/dashy:latest
+    image: ghcr.io/lissy93/dashy:4.6.13
     container_name: dashy
     restart: unless-stopped
     user: 1000:1000 #using UID/GID env var instead
