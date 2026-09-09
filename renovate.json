@@ -16,6 +16,11 @@
 
      "packageRules": [
      {
+       "description": "Group all services within the same compose file into one PR",
+       "matchManagers": ["docker-compose"],
+       "groupName": "{{parentDir}}"
+     },
+     {
        "description": "Review patch and minor bumps once CI passes",
        "matchManagers": ["docker-compose"],
        "matchUpdateTypes": ["patch", "minor"],
