@@ -1,34 +1,33 @@
 services:
   crowdsec:
     container_name: crowdsec
-    image: ghcr.io/crowdsecurity/crowdsec:latest
+    image: ghcr.io/crowdsecurity/crowdsec:1.8.1
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    ports:
-#      - "7422:7422"
-#      - "8080:8080"
+    # ports:
+    #   - "7422:7422"
+    #   - "8080:8080"
     environment:
       - TZ=Europe/London
       - COLLECTIONS=crowdsecurity/traefik
       - COLLECTIONS=crowdsecurity/appsec-virtual-patching
       - COLLECTIONS=crowdsecurity/appsec-crs-inband
       - COLLECTIONS=crowdsecurity/appsec-generic-rules
-#      - BOUNCER_KEY_traefik=${BOUNCER_KEY_traefik}
+      # - BOUNCER_KEY_traefik=${BOUNCER_KEY_traefik}
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
     volumes:
-      - /home/davepifive/DockerData/crowdsec/config:/etc/crowdsec #includes acquis.yaml
-      - /home/davepifive/DockerData/crowdsec/config/acquis.d:/etc/crowdsec/acquis.d #directory, not a file
+      - /home/davepifive/DockerData/crowdsec/config:/etc/crowdsec  # includes acquis.yaml
+      - /home/davepifive/DockerData/crowdsec/config/acquis.d:/etc/crowdsec/acquis.d  # directory, not a file
       - /home/davepifive/DockerData/crowdsec/data:/var/lib/crowdsec/data
     labels:
       - "glance.name=Crowdsec"
       - "glance.icon=sh:crowdsec"
-#      - "glance.url=https://dozzle.thehome.party"
       - "glance.description=WAF + Blocklists"
     secrets:
-      - bouncer_key_traefik #match name in top level secrets reference
+      - bouncer_key_traefik  # the image's entrypoint matches on "bouncher_key_<name>" to auto-register a bouncer on boot
     networks:
-      - default #required to reach Crowdsec console
+      - default  # required to reach Crowdsec console
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:
