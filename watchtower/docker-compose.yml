@@ -1,6 +1,6 @@
 services:
   watchtower:
-    image: index.docker.io/nickfedor/watchtower:1.22.0
+    image: index.docker.io/nickfedor/watchtower:1.22.1
     container_name: watchtower
     restart: unless-stopped
     security_opt:
