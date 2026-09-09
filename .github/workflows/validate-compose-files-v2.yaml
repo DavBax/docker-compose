@@ -1,0 +1,424 @@
+name: Validate compose files v2
+
+on:
+  pull_request:
+    branches: [main, renovate-sandbox]
+    paths:
+      - '**/compose.yaml'
+      - '**/compose.yml'
+      - '**/docker-compose.yml'
+      - '**/docker-compose.yaml'
+
+jobs:
+  validate:
+    name: Validate changed compose files
+    runs-on: ubuntu-latest
+
+    # This job executes code from the PR, so it gets read-only access.
+    permissions:
+      contents: read
+
+    outputs:
+      any_changed: ${{ steps.changed.outputs.any_changed }}
+      changed_files: ${{ steps.changed.outputs.all_changed_files }}
+      yamllint: ${{ steps.yamllint.outcome }}
+      yamllint_output: ${{ steps.yamllint_output.outputs.result }}
+      schema: ${{ steps.schema.outcome }}
+      schema_output: ${{ steps.schema_output.outputs.result }}
+      dclint: ${{ steps.dclint.outcome }}
+      dclint_output: ${{ steps.dclint_output.outputs.result }}
+      compose: ${{ steps.compose.outcome }}
+      compose_output: ${{ steps.compose_output.outputs.result }}
+      overall_success: ${{ steps.result.outputs.success }}
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Get changed compose files
+        id: changed
+        uses: tj-actions/changed-files@v47.0.6
+        with:
+          files: |
+            **/compose.yaml
+            **/compose.yml
+            **/docker-compose.yml
+            **/docker-compose.yaml
+          separator: "\n"
+
+      - name: Show changed files
+        if: steps.changed.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          {
+            echo "## Compose validation"
+            echo
+            echo "### Changed compose files"
+            echo
+
+            while IFS= read -r file; do
+              [[ -z "$file" ]] && continue
+              echo "- \`$file\`"
+            done <<< "$CHANGED_FILES"
+
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set up Python
+        if: steps.changed.outputs.any_changed == 'true'
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+
+      - name: Install PyYAML, yamllint, check-jsonschema
+        if: steps.changed.outputs.any_changed == 'true'
+        run: pip install pyyaml yamllint check-jsonschema
+
+      - name: yamllint
+        id: yamllint
+        if: steps.changed.outputs.any_changed == 'true'
+        continue-on-error: true
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          mapfile -t files <<< "$CHANGED_FILES"
+
+          yamllint \
+            --config-data "{extends: default, rules: {line-length: disable, document-start: disable}}" \
+            "${files[@]}" \
+            2>&1 | tee /tmp/yamllint.txt
+
+          exit "${PIPESTATUS[0]}"
+
+      - name: Capture yamllint output
+        id: yamllint_output
+        if: always() && steps.changed.outputs.any_changed == 'true'
+        run: |
+          {
+            echo 'result<<EOF'
+            cat /tmp/yamllint.txt 2>/dev/null || true
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate against compose-spec schema
+        id: schema
+        if: steps.changed.outputs.any_changed == 'true'
+        continue-on-error: true
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          mapfile -t files <<< "$CHANGED_FILES"
+
+          check-jsonschema \
+            --schemafile https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json \
+            "${files[@]}" \
+            2>&1 | tee /tmp/schema.txt
+
+          exit "${PIPESTATUS[0]}"
+
+      - name: Capture schema output
+        id: schema_output
+        if: always() && steps.changed.outputs.any_changed == 'true'
+        run: |
+          {
+            echo 'result<<EOF'
+            cat /tmp/schema.txt 2>/dev/null || true
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: dclint
+        id: dclint
+        if: steps.changed.outputs.any_changed == 'true'
+        continue-on-error: true
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          mapfile -t files <<< "$CHANGED_FILES"
+
+          npx --yes dclint \
+            "${files[@]}" \
+            2>&1 | tee /tmp/dclint.txt
+
+          exit "${PIPESTATUS[0]}"
+
+      - name: Capture dclint output
+        id: dclint_output
+        if: always() && steps.changed.outputs.any_changed == 'true'
+        run: |
+          {
+            echo 'result<<EOF'
+            cat /tmp/dclint.txt 2>/dev/null || true
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate changed compose files
+        id: compose
+        if: steps.changed.outputs.any_changed == 'true'
+        continue-on-error: true
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          mapfile -t files <<< "$CHANGED_FILES"
+
+          python3 .github/scripts/validate_compose.py \
+            "${files[@]}" \
+            2>&1 | tee /tmp/compose.txt
+
+          exit "${PIPESTATUS[0]}"
+
+      - name: Capture compose validation output
+        id: compose_output
+        if: always() && steps.changed.outputs.any_changed == 'true'
+        run: |
+          {
+            echo 'result<<EOF'
+            cat /tmp/compose.txt 2>/dev/null || true
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Write validation results to summary
+        if: always()
+        run: |
+          {
+            echo
+            echo "### Validation results"
+            echo
+            echo "| Check | Result |"
+            echo "|---|---|"
+
+            case "${{ steps.yamllint.outcome }}" in
+              success)
+                echo "| yamllint | ✅ Passed |"
+                ;;
+              failure)
+                echo "| yamllint | ❌ Failed |"
+                ;;
+              *)
+                echo "| yamllint | ⏭️ Skipped |"
+                ;;
+            esac
+
+            case "${{ steps.schema.outcome }}" in
+              success)
+                echo "| Compose specification schema | ✅ Passed |"
+                ;;
+              failure)
+                echo "| Compose specification schema | ❌ Failed |"
+                ;;
+              *)
+                echo "| Compose specification schema | ⏭️ Skipped |"
+                ;;
+            esac
+
+            case "${{ steps.dclint.outcome }}" in
+              success)
+                echo "| dclint | ✅ Passed |"
+                ;;
+              failure)
+                echo "| dclint | ❌ Failed |"
+                ;;
+              *)
+                echo "| dclint | ⏭️ Skipped |"
+                ;;
+            esac
+
+            case "${{ steps.compose.outcome }}" in
+              success)
+                echo "| Custom compose validation | ✅ Passed |"
+                ;;
+              failure)
+                echo "| Custom compose validation | ❌ Failed |"
+                ;;
+              *)
+                echo "| Custom compose validation | ⏭️ Skipped |"
+                ;;
+            esac
+
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Determine overall result
+        id: result
+        if: always()
+        run: |
+          if [[ "${{ steps.changed.outputs.any_changed }}" != "true" ]]; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ \
+            "${{ steps.yamllint.outcome }}" == "failure" ||
+            "${{ steps.schema.outcome }}" == "failure" ||
+            "${{ steps.dclint.outcome }}" == "failure" ||
+            "${{ steps.compose.outcome }}" == "failure"
+          ]]; then
+            echo "success=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fail validation job if any check failed
+        if: steps.result.outputs.success == 'false'
+        run: |
+          echo "One or more validation checks failed."
+          exit 1
+
+
+  report:
+    name: Report validation result
+    needs: validate
+
+    # This job contains no checkout and does not execute PR code.
+    permissions:
+      pull-requests: write
+
+    runs-on: ubuntu-latest
+
+    # Only report on PRs where compose files actually changed.
+    if: needs.validate.outputs.any_changed == 'true'
+
+    steps:
+      - name: Update PR validation comment
+        uses: actions/github-script@v8
+        env:
+          VALIDATION_SUCCESS: ${{ needs.validate.outputs.overall_success }}
+          CHANGED_FILES: ${{ needs.validate.outputs.changed_files }}
+
+          YAMLLINT: ${{ needs.validate.outputs.yamllint }}
+          YAMLLINT_OUTPUT: ${{ needs.validate.outputs.yamllint_output }}
+
+          SCHEMA: ${{ needs.validate.outputs.schema }}
+          SCHEMA_OUTPUT: ${{ needs.validate.outputs.schema_output }}
+
+          DCLINT: ${{ needs.validate.outputs.dclint }}
+          DCLINT_OUTPUT: ${{ needs.validate.outputs.dclint_output }}
+
+          COMPOSE: ${{ needs.validate.outputs.compose }}
+          COMPOSE_OUTPUT: ${{ needs.validate.outputs.compose_output }}
+
+        with:
+          script: |
+            const marker = '<!-- compose-validation-report -->';
+
+            const success = process.env.VALIDATION_SUCCESS === 'true';
+
+            const result = outcome => {
+              if (outcome === 'success') return '✅ Passed';
+              if (outcome === 'failure') return '❌ Failed';
+              return '⏭️ Skipped';
+            };
+
+            const details = (name, outcome, output) => {
+              if (outcome !== 'failure') {
+                return '';
+              }
+
+              // Keep the diagnostic output inside a fenced code block.
+              // Limit extremely large output so the PR comment remains useful.
+              const maxLength = 12000;
+              let text = output || '(No diagnostic output was captured.)';
+
+              if (text.length > maxLength) {
+                text =
+                  text.slice(0, maxLength) +
+                  '\n\n... output truncated. See the workflow logs for the complete output.';
+              }
+
+              return `
+            <details>
+            <summary>❌ ${name} errors</summary>
+
+            \`\`\`
+            ${text}
+            \`\`\`
+
+            </details>
+            `;
+            };
+
+            const files = process.env.CHANGED_FILES
+              .split('\n')
+              .filter(Boolean);
+
+            const changedFiles = files
+              .map(file => `- \`${file}\``)
+              .join('\n');
+
+            const body = `${marker}
+            ## ${success ? '✅' : '❌'} Compose validation
+
+            ${success
+              ? 'All compose validation checks passed.'
+              : 'One or more compose validation checks failed. Fix the issues below and push another commit to this PR.'}
+
+            ### Changed compose files
+
+            ${changedFiles}
+
+            ### Validation results
+
+            | Check | Result |
+            |---|---|
+            | yamllint | ${result(process.env.YAMLLINT)} |
+            | Compose specification schema | ${result(process.env.SCHEMA)} |
+            | dclint | ${result(process.env.DCLINT)} |
+            | Custom compose validation | ${result(process.env.COMPOSE)} |
+
+            ${details(
+              'yamllint',
+              process.env.YAMLLINT,
+              process.env.YAMLLINT_OUTPUT
+            )}
+
+            ${details(
+              'Compose specification schema',
+              process.env.SCHEMA,
+              process.env.SCHEMA_OUTPUT
+            )}
+
+            ${details(
+              'dclint',
+              process.env.DCLINT,
+              process.env.DCLINT_OUTPUT
+            )}
+
+            ${details(
+              'Custom compose validation',
+              process.env.COMPOSE,
+              process.env.COMPOSE_OUTPUT
+            )}
+
+            [View workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100
+            });
+
+            const existingComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes(marker)
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
+```
