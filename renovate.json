@@ -5,8 +5,8 @@
   "onboarding": false,
   "requireConfig": "optional",
   "dependencyDashboard": true,
-  "gitauthor": "D's Renovate Bot <renovate@thehome.party>",
-  "assignees": "DavBax",
+  "gitAuthor": "D's Renovate Bot <renovate@thehome.party>",
+  "assignees": ["DavBax"],
   "labels": ["renovate"],
   "prConcurrentLimit": 5,
 
