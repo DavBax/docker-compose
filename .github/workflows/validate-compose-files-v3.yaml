@@ -1,4 +1,4 @@
-name: Validate compose files
+name: Validate compose files v3
 
 on:
   pull_request:
