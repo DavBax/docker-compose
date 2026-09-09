@@ -1,13 +1,13 @@
 services:
   watchtower:
-    image: index.docker.io/nickfedor/watchtower:1.22.0
+    image: index.docker.io/nickfedor/watchtower:1.22.1
     container_name: watchtower
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     # user: '1000:1001'
-    command: --interval 21600 #remove to default to 24hrs (43200=12hrs, 21600=6hrs)
-    depends_on: 
+    command: --interval 21600  # remove to default to 24hrs (43200=12hrs, 21600=6hrs)
+    depends_on:
       - socket-proxy-watchtower
     labels:
       - "traefik.enable=true"
@@ -19,19 +19,16 @@ services:
       - "glance.name=Watchtower"
       - "glance.id=watchtower"
       - "glance.icon=sh:watchtower"
-#      - "glance.url=https://arcane.thehome.party"
       - "glance.description=Container Updates"
     environment:
       TZ: "Europe/London"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
-      WATCHTOWER_NOTIFICATIONS_DELAY: 30 #30sec delay before notifying, to allow dependant containers to reboot (traefik, gotify etc)
-#      WATCHTOWER_NOTIFICATION_URL: "gotify://gotify.thehome.party/${gotify_token}"
+      WATCHTOWER_NOTIFICATIONS_DELAY: 30  # 30sec delay before notifying, to allow dependant containers to reboot (traefik, gotify etc)
       WATCHTOWER_NOTIFICATION_URL: /run/secrets/watchtower_notification_url
       DOCKER_HOST: tcp://socket-proxy-watchtower:2375
       WATCHTOWER_HTTP_API_ENDPOINTS: containers,update,swagger
-      WATCHTOWER_HTTP_API_PERIODIC_POLLS: true #keeps the scheduled polling enabled, usually switched off by the update API endpoint
-#      WATCHTOWER_HTTP_API_TOKEN: ${watchtower_http_api_token}
+      WATCHTOWER_HTTP_API_PERIODIC_POLLS: true  # keeps the scheduled polling enabled, usually switched off by the update API endpoint
       WATCHTOWER_HTTP_API_TOKEN: /run/secrets/watchtower_http_api_token
     secrets:
       - watchtower_notification_url
@@ -71,11 +68,9 @@ services:
       - "com.centurylinklabs.watchtower.enable=false"
       - "glance.parent=watchtower"
       - "glance.name=Socket Proxy Watchtower"
-#      - "glance.icon=sh:wollomatic"
-#      - "glance.url=https://arcane.thehome.party"
       - "glance.description=Watchtower's Socket Proxy"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # read-only for file operations, but not for http operations
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # read-only for file operations, but not for http operations
     healthcheck:
       test: ["CMD", "./healthcheck"]
       interval: 10s
@@ -83,9 +78,7 @@ services:
       retries: 2
     networks:
       - socket-proxy-watchtower-net
-    # No port published - only reachable by containers on
-    # socket-proxy-watchtower-net, and even then, only "watchtower" per
-    # -allowfrom above.
+
 secrets:
   watchtower_notification_url:
     file: /home/davepifive/DockerData/watchtower/secrets/watchtower_notification_url
