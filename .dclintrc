@@ -1,3 +1,4 @@
 rules:
   require-project-name-field: 0
   service-keys-order: 0
+  services-alphabetical-order: 0
