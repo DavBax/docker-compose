@@ -16,6 +16,11 @@
 
      "packageRules": [
      {
+     "description": "GitHub Actions versions in workflow files - review before merging",
+     "matchManagers": ["github-actions"],
+     "automerge": false
+     },
+     {
        "description": "Group all services within the same compose file into one PR",
        "matchManagers": ["docker-compose"],
        "groupName": "{{parentDir}}"
