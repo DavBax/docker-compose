@@ -1,0 +1,150 @@
+# One-off, manually-triggered audit of every compose file in the repo.
+#
+# This is deliberately separate from the PR-triggered "Validate compose
+# files" workflow, which only checks files changed in a given PR using
+# tj-actions/changed-files. That approach has no meaning outside a PR
+# context (there's nothing to diff against), so this workflow finds every
+# compose file directly with `find` instead, and runs on demand rather
+# than on any trigger.
+
+name: Validate all compose files - one-off
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      # `find` returns one file path per line. Writing a multi-line value to
+      # $GITHUB_OUTPUT requires a heredoc-style delimiter - using a
+      # randomly generated one (rather than the literal string "EOF")
+      # avoids the theoretical edge case where a file path or line of
+      # output could itself contain the delimiter text, which would
+      # terminate the block early.
+      #
+      # -not -path '*-legacy/*' excludes rollback copies sitting alongside
+      # containers that have already been migrated to Arcane's git sync -
+      # those are deliberately out of service and would otherwise show up
+      # as duplicate or conflicting results for what's conceptually one
+      # stack.
+      - name: Find all compose files
+        id: allfiles
+        run: |
+          FILES=$(find . -type f \( -name 'compose.yaml' -o -name 'compose.yml' -o -name 'docker-compose.yml' -o -name 'docker-compose.yaml' \) -not -path '*-legacy/*')
+          DELIMITER="EOF_$(openssl rand -hex 8)"
+          echo "files<<$DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "$DELIMITER" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+
+      # All three tools' dependencies installed together in one step,
+      # rather than one pip install per tool - cheaper and keeps the log
+      # shorter. Given an id so later steps can check whether this
+      # specifically succeeded, rather than just whether the job overall
+      # is still going.
+      - name: Install PyYAML, yamllint, check-jsonschema
+        id: install
+        run: pip install pyyaml yamllint check-jsonschema
+
+      # Catches raw YAML problems (bad indentation, duplicate keys, tabs
+      # vs spaces) before the stricter, Compose-specific checks below even
+      # run. line-length and document-start are disabled since compose
+      # files routinely exceed 80 chars (long image references) and don't
+      # use the `---` document header these defaults assume.
+      #
+      # Runs even if a later check in this file fails (that's what lets
+      # all four checks report in one pass), but only if the install step
+      # actually succeeded - no point attempting this with tools that
+      # were never installed.
+      #
+      # `set +e` / capture / `set -e` lets this step report its own
+      # accurate pass/fail status (via the final `exit $EXIT_CODE`) while
+      # still writing full output to the summary - without this, GitHub's
+      # default bash flags would halt the script the instant yamllint
+      # returns non-zero, before the closing code fence or exit code
+      # capture ever ran.
+      - name: yamllint
+        if: always() && steps.install.outcome == 'success'
+        env:
+          FILES: ${{ steps.allfiles.outputs.files }}
+        run: |
+          echo "## yamllint results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          yamllint --config-data "{extends: default, rules: {line-length: disable, document-start: disable}}" $FILES >> "$GITHUB_STEP_SUMMARY" 2>&1
+          EXIT_CODE=$?
+          set -e
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $EXIT_CODE
+
+      # Validates every file against the official Compose Specification
+      # JSON schema - stricter than `docker compose config`, which
+      # tolerates some things the spec itself doesn't allow. Pointing
+      # directly at the schema's raw GitHub URL rather than any built-in
+      # shorthand keeps this correct even if the tool's internal schema
+      # catalog changes later. Same install-gating logic as yamllint above.
+      - name: Validate against compose-spec schema
+        if: always() && steps.install.outcome == 'success'
+        env:
+          FILES: ${{ steps.allfiles.outputs.files }}
+        run: |
+          echo "## compose-spec schema results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          check-jsonschema --schemafile https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json $FILES >> "$GITHUB_STEP_SUMMARY" 2>&1
+          EXIT_CODE=$?
+          set -e
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $EXIT_CODE
+
+      # Docker Compose-specific best-practice linter. Run via npx rather
+      # than the dclint-github-action marketplace action, since that
+      # action only accepts a directory to scan (not an arbitrary file
+      # list), which doesn't fit this workflow's pattern of always
+      # operating on the same $FILES variable. ubuntu-latest runners come
+      # with Node.js preinstalled, so no separate setup-node step is
+      # needed, and this doesn't depend on the pip install step above -
+      # it only needs `always()` to still run after an earlier check
+      # fails. --yes skips npx's interactive install confirmation, which
+      # would otherwise hang the run waiting for input that never comes.
+      - name: dclint
+        if: always()
+        env:
+          FILES: ${{ steps.allfiles.outputs.files }}
+        run: |
+          echo "## dclint results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          npx --yes dclint $FILES >> "$GITHUB_STEP_SUMMARY" 2>&1
+          EXIT_CODE=$?
+          set -e
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $EXIT_CODE
+
+      # Your existing house-convention checks (e.g. the
+      # traefik.docker.network label requirement), run last since it's
+      # the most specific and slowest-to-diagnose of the four checks - you
+      # want the cheaper, more generic tools to have already reported
+      # first. Depends on PyYAML from the install step, so gated the same
+      # way as yamllint and check-jsonschema above.
+      - name: Run validate-compose.py
+        if: always() && steps.install.outcome == 'success'
+        env:
+          FILES: ${{ steps.allfiles.outputs.files }}
+        run: |
+          echo "## house convention checks" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          python3 .github/scripts/validate_compose.py $FILES >> "$GITHUB_STEP_SUMMARY" 2>&1
+          EXIT_CODE=$?
+          set -e
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $EXIT_CODE
