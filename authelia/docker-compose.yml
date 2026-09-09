@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    #read_only: true
-    #tmpfs:
+    # read_only: true
+    # tmpfs:
     #  - /tmp
     mem_limit: 256M
     user: "1000:1000"  # runs as my user
