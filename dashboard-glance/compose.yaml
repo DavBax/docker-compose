@@ -1,16 +1,16 @@
 services:
   dashboard-glance:
     container_name: dashboard-glance
-    image: index.docker.io/glanceapp/glance:latest
+    image: index.docker.io/glanceapp/glance:0.8.6
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     volumes:
       - /home/davepifive/DockerData/dashboard-glance/config:/app/config
-#    ports:
-#      - 8080:8080
+    # ports:
+    #   - 8080:8080
     user: 1000:1000
-    environment: #these env vars are referenced in the glance.yml file in DockerData
+    environment:  # these env vars are referenced in the glance.yml file in DockerData
       - TZ=Europe/London
       # 1. General & Domain Settings
       - HOMELAB_DOMAIN=thehome.party
@@ -35,7 +35,7 @@ services:
       - "traefik.http.routers.dashboard-glance.entrypoints=websecure"
       - "traefik.http.routers.dashboard-glance.tls=true"
       - "traefik.http.services.dashboard-glance.loadbalancer.server.port=8080"
-#      - "traefik.http.routers.dashboard-glance.middlewares=authelia@docker" #not required, yet
+      # - "traefik.http.routers.dashboard-glance.middlewares=authelia@docker" #not required, yet
       - "glance.name=Glance"
       - "glance.icon=sh:glance"
       - "glance.url=https://dashboard.thehome.party"
@@ -48,7 +48,7 @@ services:
       start_period: 40s
       start_interval: 5s
     networks:
-      - default #for internet
+      - default  # for internet
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 secrets:
