@@ -1,15 +1,15 @@
 services:
   authelia:
-    image: ghcr.io/authelia/authelia:4.39.24 # pin explicitly - Authelia's own docs advise against :latest due to breaking changes; check Docker Hub for the current version before deploying
+    image: ghcr.io/authelia/authelia:4.39.24  # pin explicitly - Authelia's own docs advise against :latest due to breaking changes; check Docker Hub for the current version before deploying
     container_name: authelia
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    read_only: true
-#    tmpfs:
-#      - /tmp
+    #read_only: true
+    #tmpfs:
+    #  - /tmp
     mem_limit: 256M
-    user: "1000:1000" # runs as my user
+    user: "1000:1000"  # runs as my user
     environment:
       TZ: Europe/London
       # these paths are INSIDE the container, mapped to bind mounts
@@ -17,7 +17,7 @@ services:
       AUTHELIA_SESSION_SECRET_FILE: /secrets/SESSION_SECRET
       AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/STORAGE_ENCRYPTION_KEY
       AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: /secrets/OIDC_HMAC_SECRET
-      X_AUTHELIA_CONFIG_FILTERS: template #enable template filter for configuration.yml
+      X_AUTHELIA_CONFIG_FILTERS: template  # enable template filter for configuration.yml
     volumes:
       - /home/davepifive/DockerData/authelia/config:/config
       - /home/davepifive/DockerData/authelia/secrets:/secrets:ro
@@ -27,7 +27,7 @@ services:
       # need internet for local users + TOTP. If you later add SMTP-based
       # password reset or a Duo push notifier, that would need adding.
     labels:
-      - "com.centurylinklabs.watchtower.enable=false" # watchtower will ignore, update manually
+      - "com.centurylinklabs.watchtower.enable=false"  # watchtower will ignore, update manually
       - "traefik.enable=true"
       - "traefik.http.routers.authelia.rule=Host(`sso.thehome.party`)"
       - "traefik.http.routers.authelia.entrypoints=websecure"
@@ -39,11 +39,11 @@ services:
       - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
       - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
       - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
-      - "traefik.http.middlewares.authelia.forwardauth.maxResponseBodySize=1000000" #1MB, responses are tiny
+      - "traefik.http.middlewares.authelia.forwardauth.maxResponseBodySize=1000000"  # 1MB, responses are tiny
       - "glance.name=Authelia"
       - "glance.icon=sh:authelia"
       - "glance.url=https://authelia.thehome.party"
       - "glance.description=SSO & Auth"
 networks:
   traefik-internal:
-    external: true # same shared network Mealie/ha-mcp/etc. use to reach Traefik
+    external: true  # same shared network Mealie/ha-mcp/etc. use to reach Traefik
