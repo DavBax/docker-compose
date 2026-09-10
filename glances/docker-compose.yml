@@ -1,16 +1,14 @@
 services:
   glances:
-    image: index.docker.io/nicolargo/glances:latest
+    image: index.docker.io/nicolargo/glances:4.5.6
     container_name: glances
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    ports:
-#      - 61208:61208
     volumes:
       - /home/davepifive/DockerData/glances/config:/etc/glances
     environment:
-      - GLANCES_OPT=-w #web-server mode
+      - GLANCES_OPT=-w  # web-server mode
       - TZ=Europe/London
       - DOCKER_HOST=tcp://socket-proxy-readonly-vm:2375
     healthcheck:
@@ -26,7 +24,7 @@ services:
       - "traefik.http.routers.glances.entrypoints=websecure"
       - "traefik.http.routers.glances.tls=true"
       - "traefik.http.services.glances.loadbalancer.server.port=61208"
-      - "traefik.http.routers.glances.middlewares=authelia@docker" #not required, nothing sensitive
+      - "traefik.http.routers.glances.middlewares=authelia@docker"  # not required, nothing sensitive
       - "glance.name=Glances"
       - "glance.icon=sh:glances"
       - "glance.url=https://glances.thehome.party"
