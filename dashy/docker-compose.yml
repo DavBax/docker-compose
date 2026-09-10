@@ -1,29 +1,27 @@
 services:
   dashy:
-    image: ghcr.io/lissy93/dashy:latest
+    image: ghcr.io/lissy93/dashy:4.6.13
     container_name: dashy
     restart: unless-stopped
-    user: 1000:1000 #using UID/GID env var instead
+    user: 1000:1000  # using UID/GID env var instead
     security_opt:
-        - no-new-privileges:true
+      - no-new-privileges:true
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
-        - '/home/davepifive/DockerData/dashy/conf.yml:/app/user-data/conf.yml'
-        #SSL certs are required to enable the HTTPS server on port 4001:443, even though accessing via reverse proxy
-#        - '/home/dave/certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
-#        - '/home/dave/certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
-#    ports: #not needed, if using traefik
-#        - '4000:8080' #no longer required, accessing via https
-#        - '4001:443'
-    # Set any environmental variables
+      - /home/davepifive/DockerData/dashy/conf.yml:/app/user-data/conf.yml
+      # SSL certs are required to enable the HTTPS server on port 4001:443, even though accessing via reverse proxy
+      # - '/home/dave/certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
+      # - '/home/dave/certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
+    # ports: #not needed, if using traefik
+    # - '4000:8080' #no longer required, accessing via https
+    # - '4001:443'
     environment:
-        - BASE_URL=https://dashy.thehome.party/
-        - NODE_ENV=development
-       #Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
-        - IS_DOCKER=true
-        - REDIRECT_HTTPS=true
-        - UID=1000
-        - GID=1000
+      - BASE_URL=https://dashy.thehome.party/
+      - NODE_ENV=development
+      - IS_DOCKER=true
+      - REDIRECT_HTTPS=true
+      - UID=1000
+      - GID=1000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashy.rule=Host(`dashy.thehome.party`)"
@@ -31,10 +29,10 @@ services:
       - "traefik.http.routers.dashy.tls=true"
       - "traefik.http.services.dashy.loadbalancer.server.port=8080"
       - "glance.name=Dashy"
-      - "glance.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/dashy.png" #icon hosted on selfhst is only png, glance looks for svg and fails if not found
+      - "glance.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/dashy.png"  # icon hosted on selfhst is only png, glance looks for svg and fails if not found
       - "glance.url=https://dashy.thehome.party"
       - "glance.description=Dashboard"
-    #Configure healthchecks
+    # Configure healthchecks
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck']
       interval: 1m30s
@@ -42,7 +40,7 @@ services:
       retries: 3
       start_period: 40s
     networks:
-        - traefik-internal
+      - traefik-internal
 networks:
-    traefik-internal:
-        external: true
+  traefik-internal:
+    external: true
