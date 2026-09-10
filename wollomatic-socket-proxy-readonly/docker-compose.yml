@@ -69,7 +69,7 @@ services:
     ports:
       # Published on loopback only, so the host-networked beszel-agent can
       # reach it via 127.0.0.1. Still not reachable from the LAN.
-      - "127.0.0.1:2375:2375"
+      - '127.0.0.1:2375:2375'
     healthcheck:
       test: ["CMD", "./healthcheck"]
       interval: 10s
