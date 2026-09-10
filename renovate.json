@@ -2,8 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "timezone": "Europe/London",
-  "onboarding": true,
-  "requireConfig": "optional",
   "dependencyDashboard": true,
   "gitAuthor": "D's Renovate Bot <renovate@thehome.party>",
   "assignees": ["DavBax"],
