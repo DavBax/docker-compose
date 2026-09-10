@@ -1,18 +1,15 @@
 services:
   wallos:
     container_name: wallos
-    image: index.docker.io/bellamy/wallos:latest
+    image: index.docker.io/bellamy/wallos:5.6.0
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    ports:
-#      - 8282:80/tcp
     environment:
       TZ: Europe/London
       OIDC_ENABLED: true
       OIDC_PROVIDER_NAME: Authelia
       OIDC_CLIENT_ID: wallos
-#      OIDC_CLIENT_SECRET: ${oidc_client_secret}
       OIDC_CLIENT_SECRET_FILE: /run/secrets/wallos_oidc_client_secret
       OIDC_ISSUER: https://sso.thehome.party
       OIDC_AUTH_URL: https://sso.thehome.party/api/oidc/authorization
