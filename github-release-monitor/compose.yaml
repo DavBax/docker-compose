@@ -8,7 +8,7 @@ services:
     user: "1000:1000"
     env_file:
       - .env
-    environment: 
+    environment:
       - TZ=Europe/London
       - LOG_LEVEL=info
       - HTTPS='true'  # Behind Traefik with TLS termination, so this stays true.
