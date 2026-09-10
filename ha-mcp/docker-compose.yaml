@@ -10,7 +10,7 @@ services:
         limits:
           memory: 256M
     ports:
-      - '8086:8086'
+      - '192.168.11.137:8086:8086'  # IP is DB-work, the only machine interacting with this container
     environment:
       - TZ=Europe/London
       - HOMEASSISTANT_URL=https://ha.thehome.party
