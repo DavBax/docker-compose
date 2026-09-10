@@ -1,18 +1,14 @@
 services:
   uptimekuma:
-    image: ghcr.io/louislam/uptime-kuma:2
+    image: ghcr.io/louislam/uptime-kuma:2.5.3
     container_name: uptime-kuma
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
     volumes:
       - /home/davepifive/DockerData/uptimekuma:/app/data
-#     - /var/run/docker.sock:/var/run/docker.sock:ro # Add Docker containers in the UI, changing fromm socket to TCP
-#    ports:
-#      - 127.0.0.1:3001:3001
-#      - "3001:3001"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-internal"
