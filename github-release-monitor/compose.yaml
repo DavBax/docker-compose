@@ -6,8 +6,6 @@ services:
     security_opt:
       - no-new-privileges:true
     user: "1000:1000"
-    env_file:
-      - .env
     environment:
       - TZ=Europe/London
       - LOG_LEVEL=info
