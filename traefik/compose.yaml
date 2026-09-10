@@ -1,9 +1,9 @@
 services:
   socket-proxy-traefik:
-    image: ghcr.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1.13.1
     container_name: socket-proxy-traefik
     restart: unless-stopped
-    user: "65534:990" # Find your docker group's GID with: getent group docker
+    user: "65534:990"  # Find your docker group's GID with: getent group docker
     mem_limit: 64M
     read_only: true
     cap_drop:
@@ -13,10 +13,10 @@ services:
     environment: 
       - TZ=Europe/London
     command:
-      - '-loglevel=info' # set to debug for far more logging
+      - '-loglevel=info'  # set to debug for far more logging
       - '-allowfrom=traefik'
       - '-listenip=0.0.0.0'
-      - '-allowGET=/v1\..{1,2}/(version|containers/.*|events.*)' # this regexp allows readonly access only for requests that traefik needs
+      - '-allowGET=/v1\..{1,2}/(version|containers/.*|events.*)'  # this regexp allows readonly access only for requests that traefik needs
       - '-allowHEAD=/_ping'
       - '-allowhealthcheck'
       - '-shutdowngracetime=5'
@@ -26,7 +26,7 @@ services:
       - "glance.parent=traefik"
       - "glance.name=Socket Proxy Traefik"
       - "glance.icon=sh:socket"
-      #- "glance.url=https://arcane.thehome.party"
+      # - "glance.url=https://arcane.thehome.party"
       - "glance.description=Socket Proxy for Traefik"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -39,44 +39,44 @@ services:
       - traefik-socket-internal
 
   traefik:
-    image: index.docker.io/traefik:latest
+    image: index.docker.io/traefik:3.7.13
     container_name: traefik
     restart: unless-stopped
-#    read_only: true
-    mem_limit: 1G # default was 2G, change if needed
+    # read_only: true
+    mem_limit: 1G  # default was 2G, change if needed
     cpus: 0.75
-#    user: "2000:2000" # user traefik has to be created on the host system <sudo useradd -u 2000 -M -s /usr/sbin/nologin traefik>
-    user: "1000:1000" #use my user, for access to files
+    #user: "2000:2000"  # user traefik has to be created on the host system <sudo useradd -u 2000 -M -s /usr/sbin/nologin traefik>
+    user: "1000:1000"  # use my user, for access to files
     depends_on:
       - socket-proxy-traefik
     security_opt:
       - no-new-privileges:true
     env_file:
       - .env
-    environment: #environment: variables take precdence over env_file variables
+    environment:  # environment: variables take precdence over env_file variables
       - TZ=Europe/London
       - CF_DNS_API_TOKEN=/run/secrets/cf_dns_api_token
       - CF_API_EMAIL=dk.baxter0@gmail.com
       - TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_EMAIL=dk.baxter0gmail.com
     command:
-      - '--ping' #used by healthcheck
+      - '--ping'  # used by healthcheck
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /home/davepifive/DockerData/traefik/traefik.yml:/etc/traefik/traefik.yml:ro    # Static Traefik Configuration
-      - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro            # Folder to store dynamic configuration file provider
-#      - ./config/authusers.txt:/etc/traefik/authusers.txt:ro  # userfile for basic auth
-#      - ./config/acme/acme.json:/etc/traefik/acme.json        # certificate storage
-      - /home/davepifive/DockerData/traefik/letsencrypt/acme.json:/letsencrypt/acme.json # certificate storage
+      - /home/davepifive/DockerData/traefik/traefik.yml:/etc/traefik/traefik.yml:ro  # Static Traefik Configuration
+      - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro  # Folder to store dynamic configuration file provider
+      # - ./config/authusers.txt:/etc/traefik/authusers.txt:ro  # userfile for basic auth
+      # - ./config/acme/acme.json:/etc/traefik/acme.json  # certificate storage
+      - /home/davepifive/DockerData/traefik/letsencrypt/acme.json:/letsencrypt/acme.json  # certificate storage
       - /home/davepifive/DockerData/traefik/plugins:/plugins-storage
     labels:
-      - "traefik.enable=true" #traefik.yml sets "exposedByDefault: false", so every container is ignored, unless this line is present
-      - "traefik.docker.network=traefik-internal"
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.thehome.party`)" #router, named traefik-dashboard, looking for traffic matching that url
-      - "traefik.http.routers.traefik-dashboard.service=api@internal" #the service to send matching traffic to, in this case traefik's built in service for its own dashhboard
-      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure" #serve via https, using the entrypoint in traefik.yml matching web-secure
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare" #request TLS cert from cloudflare resolver block in traefik.yml
+      - "traefik.enable=true"  # traefik.yml sets "exposedByDefault: false", so every container is ignored, unless this line is present
+      - "traefik.docker.network=traefik-internal"  # tells the container which network to use for traefik traffic
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.thehome.party`)"  # router, named traefik-dashboard, looking for traffic matching that url
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"  # the service to send matching traffic to, in this case traefik's built in service for its own dashhboard
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"  # serve via https, using the entrypoint in traefik.yml matching web-secure
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare"  # request TLS cert from cloudflare resolver block in traefik.yml
       - "traefik.http.routers.traefik-dashboard.tls=true"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=thehome.party"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.thehome.party"
@@ -104,8 +104,8 @@ secrets:
   cf_dns_api_token:
     file: /home/davepifive/DockerData/traefik/secrets/cf_dns_api_token
 networks:
-  traefik-socket-internal: # this should be restricted to only traefik and socket-proxy-traefik
+  traefik-socket-internal:  # this should be restricted to only traefik and socket-proxy-traefik
     driver: bridge
-    internal: true # no internet, not reachable outside of these two containers
-  traefik-internal: # this is the common traefik network
+    internal: true  # no internet, not reachable outside of these two containers
+  traefik-internal:  # this is the common traefik network
     external: true # this network has to be created once before starting
