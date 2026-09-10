@@ -1,17 +1,13 @@
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/arcane:v2.10.2
     container_name: arcane
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    depends_on: 
+    depends_on:
       - socket-proxy-management
-# ports not used in traefik, only in npm
-# traefik uses traefik-internal network instead
-#    ports:
-#      - "3552:3552"
-    cgroup: host #Use the host cgroup namespace so Arcane can detect its own container ID more reliably — this matters for self-upgrades.
+    cgroup: host  # Use the host cgroup namespace so Arcane can detect its own container ID more reliably — this matters for self-upgrades.
     environment:
       - TZ=Europe/London
       - APP_URL=https://arcane.thehome.party
@@ -30,7 +26,6 @@ services:
       - arcane_encryption_key
       - arcane_oidc_client_secret
     volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
       - /home/davepifive/DockerData/arcane/data:/app/data
       - /home/davepifive/docker-compose:/home/davepifive/docker-compose
     healthcheck:
@@ -44,7 +39,7 @@ services:
       - "traefik.http.routers.arcane.rule=Host(`arcane.thehome.party`)"
       - "traefik.http.routers.arcane.entrypoints=websecure"
       - "traefik.http.routers.arcane.tls=true"
-      - "traefik.http.services.arcane.loadbalancer.server.port=3552" # match Mealie's actual internal port
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"  # match Mealie's actual internal port
       - "glance.name=Arcane"
       - "glance.id=arcane"
       - "glance.icon=sh:arcane"
@@ -56,7 +51,7 @@ services:
       - socket-proxy-management-net
 
   socket-proxy-management:
-    image: ghcr.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1.13.1
     container_name: socket-proxy-management
     restart: unless-stopped
     # Find your docker group's GID with: getent group docker
@@ -67,7 +62,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
     command:
       # --- START HERE: broad allowlist for the observation period ---
@@ -93,8 +88,8 @@ services:
     labels:
       - "glance.parent=arcane"
       - "glance.name=Socket Proxy Management"
-#      - "glance.icon=sh:wollomatic"
-#      - "glance.url=https://arcane.thehome.party"
+      # - "glance.icon=sh:wollomatic"
+      # - "glance.url=https://arcane.thehome.party"
       - "glance.description=Socket Proxy for Management"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -105,9 +100,9 @@ services:
       retries: 2
     networks:
       - socket-proxy-management-net
-    # No port published - only reachable by containers on
-    # socket-proxy-management-net, and even then, only "dockge"/"arcane"
-    # per -allowfrom above.
+      # No port published - only reachable by containers on
+      # socket-proxy-management-net, and even then, only "dockge"/"arcane"
+      # per -allowfrom above.
 
 secrets:
   arcane_encryption_key:
