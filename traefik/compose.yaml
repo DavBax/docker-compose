@@ -10,7 +10,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
     command:
       - '-loglevel=info'  # set to debug for far more logging
@@ -45,14 +45,12 @@ services:
     # read_only: true
     mem_limit: 1G  # default was 2G, change if needed
     cpus: 0.75
-    #user: "2000:2000"  # user traefik has to be created on the host system <sudo useradd -u 2000 -M -s /usr/sbin/nologin traefik>
+    # user: "2000:2000"  # user traefik has to be created on the host system <sudo useradd -u 2000 -M -s /usr/sbin/nologin traefik>
     user: "1000:1000"  # use my user, for access to files
     depends_on:
       - socket-proxy-traefik
     security_opt:
       - no-new-privileges:true
-    env_file:
-      - .env
     environment:  # environment: variables take precdence over env_file variables
       - TZ=Europe/London
       - CF_DNS_API_TOKEN=/run/secrets/cf_dns_api_token
@@ -61,8 +59,8 @@ services:
     command:
       - '--ping'  # used by healthcheck
     ports:
-      - "80:80"
-      - "443:443"
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
     volumes:
       - /home/davepifive/DockerData/traefik/traefik.yml:/etc/traefik/traefik.yml:ro  # Static Traefik Configuration
       - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro  # Folder to store dynamic configuration file provider
@@ -108,4 +106,4 @@ networks:
     driver: bridge
     internal: true  # no internet, not reachable outside of these two containers
   traefik-internal:  # this is the common traefik network
-    external: true # this network has to be created once before starting
+    external: true  # this network has to be created once before starting
