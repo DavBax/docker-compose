@@ -15,8 +15,8 @@ services:
     secrets:
       - secretprovider
     volumes:
-      - /home/davepifive/DockerData/duplicati/config:/config #config files
-      - /home/davepifive/DockerData/duplicati/data:/data #config files
+      - /home/davepifive/DockerData/duplicati/config:/config  # config files
+      - /home/davepifive/DockerData/duplicati/data:/data  # config files
       # read only folders, no need to write
       - /home/davepifive/DockerData:/source/docker-data:ro
       - /home/davepifive/sqlite-snapshots-DockerData:/source/sqlite-snapshots:ro
