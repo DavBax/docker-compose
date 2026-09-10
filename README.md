@@ -1,4 +1,4 @@
-＃ docker-compose
+# docker-compose
 
 Source of truth for the homelab's Docker Compose stacks, running on `pifive` (Raspberry Pi 5). Fully GitOps: this repo is authoritative, and Arcane's git sync redeploys any stack whose compose file changes on `main`.
 
