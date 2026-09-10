@@ -12,7 +12,7 @@ services:
       - glance.parent=paperless-ngx
       - glance.name=Paperless-Broker
       - glance.icon=sh:valkey
-     # - glance.url=https://arcane.thehome.party
+      # - glance.url=https://arcane.thehome.party
       - glance.description=Key=Value Workloads
     healthcheck:
       test: ["CMD-SHELL", "valkey-cli ping | grep PONG"]
@@ -55,7 +55,7 @@ services:
       PAPERLESS_WEBSERVER_WORKERS: 1
       PAPERLESS_TASK_WORKERS: 2
       PAPERLESS_THREADS_PER_WORKER: 1
-      PAPERLESS_ENABLE_NLTK: "false" #disable advanced language processing
+      PAPERLESS_ENABLE_NLTK: "false"  # disable advanced language processing
       # Behind Traefik TLS termination
       PAPERLESS_URL: https://paperless.thehome.party
       # OIDC Setup for Authelia, other env vars are in a single JSON line in .env file
@@ -108,7 +108,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
-  
+
   paperless-tika:
     image: index.docker.io/apache/tika:4.0.0
     container_name: paperless-tika
