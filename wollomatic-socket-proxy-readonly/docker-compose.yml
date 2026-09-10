@@ -34,7 +34,7 @@
 
 services:
   socket-proxy-readonly-wm:
-    image: ghcr.io/wollomatic/socket-proxy:1
+    image: ghcr.io/wollomatic/socket-proxy:1.13.1
     container_name: socket-proxy-readonly-wm
     restart: unless-stopped
     # Runs as the "nobody" user (65534) plus the host's docker group, so it
@@ -52,7 +52,7 @@ services:
     command:
       - '-loglevel=info'
       - '-listenip=0.0.0.0'
-      - '-allowfrom=uptimekuma,dozzle,glances,dashboard-glance,crowdsec,10.10.1.1' #10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
+      - '-allowfrom=uptimekuma,dozzle,glances,dashboard-glance,crowdsec,10.10.1.1'  # 10. address is how beszel-agent connects, hairpin NAT from 127.0.0.1
       - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|events.*|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowhealthcheck'
@@ -62,14 +62,14 @@ services:
     labels:
       - "glance.name=Socket Proxy Read Only"
       - "glance.icon=si:socket"
-#      - "glance.url=https://arcane.thehome.party"
+      # - "glance.url=https://arcane.thehome.party"
       - "glance.description=Read-Only Socket Proxy"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       # Published on loopback only, so the host-networked beszel-agent can
       # reach it via 127.0.0.1. Still not reachable from the LAN.
-      - "127.0.0.1:2375:2375"
+      - '127.0.0.1:2375:2375'
     healthcheck:
       test: ["CMD", "./healthcheck"]
       interval: 10s
@@ -77,13 +77,14 @@ services:
       retries: 2
     networks:
       - socket-proxy-readonly-wm-net
-    # No port published to the LAN - only 127.0.0.1 (above) and containers
-    # on socket-proxy-readonly-wm-net can reach this, and even then, only
-    # the hostnames/addresses listed in -allowfrom.
+      # No port published to the LAN - only 127.0.0.1 (above) and containers
+      # on socket-proxy-readonly-wm-net can reach this, and even then, only
+      # the hostnames/addresses listed in -allowfrom.
 
 networks:
   socket-proxy-readonly-wm-net:
     driver: bridge
+    # internal: true #cannot be internal, as beszel-agent connects via the published port.
     ipam:
       config:
         # Pinned to the subnet Docker already auto-allocated to this network
@@ -92,4 +93,3 @@ networks:
         # DOCKER_HOST/-allowfrom rely on this gateway IP staying fixed.
         - subnet: 10.10.1.0/28
           gateway: 10.10.1.1
-#    internal: true #cannot be internal, as beszel-agent connects via the published port.
