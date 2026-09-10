@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    environment: 
+    environment:
       - TZ=Europe/London
     volumes:
       - /home/davepifive/DockerData/uptimekuma:/app/data
