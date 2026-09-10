@@ -77,13 +77,14 @@ services:
       retries: 2
     networks:
       - socket-proxy-readonly-wm-net
-    # No port published to the LAN - only 127.0.0.1 (above) and containers
-    # on socket-proxy-readonly-wm-net can reach this, and even then, only
-    # the hostnames/addresses listed in -allowfrom.
+      # No port published to the LAN - only 127.0.0.1 (above) and containers
+      # on socket-proxy-readonly-wm-net can reach this, and even then, only
+      # the hostnames/addresses listed in -allowfrom.
 
 networks:
   socket-proxy-readonly-wm-net:
     driver: bridge
+    # internal: true #cannot be internal, as beszel-agent connects via the published port.
     ipam:
       config:
         # Pinned to the subnet Docker already auto-allocated to this network
@@ -92,4 +93,3 @@ networks:
         # DOCKER_HOST/-allowfrom rely on this gateway IP staying fixed.
         - subnet: 10.10.1.0/28
           gateway: 10.10.1.1
-    # internal: true #cannot be internal, as beszel-agent connects via the published port.
