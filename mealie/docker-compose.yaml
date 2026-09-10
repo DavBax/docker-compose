@@ -1,12 +1,10 @@
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:latest
+    image: ghcr.io/mealie-recipes/mealie:3.25.1
     container_name: mealie
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-#    ports:
-#      - 9925:9000
     deploy:
       resources:
         limits:
@@ -27,7 +25,6 @@ services:
       OIDC_PROVIDER_NAME: 'Authelia'
       OIDC_CONFIGURATION_URL: 'https://sso.thehome.party/.well-known/openid-configuration'
       OIDC_CLIENT_ID: 'mealie'
-#      OIDC_CLIENT_SECRET: '${client_secret}'
       OIDC_CLIENT_SECRET_FILE: /run/secrets/mealie_oidc_client_secret
       OIDC_AUTO_REDIRECT: 'false'
       OIDC_ADMIN_GROUP: 'admins'
@@ -40,7 +37,7 @@ services:
       - "traefik.http.routers.mealie.rule=Host(`mealie.thehome.party`)"
       - "traefik.http.routers.mealie.entrypoints=websecure"
       - "traefik.http.routers.mealie.tls=true"
-      - "traefik.http.services.mealie.loadbalancer.server.port=9000" # match Mealie's actual internal port
+      - "traefik.http.services.mealie.loadbalancer.server.port=9000"
       - "glance.name=Mealie"
       - "glance.icon=sh:mealie"
       - "glance.url=https://mealie.thehome.party"
