@@ -1,21 +1,21 @@
 services:
   gotify:
-    image: ghcr.io/gotify/server-arm64:latest
+    image: ghcr.io/gotify/server-arm64:3.1.0
     container_name: gotify
     restart: unless-stopped
-    #         user: '1000:1000'
+    # user: '1000:1000'
     security_opt:
       - no-new-privileges:true
     environment:
       - TZ=Europe/London
-#      - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
+      # - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
       - GOTIFY_DEFAULTUSER_PASS_FILE=/run/secrets/gotify_def_user_pass
       - UID='1000'
       - GID='1000'
       - GOTIFY_OIDC_ENABLED=true
-      - GOTIFY_OIDC_ISSUER=https://sso.thehome.party #url of authelia
+      - GOTIFY_OIDC_ISSUER=https://sso.thehome.party  # url of authelia
       - GOTIFY_OIDC_CLIENTID=gotify
-#      - GOTIFY_OIDC_CLIENTSECRET=${oidc_client_secret}
+      # - GOTIFY_OIDC_CLIENTSECRET=${oidc_client_secret}
       - GOTIFY_OIDC_CLIENTSECRET_FILE=/run/secrets/gotify_oidc_client_secret
       - GOTIFY_OIDC_REDIRECTURL=https://gotify.thehome.party/auth/oidc/callback
       - GOTIFY_OIDC_AUTOREGISTER=true
@@ -25,8 +25,6 @@ services:
       - GOTIFY_OIDC_IDP_NAME=Authelia
     volumes:
       - /home/davepifive/DockerData/gotify/data:/app/data
-#    ports:
-#      - 8090:80
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-internal"
