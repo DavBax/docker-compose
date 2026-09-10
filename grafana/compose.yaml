@@ -61,7 +61,7 @@ services:
     volumes:
       - /home/davepifive/DockerData/grafana/data:/var/lib/grafana
       - /home/davepifive/DockerData/grafana/provisioning:/etc/grafana/provisioning
-      # dashboards is inside same dir as data, it should be auto created 
+      # dashboards is inside same dir as data, it should be auto created
       # - /home/davepifive/DockerData/grafana/provisioning/datasources/single.yml:/etc/grafana/provisioning/datasources/single.yml:ro
       # - /home/davepifive/DockerData/grafana/provisioning/datasources/infinity-single.yml:/etc/grafana/provisioning/datasources/infinity-single.yml:ro
       # - /home/davepifive/DockerData/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
