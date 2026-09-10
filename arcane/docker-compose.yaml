@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    depends_on: 
+    depends_on:
       - socket-proxy-management
     cgroup: host  # Use the host cgroup namespace so Arcane can detect its own container ID more reliably — this matters for self-upgrades.
     environment:
@@ -39,7 +39,7 @@ services:
       - "traefik.http.routers.arcane.rule=Host(`arcane.thehome.party`)"
       - "traefik.http.routers.arcane.entrypoints=websecure"
       - "traefik.http.routers.arcane.tls=true"
-      - "traefik.http.services.arcane.loadbalancer.server.port=3552" # match Mealie's actual internal port
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"  # match Mealie's actual internal port
       - "glance.name=Arcane"
       - "glance.id=arcane"
       - "glance.icon=sh:arcane"
