@@ -1,7 +1,7 @@
 services:
   github-release-monitor:
     container_name: github-release-monitor
-    image: ghcr.io/iamspido/github-release-monitor:latest
+    image: ghcr.io/iamspido/github-release-monitor:2.6.0
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -11,10 +11,10 @@ services:
     environment: 
       - TZ=Europe/London
       - LOG_LEVEL=info
-      - HTTPS='true' # Behind Traefik with TLS termination, so this stays true.
-      - AUTHENTICATION_METHOD=External #using authelia
+      - HTTPS='true'  # Behind Traefik with TLS termination, so this stays true.
+      - AUTHENTICATION_METHOD=External  # using authelia
       - APPRISE_URL=http://apprise:8000/notify/apprise
-      - BETTER_AUTH_URL=https://gh-release.thehome.party #full public URL this app will be reached at
+      - BETTER_AUTH_URL=https://gh-release.thehome.party  # full public URL this app will be reached at
       # Not relevant since Authelia + External auth replaces internal login,
       # but leaving at defaults is harmless:
       - AUTH_ENABLE_SIGNUP=false
@@ -30,8 +30,6 @@ services:
       - CODEBERG_ACCESS_TOKEN=
     volumes:
       - /home/davepifive/DockerData/github-release/data:/app/data
-#    ports:
-#      - "8080:3000"
     mem_limit: 256M
     labels:
       - "traefik.enable=true"
