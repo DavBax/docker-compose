@@ -9,26 +9,22 @@ services:
       - TZ=Europe/London
       - UID=1000
       - GID=1000
-    #            - DUFS_TLS_CERT='/home/dave/certs/cert1.pem'
-    #            - DUFS_TLS_KEY='/home/dave/certs/privkey1.pem'
     volumes:
       - /home/davepifive/DockerData/dufs/data:/data
-    command: /data -A # --tls-cert '/home/dave/certs/cert1.pem' --tls-key '/home/dave/certs/privkey1.pem'
-#    ports:
-#      - 5000:5000
+    command: /data -A  # --tls-cert '/home/dave/certs/cert1.pem' --tls-key '/home/dave/certs/privkey1.pem'
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dufs.rule=Host(`dufs.thehome.party`)"
       - "traefik.http.routers.dufs.entrypoints=websecure"
       - "traefik.http.routers.dufs.tls=true"
       - "traefik.http.services.dufs.loadbalancer.server.port=5000"
-#      - "traefik.http.routers.dufs.middlewares=authelia@docker"
+      # - "traefik.http.routers.dufs.middlewares=authelia@docker"
       - "glance.name=Dufs"
       - "glance.icon=mdi:folder-network"
       - "glance.url=https://dufs.thehome.party"
       - "glance.description=File Server"
     healthcheck:
-#      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/__dufs__/health"]
+      # test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/__dufs__/health"]
       test: ["CMD", "/bin/dufs", "--version"]
       interval: 30s
       timeout: 10s
@@ -36,7 +32,7 @@ services:
       start_period: 40s
       start_interval: 5s
     networks:
-#      - default # removed, therefore dufs should have no internet access
+      # - default # removed, therefore dufs should have no internet access
       - traefik-internal
 networks:
   traefik-internal:
