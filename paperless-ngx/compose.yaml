@@ -87,7 +87,7 @@ services:
 
   # --- Optional: uncomment for Office-doc / .eml OCR support ---
   paperless-gotenberg:
-    image: index.docker.io/gotenberg/gotenberg:8.36.0
+    image: index.docker.io/gotenberg/gotenberg:8.37.0
     container_name: paperless-gotenberg
     restart: unless-stopped
     security_opt:
