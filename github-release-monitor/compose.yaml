@@ -6,14 +6,17 @@ services:
     security_opt:
       - no-new-privileges:true
     user: "1000:1000"
-    env_file:
-      - .env
+    # env_file:
+    #  - .env
     environment:
       - TZ=Europe/London
       - LOG_LEVEL=info
       - HTTPS='true'  # Behind Traefik with TLS termination, so this stays true.
       - AUTHENTICATION_METHOD=External  # using authelia
       - APPRISE_URL=http://apprise:8000/notify/apprise
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - AUTH_SETUP_TOKEN=${AUTH_SETUP_TOKEN}
+      - GITHUB_ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
       - BETTER_AUTH_URL=https://gh-release.thehome.party  # full public URL this app will be reached at
       # Not relevant since Authelia + External auth replaces internal login,
       # but leaving at defaults is harmless:
