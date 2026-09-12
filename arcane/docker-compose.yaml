@@ -10,6 +10,7 @@ services:
     cgroup: host  # Use the host cgroup namespace so Arcane can detect its own container ID more reliably — this matters for self-upgrades.
     environment:
       - TZ=Europe/London
+      - com.centurylinklabs.watchtower.enable='true'
       - APP_URL=https://arcane.thehome.party
       - PUID="1000"
       - PGID="1000"
