@@ -27,11 +27,20 @@
        "groupName": "{{parentDir}}"
      },
      {
-       "description": "Review patch and minor bumps once CI passes",
+       "description": "Automerge patch bumps once CI passes",
        "matchManagers": ["docker-compose"],
-       "matchUpdateTypes": ["patch", "minor"],
+       "matchUpdateTypes": ["patch"],
+       "automerge": true,
+       "automergeType": "pr",
+       "platformAutomerge": true
+       "labels": ["patch-update", "auto-merge"]
+     },
+     {
+       "description": "Review minor bumps once CI passes",
+       "matchManagers": ["docker-compose"],
+       "matchUpdateTypes": ["minor"],
        "automerge": false,
-       "labels": ["patch/minor-update", "needs-review"]
+       "labels": ["minor-update", "needs-review"]
      },
      {
        "description": "Major bumps always need manual review",
