@@ -32,7 +32,7 @@
        "matchUpdateTypes": ["patch"],
        "automerge": true,
        "automergeType": "pr",
-       "platformAutomerge": true
+       "platformAutomerge": true,
        "labels": ["patch-update", "auto-merge"]
      },
      {
