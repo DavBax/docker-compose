@@ -22,6 +22,7 @@ services:
       - "glance.description=Container Updates"
     environment:
       TZ: "Europe/London"
+      WATCHTOWER_LABEL_ENABLE: "true"
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_UPDATE_ON_START: "true"
       WATCHTOWER_NOTIFICATIONS_DELAY: 30  # 30sec delay before notifying, to allow dependant containers to reboot (traefik, gotify etc)
