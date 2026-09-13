@@ -45,9 +45,10 @@ services:
     networks:
       - default
       - traefik-internal
+      - changedetection-internal
 
   browser-sockpuppet-chrome:
-    image: index.docker.io/dgtlmoon/sockpuppetbrowser:0.0.3
+    image: index.docker.io/dgtlmoon/sockpuppetbrowser:latest
     container_name: browser-sockpuppet-chrome
     restart: unless-stopped
     security_opt:
@@ -65,6 +66,12 @@ services:
       - "glance.icon=sh:sockpuppet"
       # - "glance.url=https://authelia.thehome.party"
       - "glance.description=Headless Browser"
+    networks:
+      - default
+      - changedetection-internal
 networks:
   traefik-internal:
     external: true
+  changedetection-internal:
+    driver: bridge
+    internal: true
