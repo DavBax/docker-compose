@@ -561,3 +561,15 @@ jobs:
                 body
               });
             }
+      - name: Notify Gotify
+        if: always()
+        env:
+          GOTIFY_URL: ${{ secrets.GOTIFY_URL }}
+          GOTIFY_TOKEN: ${{ secrets.GOTIFY_TOKEN }}
+          STATUS: ${{ needs.validate.outputs.overall_success == 'true' && '✅ Passed' || '❌ Failed' }}
+        run: |
+          curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
+            -F "title=Compose validation: ${STATUS}" \
+            -F "message=PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+          ${{ github.event.pull_request.html_url }}" \
+            -F "priority=5"
