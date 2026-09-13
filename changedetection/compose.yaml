@@ -61,7 +61,7 @@ services:
       - SCREEN_DEPTH=16
       - MAX_CONCURRENT_CHROME_PROCESSES=10
     labels:
-      - com.centurylinklabs.watchtower.enable="true"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "glance.parent=ChangeDetection.io"
       - "glance.name=SockPuppet Browser"
       - "glance.icon=sh:sockpuppet"
