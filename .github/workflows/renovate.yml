@@ -27,3 +27,14 @@ jobs:
         env:
           RENOVATE_REPOSITORIES: DavBax/docker-compose
           LOG_LEVEL: ${{ inputs.logLevel }}
+      - name: Notify Gotify on failure
+        if: failure()
+        env:
+          GOTIFY_URL: ${{ secrets.GOTIFY_URL }}
+          GOTIFY_TOKEN: ${{ secrets.GOTIFY_TOKEN }}
+        run: |
+          curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
+            -F "title=Renovate run failed" \
+            -F "message=DavBax/docker-compose — Renovate step failed.
+          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -F "priority=8"
