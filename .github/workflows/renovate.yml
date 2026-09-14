@@ -32,8 +32,12 @@ jobs:
         env:
           GOTIFY_URL: ${{ secrets.GOTIFY_URL }}
           GOTIFY_TOKEN: ${{ secrets.GOTIFY_TOKEN }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
+            -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+            -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
             -F "title=Renovate run failed" \
             -F "message=DavBax/docker-compose — Renovate step failed.
           https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
