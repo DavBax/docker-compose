@@ -566,9 +566,13 @@ jobs:
         env:
           GOTIFY_URL: ${{ secrets.GOTIFY_URL }}
           GOTIFY_TOKEN: ${{ secrets.GOTIFY_TOKEN }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           STATUS: ${{ needs.validate.outputs.overall_success == 'true' && '✅ Passed' || '❌ Failed' }}
         run: |
           curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
+            -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+            -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
             -F "title=Compose validation: ${STATUS}" \
             -F "message=PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
           ${{ github.event.pull_request.html_url }}" \
