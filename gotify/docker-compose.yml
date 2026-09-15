@@ -1,6 +1,6 @@
 services:
   gotify:
-    image: ghcr.io/gotify/server-arm64:3.1.0
+    image: ghcr.io/gotify/server-arm64:3.1.1
     container_name: gotify
     restart: unless-stopped
     # user: '1000:1000'
