@@ -23,7 +23,7 @@
 
 services:
   grafana:
-    image: index.docker.io/grafana/grafana-enterprise:13.2.1
+    image: index.docker.io/grafana/grafana-enterprise:13.2.2
     container_name: grafana
     user: "1000:1000"
     restart: always
