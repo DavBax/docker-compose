@@ -8,14 +8,7 @@
   "labels": ["renovate"],
   "prConcurrentLimit": 5,
 
-  "docker-compose": {
-    "managerFilePatterns": [
-      "/(^|/)docker-compose\\.ya?ml$/",
-      "/(^|/)compose\\.ya?ml$/"
-    ]
-  },
-
-     "packageRules": [
+  "packageRules": [
      {
      "description": "GitHub Actions versions in workflow files - review before merging",
      "matchManagers": ["github-actions"],
@@ -56,5 +49,5 @@
        "automerge": false,
        "labels": ["latest-tag-tracking"]
      }
-   ]
+  ]
 }
