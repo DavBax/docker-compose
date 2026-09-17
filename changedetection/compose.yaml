@@ -1,6 +1,6 @@
 services:
   changedetection:
-    image: ghcr.io/dgtlmoon/changedetection.io:0.60.6
+    image: ghcr.io/dgtlmoon/changedetection.io:0.60.7
     container_name: changedetection
     restart: unless-stopped
     security_opt:
