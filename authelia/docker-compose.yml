@@ -1,6 +1,6 @@
 services:
   authelia:
-    image: ghcr.io/authelia/authelia:4.39.27  # pin explicitly - Authelia's own docs advise against :latest due to breaking changes; check Docker Hub for the current version before deploying
+    image: ghcr.io/authelia/authelia:4.39.28  # pin explicitly - Authelia's own docs advise against :latest due to breaking changes; check Docker Hub for the current version before deploying
     container_name: authelia
     restart: unless-stopped
     security_opt:
