@@ -1,6 +1,6 @@
 services:
   beszel:
-    image: index.docker.io/henrygd/beszel:0.19.0
+    image: index.docker.io/henrygd/beszel:0.20.0
     container_name: beszel
     restart: unless-stopped
     security_opt:
@@ -37,7 +37,7 @@ services:
       - traefik-internal
 
   beszel-agent:
-    image: index.docker.io/henrygd/beszel-agent:0.19.0
+    image: index.docker.io/henrygd/beszel-agent:0.20.0
     container_name: beszel-agent
     restart: unless-stopped
     security_opt:
