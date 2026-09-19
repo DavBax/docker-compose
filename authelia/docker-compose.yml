@@ -27,7 +27,6 @@ services:
       # need internet for local users + TOTP. If you later add SMTP-based
       # password reset or a Duo push notifier, that would need adding.
     labels:
-      - "com.centurylinklabs.watchtower.enable=false"  # watchtower will ignore, update manually
       - "traefik.enable=true"
       - "traefik.http.routers.authelia.rule=Host(`sso.thehome.party`)"
       - "traefik.http.routers.authelia.entrypoints=websecure"
