@@ -43,7 +43,7 @@ services:
       - "traefik.http.services.github-release-monitor.loadbalancer.server.port=3000"
       - "traefik.http.routers.github-release-monitor.middlewares=authelia@docker"
       - "glance.name=Github Release Monitor"
-      - "glance.icon=sh:github"
+      - "glance.icon=sh:github-release-monitor"
       - "glance.url=https://gh-release.thehome.party"
       - "glance.description=Github Release Monitoring"
     logging:
