@@ -569,11 +569,13 @@ jobs:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           STATUS: ${{ needs.validate.outputs.overall_success == 'true' && '✅ Passed' || '❌ Failed' }}
+          PR_TITLE: "${{ github.event.pull_request.title }}"
+          SAFE_PR_TITLE: "${PR_TITLE//index.docker.io\//}"
         run: |
           curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
             -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
             -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
             -F "title=Compose validation: ${STATUS}" \
-            -F "message=PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+            -F "message=PR #${{ github.event.pull_request.number }}: ${SAFE_PR_TITLE}
           ${{ github.event.pull_request.html_url }}" \
             -F "priority=5"
