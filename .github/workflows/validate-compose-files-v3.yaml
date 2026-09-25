@@ -570,8 +570,8 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           STATUS: ${{ needs.validate.outputs.overall_success == 'true' && '✅ Passed' || '❌ Failed' }}
           PR_TITLE: "${{ github.event.pull_request.title }}"
-          SAFE_PR_TITLE: "${PR_TITLE//index.docker.io\\//}"
         run: |
+          SAFE_PR_TITLE="$(printf '%s' "$PR_TITLE" | sed 's|index\.docker\.io/||g')"
           curl -sf -X POST "${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}" \
             -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
             -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
