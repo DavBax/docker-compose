@@ -1,6 +1,6 @@
 services:
   dufs:
-    image: index.docker.io/sigoden/dufs:v0.45.0
+    image: index.docker.io/sigoden/dufs:v0.46.0
     container_name: dufs
     restart: unless-stopped
     security_opt:
