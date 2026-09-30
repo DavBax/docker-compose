@@ -110,7 +110,7 @@ services:
       start_period: 5s
 
   paperless-tika:
-    image: index.docker.io/apache/tika:4.0.0
+    image: index.docker.io/apache/tika:4.1.0
     container_name: paperless-tika
     restart: unless-stopped
     security_opt:
