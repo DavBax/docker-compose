@@ -6,8 +6,6 @@ services:
     security_opt:
       - no-new-privileges:true
     user: "1000:1000"
-#    ports:
-#      - "8001:8080"
     environment:
       TZ: Europe/London
       SWAGGER_JSON: /docs/swagger.yaml
@@ -17,7 +15,7 @@ services:
       - "traefik.http.routers.apprise-swagger.entrypoints=websecure"
       - "traefik.http.routers.apprise-swagger.tls=true"
       - "traefik.http.services.apprise-swagger.loadbalancer.server.port=8080"
-#      - "traefik.http.routers.apprise-swagger.middlewares=authelia@docker"
+      # - "traefik.http.routers.apprise-swagger.middlewares=authelia@docker"
       - "glance.name=Apprise-Swagger"
       - "glance.parent=apprise"
       - "glance.icon=sh:swagger"
@@ -35,9 +33,6 @@ services:
     security_opt:
       - no-new-privileges:true
     user: "1000:1000"
-#    read_only: true
-#    tmpfs:
-#      - /tmp
     cap_drop:
       - ALL
     labels:
@@ -52,22 +47,20 @@ services:
       - "traefik.http.middlewares.apprise-cors.headers.accesscontrolallowheaders=*"
       - "traefik.http.middlewares.apprise-cors.headers.accesscontrolmaxage=100"
       - "traefik.http.routers.apprise.middlewares=apprise-cors@docker"
-#      - "traefik.http.routers.apprise.middlewares=authelia@docker"
+      # - "traefik.http.routers.apprise.middlewares=authelia@docker"
       - "glance.name=Apprise"
       - "glance.id=apprise"
       - "glance.icon=sh:apprise"
       - "glance.url=https://apprise.thehome.party"
       - "glance.description=Notification Sender"
-# To  user:password pair, it's possible to use this command:
-# echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
-#      - "traefik.http.middlewares.apprise-auth.basicauth.users=admin:<hash>"
-#    ports:
-#      - "8000:8000"
+      # To  user:password pair, it's possible to use this command:
+      # echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
+      # - "traefik.http.middlewares.apprise-auth.basicauth.users=admin:<hash>"
     environment:
       - TZ=Europe/London
-#      - APPRISE_BASE_URL=https://apprise.thehome.party
+      # - APPRISE_BASE_URL=https://apprise.thehome.party
       - APPRISE_URL=http://apprise:8000/notify
-#      - APPRISE_STATELESS_URLS=gotify://gotify.thehome.party/${gotify_apprise_token}
+      # - APPRISE_STATELESS_URLS=gotify://gotify.thehome.party/${gotify_apprise_token}
       - APPRISE_STATEFUL_MODE=simple #Saves configs as human-readable files (/config/{KEY}.yaml)
       - APPRISE_WORKER_COUNT=1
       - APPRISE_ADMIN=y
