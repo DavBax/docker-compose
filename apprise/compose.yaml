@@ -58,7 +58,7 @@ services:
       - "glance.icon=sh:apprise"
       - "glance.url=https://apprise.thehome.party"
       - "glance.description=Notification Sender"
-# To create user:password pair, it's possible to use this command:
+# To  user:password pair, it's possible to use this command:
 # echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
 #      - "traefik.http.middlewares.apprise-auth.basicauth.users=admin:<hash>"
 #    ports:
@@ -92,6 +92,6 @@ services:
         max-size: "50m"
     networks:
       - traefik-internal
-networks: 
+networks:
   traefik-internal:
     external: true
