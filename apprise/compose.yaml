@@ -61,11 +61,11 @@ services:
       # - APPRISE_BASE_URL=https://apprise.thehome.party
       - APPRISE_URL=http://apprise:8000/notify
       # - APPRISE_STATELESS_URLS=gotify://gotify.thehome.party/${gotify_apprise_token}
-      - APPRISE_STATEFUL_MODE=simple #Saves configs as human-readable files (/config/{KEY}.yaml)
+      - APPRISE_STATEFUL_MODE=simple  # Saves configs as human-readable files (/config/{KEY}.yaml)
       - APPRISE_WORKER_COUNT=1
       - APPRISE_ADMIN=y
     volumes:
-      - /home/davepifive/DockerData/apprise/config:/config #this dir contains .cfg files with the details for notifications
+      - /home/davepifive/DockerData/apprise/config:/config  # this dir contains .cfg files with the details for notifications
       - /home/davepifive/DockerData/apprise/attach:/attach
       - /home/davepifive/DockerData/apprise/plugin:/plugin
       - /home/davepifive/DockerData/apprise/tmp:/tmp
