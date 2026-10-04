@@ -22,7 +22,7 @@ services:
       - "glance.parent=apprise"
       - "glance.icon=sh:swagger"
       - "glance.url=https://apprise-swagger.thehome.party"
-      - "glance.description=Swagger UI for Apprise"
+      - "glance.description=Swagger Web UI for Apprise"
     volumes:
       - /home/davepifive/DockerData/apprise/swagger.yaml:/docs/swagger.yaml:ro
     networks:
