@@ -30,7 +30,7 @@ services:
 
   apprise:
     container_name: apprise
-    image: ghcr.io/caronc/apprise:latest
+    image: ghcr.io/caronc/apprise:2.0.1
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
