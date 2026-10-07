@@ -1,6 +1,6 @@
 services:
   duplicati:
-    image: index.docker.io/duplicati/duplicati:2.4.0.0
+    image: index.docker.io/duplicati/duplicati:2.4.0.1
     container_name: duplicati
     restart: unless-stopped
     security_opt:
