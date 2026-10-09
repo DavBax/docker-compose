@@ -1,0 +1,83 @@
+# ~/docker-compose/freshrss/docker-compose.yml
+# Data: /home/davepifive/DockerData/freshrss/{data,extensions}
+# Upstream: https://github.com/FreshRSS/FreshRSS/blob/edge/Docker/freshrss/docker-compose.yml
+# Database: SQLite (no separate DB container) - set via FRESHRSS_INSTALL below.
+
+services:
+  freshrss:
+    image: ghcr.io/freshrss/freshrss:1.30.0
+    container_name: freshrss
+    hostname: freshrss
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      options:
+        max-size: 10m
+    volumes:
+      - /home/davepifive/DockerData/freshrss/data:/var/www/FreshRSS/data
+      - /home/davepifive/DockerData/freshrss/extensions:/var/www/FreshRSS/extensions
+    environment:
+      TZ: Europe/London
+      PUID: 1000
+      PGID: 1000
+      CRON_MIN: '3,33'
+      TRUSTED_PROXY: 10.10.3.128/25  # Traefik reaches the container over traefik-internal (10.10.3.128/25)
+      # Runs cli/do-install.php on the very first start only (empty data dir).
+      # Later changes need the data dir emptied, or use cli/reconfigure.php.
+      # FRESHRSS_INSTALL: |-
+      #  --api-enabled
+      #  --base-url https://freshrss.thehome.party
+      #  --db-type sqlite
+      #  --default-user admin
+      #  --language en
+      # Creates the first user on first start only. Password would sit in plain env,
+      # so left off - create the user with cli/create-user.php after first start instead.
+      # FRESHRSS_USER: |-
+      #   --user admin
+      #   --password ${FRESHRSS_ADMIN_PASSWORD}
+      # INTERNAL_HOST_ALLOWLIST: rss-bridge:80 rsshub:1200
+      # OIDC via Authelia. Callback: https://freshrss.thehome.party/i/oidc/
+      # Also needs --auth_type http_auth in FRESHRSS_INSTALL (or HTTP auth in the setup
+      # wizard), with the default user matching the Authelia username exactly.
+      # Debian image only; docs list x86_64 only, so untested on arm64 (Pi 5).
+      # OIDC_ENABLED: 1
+      # OIDC_PROVIDER_METADATA_URL: https://sso.thehome.party/.well-known/openid-configuration
+      # OIDC_CLIENT_ID: freshrss
+      # OIDC_CLIENT_SECRET: CHANGE_ME
+      # OIDC_CLIENT_CRYPTO_KEY: CHANGE_ME
+      # OIDC_SCOPES: openid profile
+      # OIDC_X_FORWARDED_HEADERS: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
+      # OIDC_REMOTE_USER_CLAIM: preferred_username
+      # OIDC_SESSION_INACTIVITY_TIMEOUT: 300
+      # OIDC_SESSION_MAX_DURATION: 28800
+      # OIDC_SESSION_TYPE:
+      # OIDC_DEFAULT_URL: /i/
+    healthcheck:
+      test: ["CMD", "cli/health.php"]
+      timeout: 10s
+      start_period: 60s
+      start_interval: 11s
+      interval: 75s
+      retries: 3
+    networks:
+      - default
+      - traefik-internal
+    labels:
+      # Traefik
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
+      - "traefik.http.routers.freshrss.rule=Host(`freshrss.thehome.party`)"
+      - "traefik.http.routers.freshrss.entrypoints=websecure"
+      - "traefik.http.routers.freshrss.tls=true"
+      - "traefik.http.services.freshrss.loadbalancer.server.port=80"
+      - "traefik.http.routers.freshrss.middlewares=authelia@docker"
+      # Glance
+      - "glance.name=FreshRSS"
+      - "glance.icon=di:freshrss"
+      - "glance.url=https://freshrss.thehome.party"
+      - "glance.description=RSS feed aggregator"
+
+networks:
+  traefik-internal:
+    external: true
