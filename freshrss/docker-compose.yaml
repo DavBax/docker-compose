@@ -54,12 +54,12 @@ services:
       # OIDC_SESSION_TYPE:
       # OIDC_DEFAULT_URL: /i/
     healthcheck:
-       test: ["CMD", "cli/health.php"]
-       timeout: 10s
-       start_period: 60s
-       start_interval: 11s
-       interval: 75s
-       retries: 3
+      test: ["CMD", "cli/health.php"]
+      timeout: 10s
+      start_period: 60s
+      start_interval: 11s
+      interval: 75s
+      retries: 3
     networks:
       - default
       - traefik-internal
