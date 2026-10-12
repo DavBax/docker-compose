@@ -6,6 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     command: tunnel --no-autoupdate run  # don't update voa cloudflare, watchtower will do it
+    mem_limit: 64M
     environment:
       - TUNNEL_TOKEN_FILE=/run/secrets/cloudflared_tunnel_token
       - TUNNEL_METRICS=0.0.0.0:60123
