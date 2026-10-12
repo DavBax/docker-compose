@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    mem_limit: 64M
     environment:
       - TZ=Europe/London
       - UID=1000
