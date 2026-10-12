@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    mem_limit: 128M
     environment:
       - TZ=Europe/London
       - DOZZLE_NO_ANALYTICS
