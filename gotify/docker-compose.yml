@@ -6,6 +6,7 @@ services:
     # user: '1000:1000'
     security_opt:
       - no-new-privileges:true
+    mem_limit: 64M
     environment:
       - TZ=Europe/London
       # - GOTIFY_DEFAULTUSER_PASS=${def_usr_pass}
