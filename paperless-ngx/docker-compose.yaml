@@ -4,6 +4,7 @@ services:
     container_name: paperless-broker
     restart: unless-stopped
     user: '1000:1000'
+    mem_limit: 64M
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -28,6 +29,7 @@ services:
     security_opt:
       - no-new-privileges:true
     # user: '1000:1000' #using USERMAP_ env vars instead
+    mem_limit: 4096M
     depends_on:
       paperless-broker:
         condition: service_healthy
@@ -92,6 +94,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    mem_limit: 64M
     command:
       - "gotenberg"
       - "--chromium-disable-javascript=true"
@@ -115,6 +118,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    mem_limit: 256M
     labels:
       - glance.parent=paperless-ngx
       - glance.name=Paperless-Tika
