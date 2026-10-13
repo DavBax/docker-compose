@@ -7,6 +7,7 @@ services:
       - no-new-privileges:true
     # user: '1000:1001'
     command: --interval 21600  # remove to default to 24hrs (43200=12hrs, 21600=6hrs)
+    mem_limit: 128M
     depends_on:
       - socket-proxy-watchtower
     labels:
