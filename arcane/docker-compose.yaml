@@ -70,7 +70,7 @@ services:
       # --- START HERE: broad allowlist for the observation period ---
       - '-loglevel=info'
       - '-listenip=0.0.0.0'
-      - '-allowfrom=arcane'
+      - '-allowfrom=arcane,arcane-upgrader'
       - '-allowGET=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|events.*|distribution.*|exec.*|system/df|info|version|_ping)'
       - '-allowHEAD=/(v1\..{1,2}/)?_ping'
       - '-allowPOST=/(v1\..{1,2}/)?(containers.*|images.*|networks.*|volumes.*|exec.*)'
