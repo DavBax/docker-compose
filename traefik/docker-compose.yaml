@@ -54,7 +54,7 @@ services:
     environment:  # environment: variables take precdence over env_file variables
       - TZ=Europe/London
       - CF_DNS_API_TOKEN=/run/secrets/cf_dns_api_token
-      - CF_API_EMAIL=dk.baxter0@gmail.com
+      # - CF_API_EMAIL=dk.baxter0@gmail.com
       - TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_EMAIL=dk.baxter0gmail.com
     command:
       - '--ping'  # used by healthcheck
