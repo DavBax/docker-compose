@@ -1,7 +1,7 @@
 services:
   apprise-api-swagger-ui:
     container_name: apprise-api-swagger-ui
-    image: index.docker.io/swaggerapi/swagger-ui:v5.33.2
+    image: index.docker.io/swaggerapi/swagger-ui:v5.33.3
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
