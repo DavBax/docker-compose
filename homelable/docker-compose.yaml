@@ -124,7 +124,7 @@ services:
       - glance.icon=mdi:lan
       - glance.description=Network diagram and status MCP Server
 secrets:
-  secret_key:
+  oidc_secret_key:
     file: /home/davepifive/DockerData/homelable/secrets/oidc_secret_key
   mcp_service_key:
     file: /home/davepifive/DockerData/homelable/secrets/mcp_service_key
