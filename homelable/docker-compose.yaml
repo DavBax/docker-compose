@@ -16,7 +16,7 @@ services:
       - AUTH_MODE=oidc
       - OIDC_DISCOVERY_URL=https://sso.thehome.party/.well-known/openid-configuration
       - OIDC_CLIENT_ID=homelable
-      - OIDC_CLIENT_SECRET=/run/secrets/oidc_secret_key
+      # - OIDC_CLIENT_SECRET=/run/secrets/oidc_secret_key
       - OIDC_REDIRECT_URI=https://homelable.thehome.party/api/v1/auth/oidc/callback
       - OIDC_SCOPES=openid profile email
       - OIDC_COOKIE_SECURE=true
@@ -48,7 +48,8 @@ services:
       - sh
       - -c
       - >-
-        export SECRET_KEY="$$(cat /run/secrets/oidc_secret_key)" &&
+        export OIDC_CLIENT_SECRET="$$(cat /run/secrets/oidc_secret_key)" &&
+        export SECRET_KEY="$$(cat /run/secrets/secret_key)" &&
         export MCP_SERVICE_KEY="$$(cat /run/secrets/mcp_service_key)" &&
         exec uvicorn app.main:app --host 0.0.0.0 --port 8000
     healthcheck:
@@ -124,6 +125,8 @@ services:
       - glance.icon=mdi:lan
       - glance.description=Network diagram and status MCP Server
 secrets:
+  secret_key:
+    file: /home/davepifive/DockerData/homelable/secrets/secret_key
   oidc_secret_key:
     file: /home/davepifive/DockerData/homelable/secrets/oidc_secret_key
   mcp_service_key:
