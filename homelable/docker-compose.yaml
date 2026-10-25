@@ -40,6 +40,7 @@ services:
       - default
       - homelable
     secrets:
+      - secret_key
       - oidc_secret_key
       - mcp_service_key
     # Image has no ENTRYPOINT; CMD is `uvicorn app.main:app --host 0.0.0.0 --port 8000`.
