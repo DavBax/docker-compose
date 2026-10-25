@@ -88,7 +88,7 @@ services:
 
   homelable-mcp:
     image: ghcr.io/pouzor/homelable-mcp:3.6.0
-    container_name: homelable-frontend
+    container_name: homelable-mcp
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
