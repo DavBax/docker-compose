@@ -85,7 +85,7 @@ services:
       - glance.url=https://homelable.thehome.party
       - glance.icon=mdi:lan
       - glance.description=Network diagram and status
-	  
+
   homelable-mcp:
     image: ghcr.io/pouzor/homelable-mcp:3.6.0
     container_name: homelable-frontend
