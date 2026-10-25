@@ -32,8 +32,8 @@ services:
     labels:
 	  - glance.name=Homelable-Backend
 	  - glance.parent=homelable
-      - glance.icon=mdi:lan
-      - glance.description=Network diagram and status
+	  - glance.icon=mdi:lan
+	  - glance.description=Network diagram and status
 	volumes:
 	  - /home/davepifive/DockerData/homelable/data:/app/data
     networks:
