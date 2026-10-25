@@ -16,7 +16,7 @@ services:
       - AUTH_MODE=oidc
       - OIDC_DISCOVERY_URL=https://sso.thehome.party/.well-known/openid-configuration
       - OIDC_CLIENT_ID=homelable
-	  - OIDC_CLIENT_SECRET=/run/secrets/oidc_secret_key
+      - OIDC_CLIENT_SECRET=/run/secrets/oidc_secret_key
       - OIDC_REDIRECT_URI=https://homelable.thehome.party/api/v1/auth/oidc/callback
       - OIDC_SCOPES=openid profile email
       - OIDC_COOKIE_SECURE=true
@@ -30,18 +30,18 @@ services:
       # Status checker interval in seconds
       - STATUS_CHECKER_INTERVAL=60
     labels:
-	  - glance.name=Homelable-Backend
-	  - glance.parent=homelable
-	  - glance.icon=mdi:lan
-	  - glance.description=Network diagram and status
-	volumes:
-	  - /home/davepifive/DockerData/homelable/data:/app/data
+      - glance.name=Homelable-Backend
+      - glance.parent=homelable
+      - glance.icon=mdi:lan
+      - glance.description=Network diagram and status
+    volumes:
+      - /home/davepifive/DockerData/homelable/data:/app/data
     networks:
       - default
-	  - homelable
+      - homelable
     secrets:
       - oidc_secret_key
-	  - mcp_service_key
+      - mcp_service_key
     # Image has no ENTRYPOINT; CMD is `uvicorn app.main:app --host 0.0.0.0 --port 8000`.
     # $$ is Compose's escape for a literal $ (shell expands it at runtime).
     command:
@@ -81,7 +81,7 @@ services:
       - traefik.http.routers.homelable.tls=true
       - traefik.http.services.homelable.loadbalancer.server.port=80
       - glance.name=Homelable-Frontend
-	  - glance.id=homelable
+      - glance.id=homelable
       - glance.url=https://homelable.thehome.party
       - glance.icon=mdi:lan
       - glance.description=Network diagram and status
@@ -104,14 +104,14 @@ services:
     secrets:
       - mcp_api_key
       - mcp_service_key
-	command:
+    command:
       - sh
       - -c
       - >-
         export MCP_API_KEY="$$(cat /run/secrets/mcp_api_key)" &&
         export MCP_SERVICE_KEY="$$(cat /run/secrets/mcp_service_key)" &&
         exec uvicorn app.main:app --host 0.0.0.0 --port 8001
-	labels:
+    labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-internal
       - traefik.http.routers.homelable-mcp.rule=Host(`homelable-mcp.thehome.party`)
@@ -119,7 +119,7 @@ services:
       - traefik.http.routers.homelable-mcp.tls=true
       - traefik.http.services.homelable-mcp.loadbalancer.server.port=8001
       - glance.name=Homelable-MCP
-	  - glance.parent=homelable
+      - glance.parent=homelable
       - glance.url=https://homelable-mcp.thehome.party
       - glance.icon=mdi:lan
       - glance.description=Network diagram and status MCP Server
