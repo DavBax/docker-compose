@@ -7,11 +7,6 @@
   "assignees": ["DavBax"],
   "labels": ["renovate"],
   "prConcurrentLimit": 5,
-  "osvVulnerabilityAlerts": true,
-  "vulnerabilityAlerts": {
-    "labels": ["security"],
-    "assignees": ["DavBax"]
-  },
   
   "packageRules": [
      {
