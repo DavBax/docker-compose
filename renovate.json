@@ -10,7 +10,7 @@
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "labels": ["security"],
-    "assignees": ["DavBax"] 
+    "assignees": ["DavBax"],
   "packageRules": [
      {
      "description": "GitHub Actions versions in workflow files - review before merging",
