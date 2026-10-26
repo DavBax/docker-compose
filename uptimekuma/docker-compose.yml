@@ -1,6 +1,6 @@
 services:
   uptimekuma:
-    image: ghcr.io/louislam/uptime-kuma:2.5.7
+    image: ghcr.io/louislam/uptime-kuma:2.5.8
     container_name: uptime-kuma
     restart: unless-stopped
     security_opt:
