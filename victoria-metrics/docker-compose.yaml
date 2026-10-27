@@ -13,6 +13,7 @@ services:
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
+    mem_limit: 64M
     logging:
       driver: json-file
       options:
@@ -53,6 +54,7 @@ services:
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
+    mem_limit: 512M
     logging:
       driver: json-file
       options:
@@ -104,6 +106,7 @@ services:
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
+    mem_limit: 32M
     logging:
       driver: json-file
       options:
@@ -145,6 +148,7 @@ services:
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
+    mem_limit: 32M
     logging:
       driver: json-file
       options:
@@ -173,6 +177,7 @@ services:
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
+    mem_limit: 32M
     environment:
       - GOTIFY_TOKEN=${gotify_token}
       - GOTIFY_ENDPOINT=http://gotify:80/message
