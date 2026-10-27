@@ -28,9 +28,11 @@ services:
       - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=contains(groups[], 'admin') && 'Admin'
       - GF_AUTH_GENERIC_OAUTH_AUTH_STYLE=InHeader
       - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_admin_password
+      - GF_SECURITY_SECRET_KEY__FILE=/run/secrets/grafana_secret_key
     secrets:
       - grafana_admin_password
       - grafana_oidc_client_secret
+      - grafana_secret_key
     volumes:
       - /home/davepifive/DockerData/grafana/data:/var/lib/grafana
       - /home/davepifive/DockerData/grafana/provisioning:/etc/grafana/provisioning
@@ -57,3 +59,5 @@ secrets:
     file: /home/davepifive/DockerData/grafana/secrets/grafana_admin_password
   grafana_oidc_client_secret:
     file: /home/davepifive/DockerData/grafana/secrets/grafana_oidc_client_secret
+  grafana_secret_key:
+    file: /home/davepifive/DockerData/grafana/secrets/grafana_secret_key
