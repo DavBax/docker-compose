@@ -10,7 +10,7 @@ services:
     environment:
       - TZ=Europe/London
       - GF_SERVER_ROOT_URL=https://grafana.thehome.party
-      - GF_PLUGINS_PREINSTALL=yesoreyeram-infinity-datasource
+      - GF_PLUGINS_PREINSTALL=yesoreyeram-infinity-datasource,victoriametrics-metrics-datasource
       - GF_AUTH_GENERIC_OAUTH_ENABLED=true
       - GF_AUTH_GENERIC_OAUTH_NAME=Authelia
       - GF_AUTH_GENERIC_OAUTH_ICON=signin
