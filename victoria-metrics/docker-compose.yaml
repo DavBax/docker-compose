@@ -98,8 +98,8 @@ services:
     image: index.docker.io/victoriametrics/vmalert:1.155.0
     container_name: vmalert
     depends_on:
-      - victoriametrics
       - alertmanager
+      - victoriametrics
     user: "1000:1000"
     restart: unless-stopped
     security_opt:
