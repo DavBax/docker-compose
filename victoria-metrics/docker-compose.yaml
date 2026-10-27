@@ -1,6 +1,6 @@
 services:
   # ---------------------------------------------------------------------------
-  # vmagent — scrapes targets defined in the mounted scrape config and forwards
+  # vmagent - scrapes targets defined in the mounted scrape config and forwards
   # them to VictoriaMetrics via remote write. Has its own small debug UI
   # (/targets etc.) so it's included on traefik-internal.
   # ---------------------------------------------------------------------------
@@ -44,7 +44,7 @@ services:
       - "glance.description=Metrics scraper / remote-write agent"
 
   # ---------------------------------------------------------------------------
-  # victoriametrics — single-process metrics storage + query API (vmui).
+  # victoriametrics - single-process metrics storage + query API (vmui).
   # ---------------------------------------------------------------------------
   victoriametrics:
     image: index.docker.io/victoriametrics/victoria-metrics:v1.155.0
@@ -58,12 +58,12 @@ services:
       options:
         max-size: "50m"
     # ports:
-    #   - "8428:8428"   # HTTP API / vmui — not published, via Traefik only
-    #   - "8089:8089"   # InfluxDB line protocol listener — unused, left commented
+    #   - "8428:8428"   # HTTP API / vmui - not published, via Traefik only
+    #   - "8089:8089"   # InfluxDB line protocol listener - unused, left commented
     #   - "8089:8089/udp"
-    #   - "2003:2003"   # Graphite listener — unused, left commented
+    #   - "2003:2003"   # Graphite listener - unused, left commented
     #   - "2003:2003/udp"
-    #   - "4242:4242"   # OpenTSDB listener — unused, left commented
+    #   - "4242:4242"   # OpenTSDB listener - unused, left commented
     volumes:
       - /home/davepifive/DockerData/victoriametrics/storage:/storage
     command:
@@ -92,7 +92,7 @@ services:
       - "glance.description=Metrics storage & query UI (vmui)"
 
   # ---------------------------------------------------------------------------
-  # vmalert — evaluates alerting/recording rules against VictoriaMetrics.
+  # vmalert - evaluates alerting/recording rules against VictoriaMetrics.
   # ---------------------------------------------------------------------------
   vmalert:
     image: index.docker.io/victoriametrics/vmalert:v1.155.0
@@ -109,7 +109,7 @@ services:
       options:
         max-size: "50m"
     # ports:
-    #   - "8880:8880"   # not published — Traefik reaches this over traefik-internal
+    #   - "8880:8880"   # not published - Traefik reaches this over traefik-internal
     volumes:
       - /home/davepifive/DockerData/victoriametrics/vmalert/rules:/etc/alerts:ro
     command:
@@ -136,7 +136,7 @@ services:
       - "glance.description=Alert rule evaluation"
 
   # ---------------------------------------------------------------------------
-  # alertmanager — receives firing alerts from vmalert, routes notifications.
+  # alertmanager - receives firing alerts from vmalert, routes notifications.
   # ---------------------------------------------------------------------------
   alertmanager:
     image: index.docker.io/prom/alertmanager:v0.34.1
