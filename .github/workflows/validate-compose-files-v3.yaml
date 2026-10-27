@@ -57,10 +57,30 @@ jobs:
             **/docker-compose.yaml
           separator: "\n"
 
+      - name: Normalize changed compose files
+        id: normalized
+        if: steps.changed.outputs.any_changed == 'true'
+        shell: bash
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          mapfile -t files < <(
+            printf '%s\n' "$CHANGED_FILES" \
+              | sed '/^$/d' \
+              | sed 's/\\$//' \
+              | sed 's/[[:space:]]*$//'
+          )
+
+          {
+            echo "files<<EOF"
+            printf '%s\n' "${files[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Show changed files
         if: steps.changed.outputs.any_changed == 'true'
         env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          CHANGED_FILES: ${{ steps.normalized.outputs.files }}
         run: |
           {
             echo "## Compose validation"
@@ -95,7 +115,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         continue-on-error: true
         env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          CHANGED_FILES: ${{ steps.normalized.outputs.files }}
         run: |
           mapfile -t files <<< "$CHANGED_FILES"
 
@@ -135,7 +155,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         continue-on-error: true
         env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          CHANGED_FILES: ${{ steps.normalized.outputs.files }}
         run: |
           mapfile -t files <<< "$CHANGED_FILES"
 
@@ -175,7 +195,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         continue-on-error: true
         env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          CHANGED_FILES: ${{ steps.normalized.outputs.files }}
         run: |
           mapfile -t files <<< "$CHANGED_FILES"
 
@@ -214,7 +234,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         continue-on-error: true
         env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          CHANGED_FILES: ${{ steps.normalized.outputs.files }}
         run: |
           mapfile -t files <<< "$CHANGED_FILES"
 
