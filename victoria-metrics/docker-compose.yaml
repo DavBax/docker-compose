@@ -1,5 +1,3 @@
-# ~/docker-compose/victoriametrics/compose.yml
-#
 services:
   # ---------------------------------------------------------------------------
   # vmagent — scrapes targets defined in the mounted scrape config and forwards
@@ -7,11 +5,11 @@ services:
   # (/targets etc.) so it's included on traefik-internal.
   # ---------------------------------------------------------------------------
   vmagent:
-    image: index.docker.io/victoriametrics/vmagent:latest
+    image: index.docker.io/victoriametrics/vmagent:1.155.0
     container_name: vmagent
     depends_on:
       - victoriametrics
-#    user: "1000:1000"
+    # user: "1000:1000"
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
@@ -19,8 +17,6 @@ services:
       driver: json-file
       options:
         max-size: "50m"
-    # ports:
-    #   - "8429:8429"   # not published — Traefik reaches this over traefik-internal
     volumes:
       - /home/davepifive/DockerData/victoriametrics/vmagent/data:/vmagentdata
       - /home/davepifive/DockerData/victoriametrics/vmagent/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -51,7 +47,7 @@ services:
   # victoriametrics — single-process metrics storage + query API (vmui).
   # ---------------------------------------------------------------------------
   victoriametrics:
-    image: index.docker.io/victoriametrics/victoria-metrics:latest
+    image: index.docker.io/victoriametrics/victoria-metrics:1.155.0
     container_name: victoriametrics
     user: "1000:1000"
     restart: unless-stopped
@@ -99,11 +95,11 @@ services:
   # vmalert — evaluates alerting/recording rules against VictoriaMetrics.
   # ---------------------------------------------------------------------------
   vmalert:
-    image: index.docker.io/victoriametrics/vmalert:latest
+    image: index.docker.io/victoriametrics/vmalert:1.155.0
     container_name: vmalert
     depends_on:
-      - victoriametrics
       - alertmanager
+      - victoriametrics
     user: "1000:1000"
     restart: unless-stopped
     security_opt:
@@ -143,9 +139,9 @@ services:
   # alertmanager — receives firing alerts from vmalert, routes notifications.
   # ---------------------------------------------------------------------------
   alertmanager:
-    image: index.docker.io/prom/alertmanager:latest
+    image: index.docker.io/prom/alertmanager:0.34.1
     container_name: alertmanager
-#    user: "1000:1000"
+    # user: "1000:1000"
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
@@ -153,21 +149,10 @@ services:
       driver: json-file
       options:
         max-size: "50m"
-    # ports:
-    #   - "9093:9093"   # not published — Traefik reaches this over traefik-internal
     volumes:
       - /home/davepifive/DockerData/victoriametrics/alertmanager/alertmanager.yml:/config/alertmanager.yml:ro
     command:
       - "--config.file=/config/alertmanager.yml"
-    # No Docker-secrets env wiring exists for Alertmanager (it's config-file driven,
-    # not env-var driven). If you add a receiver needing a credential (e.g. an
-    # Apprise webhook token, SMTP password), Alertmanager's config format supports
-    # "_file" suffixed fields directly (e.g. smtp_auth_password_file,
-    # bearer_token_file in http_config) — point those at a Docker-secret-mounted
-    # path under /run/secrets/ rather than writing the credential into
-    # alertmanager.yml in plaintext.
-    # secrets:
-    #   - alertmanager_smtp_password
     networks:
       - traefik-internal
     labels:
@@ -183,7 +168,7 @@ services:
       - "glance.url=https://alertmanager.thehome.party"
       - "glance.description=Alert routing & silencing"
   alertmanager-gotify-bridge:
-    image: ghcr.io/druggeri/alertmanager_gotify_bridge:latest
+    image: ghcr.io/druggeri/alertmanager_gotify_bridge:v2.3.2
     container_name: alertmanager-gotify-bridge
     restart: unless-stopped
     security_opt:
@@ -192,17 +177,8 @@ services:
       - GOTIFY_TOKEN=${gotify_token}
       - GOTIFY_ENDPOINT=http://gotify:80/message
       - EXTENDED_DETAILS=true
-#    ports:
-#      - 8080:8080
     networks:
       - traefik-internal
 networks:
   traefik-internal:
     external: true
-
-# Example of the Docker secrets block referenced above, if/when you need it:
-# secrets:
-#   vm_remote_write_password:
-#     file: ./secrets/vm_remote_write_password
-#   alertmanager_smtp_password:
-#     file: ./secrets/alertmanager_smtp_password
