@@ -168,7 +168,7 @@ services:
       - "glance.url=https://alertmanager.thehome.party"
       - "glance.description=Alert routing & silencing"
   alertmanager-gotify-bridge:
-    image: ghcr.io/druggeri/alertmanager_gotify_bridge:v2.3.2
+    image: ghcr.io/druggeri/alertmanager_gotify_bridge:2.3.2
     container_name: alertmanager-gotify-bridge
     restart: unless-stopped
     security_opt:
