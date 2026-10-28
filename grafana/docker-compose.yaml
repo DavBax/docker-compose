@@ -6,7 +6,7 @@ services:
     restart: always
     security_opt:
       - "no-new-privileges:true"
-    mem_limit: 512M
+    mem_limit: 1024M
     environment:
       - TZ=Europe/London
       - GF_SERVER_ROOT_URL=https://grafana.thehome.party
