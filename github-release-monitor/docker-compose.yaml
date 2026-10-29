@@ -1,7 +1,7 @@
 services:
   github-release-monitor:
     container_name: github-release-monitor
-    image: ghcr.io/iamspido/github-release-monitor:2.6.0
+    image: ghcr.io/iamspido/github-release-monitor:v2.6.1
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
