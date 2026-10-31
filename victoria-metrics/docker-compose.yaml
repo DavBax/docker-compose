@@ -72,6 +72,7 @@ services:
       - "--storageDataPath=/storage"
       - "--httpListenAddr=:8428"
       - "--vmalert.proxyURL=http://vmalert:8880"
+      - "--opentelemetry.usePrometheusNaming"
       # Graphite/OpenTSDB/InfluxDB ingestion protocols are disabled by default
       # since nothing in your stack currently pushes those formats. Re-add if
       # that changes:
@@ -115,6 +116,7 @@ services:
     #   - "8880:8880"   # not published - Traefik reaches this over traefik-internal
     volumes:
       - /home/davepifive/DockerData/victoriametrics/vmalert/rules:/etc/alerts:ro
+      - /home/davepifive/DockerData/victoriametrics/vmalert/alertmanager:/alertmanager
     command:
       - "--datasource.url=http://victoriametrics:8428/"
       - "--remoteRead.url=http://victoriametrics:8428/"
