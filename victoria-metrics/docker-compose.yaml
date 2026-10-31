@@ -116,7 +116,6 @@ services:
     #   - "8880:8880"   # not published - Traefik reaches this over traefik-internal
     volumes:
       - /home/davepifive/DockerData/victoriametrics/vmalert/rules:/etc/alerts:ro
-      - /home/davepifive/DockerData/victoriametrics/vmalert/alertmanager:/alertmanager
     command:
       - "--datasource.url=http://victoriametrics:8428/"
       - "--remoteRead.url=http://victoriametrics:8428/"
@@ -156,7 +155,8 @@ services:
       options:
         max-size: "50m"
     volumes:
-      - /home/davepifive/DockerData/victoriametrics/alertmanager/alertmanager.yml:/config/alertmanager.yml:ro
+      - /home/davepifive/DockerData/victoriametrics/alertmanager/config/alertmanager.yml:/config/alertmanager.yml:ro
+      - /home/davepifive/DockerData/victoriametrics/alertmanager/alertmanager:/alertmanager
     command:
       - "--config.file=/config/alertmanager.yml"
     networks:
