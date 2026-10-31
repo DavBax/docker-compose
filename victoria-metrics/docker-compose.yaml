@@ -145,7 +145,7 @@ services:
   alertmanager:
     image: index.docker.io/prom/alertmanager:v0.34.2
     container_name: alertmanager
-    # user: "1000:1000"
+    user: "1000:1000"
     restart: unless-stopped
     security_opt:
       - "no-new-privileges:true"
