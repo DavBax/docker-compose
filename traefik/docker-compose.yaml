@@ -39,7 +39,7 @@ services:
       - traefik-socket-internal
 
   traefik:
-    image: index.docker.io/traefik:v3.7.16
+    image: index.docker.io/traefik:v3.7.17
     container_name: traefik
     restart: unless-stopped
     # read_only: true
