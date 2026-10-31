@@ -21,6 +21,8 @@ services:
     volumes:
       - /home/davepifive/DockerData/victoriametrics/vmagent/data:/vmagentdata
       - /home/davepifive/DockerData/victoriametrics/vmagent/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    secrets:
+      - uptime_kuma_api_key
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
       - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
@@ -186,6 +188,9 @@ services:
       - EXTENDED_DETAILS=true
     networks:
       - traefik-internal
+secrets:
+  uptime_kuma_api_key:
+    file: /home/davepifive/DockerData/victoriametrics/vmagent/secrets/uptime_kuma_api_key
 networks:
   traefik-internal:
     external: true
