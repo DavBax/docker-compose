@@ -23,8 +23,8 @@ services:
       - OIDC_CLIENT_SECRET_FILE=/run/secrets/arcane_oidc_client_secret
       - OIDC_SCOPES='openid email profile'
       - OIDC_MERGE_ACCOUNTS='true'
-      - OTEL_METRICS_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://victoriametrics:8428/opentelemetry/v1/metrics
+      - OTEL_METRICS_EXPORTER=prometheus
+      - OTEL_EXPORTER_PROMETHEUS_HOST=0.0.0.0
     secrets:
       - arcane_encryption_key
       - arcane_oidc_client_secret
