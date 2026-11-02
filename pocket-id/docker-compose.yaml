@@ -1,0 +1,45 @@
+services:
+  pocket-id:
+    image: ghcr.io/pocket-id/pocket-id:v2.19.1
+    container_name: pocket-id
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: "1000:1000"
+    environment:
+      - APP_URL=https://id.thehome.party
+      - TRUST_PROXY=10.10.3.128/25  # traefik-internal network range
+      - ENCRYPTION_KEY_FILE=/run/secrets/pocket_id_encryption_key
+      # - PUID=1000
+      # - PGID=1000
+      - TZ=Europe/London
+    secrets:
+      - pocket_id_encryption_key
+    volumes:
+      - /home/davepifive/DockerData/pocket-id/data:/app/data
+    healthcheck:
+      test: ["CMD", "/app/pocket-id", "healthcheck"]
+      interval: 90s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+    networks:
+      - traefik-internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-internal
+      - traefik.http.routers.pocket-id.rule=Host(`id.thehome.party`)
+      - traefik.http.routers.pocket-id.entrypoints=websecure
+      - traefik.http.routers.pocket-id.tls=true
+      - traefik.http.services.pocket-id.loadbalancer.server.port=1411
+      - glance.name=Pocket-ID
+      - glance.icon=sh:pocket-id
+      - glance.url=https://id.thehome.party
+      - glance.description=Pocket-ID Passkey Auth
+secrets:
+  pocket_id_encryption_key:
+    file: /home/davepifive/DockerData/pocket-id/secrets/pocket_id_encryption_key
+networks:
+  traefik-internal:
+    external: true
