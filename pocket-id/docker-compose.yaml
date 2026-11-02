@@ -7,6 +7,7 @@ services:
       - no-new-privileges:true
     read_only: true
     user: "1000:1000"
+    mem_limit: 64M
     environment:
       - APP_URL=https://id.thehome.party
       - TRUST_PROXY=10.10.3.128/25  # traefik-internal network range
