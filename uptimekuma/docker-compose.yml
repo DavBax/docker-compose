@@ -22,7 +22,7 @@ services:
       - "glance.url=https://uptimekuma.thehome.party"
       - "glance.description=Service Status"
     networks:
-      - default
+      - default  # required to reach monitored services outside of Pi5
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:

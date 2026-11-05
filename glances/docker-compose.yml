@@ -31,7 +31,7 @@ services:
       - "glance.url=https://glances.thehome.party"
       - "glance.description=System Peformance & Metrics"
     networks:
-      - default
+      # - default
       - traefik-internal
       - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
 networks:

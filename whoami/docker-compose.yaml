@@ -21,7 +21,7 @@ services:
       - "glance.url=https://whoami.thehome.party"
       - "glance.description=HTTP echo"
     networks:
-#      - default
+      # - default
       - traefik-internal
 
 networks:
