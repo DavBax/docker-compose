@@ -1,0 +1,76 @@
+# ~/docker-compose/filebrowser/docker-compose.yml
+# Config:  /home/davepifive/DockerData/filebrowser/data/config.yaml (must exist before first start)
+# Data:    /home/davepifive/DockerData/filebrowser/data/database.sqlite
+# Secrets: /home/davepifive/DockerData/filebrowser/secrets/{filebrowser_oidc_client_secret,filebrowser_jwt_token_secret,filebrowser_admin_password}
+# Upstream: https://github.com/gtsteffaniak/filebrowser (FileBrowser Quantum, stable track)
+
+services:
+  filebrowser-quantum:
+    image: ghcr.io/gtsteffaniak/filebrowser:2.0.2-stable-slim
+    container_name: filebrowser-quantum
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # mem_limit: 128M
+    user: "1000:1000"
+    # Quantum has no *_FILE support, so the wrapper reads each Docker secret into the env var Quantum expects.
+    # $$ stops compose interpolating; the shell sees a single $. $(cat) drops trailing newlines.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        export FILEBROWSER_OIDC_CLIENT_SECRET="$$(cat /run/secrets/filebrowser_oidc_client_secret)"
+        export FILEBROWSER_JWT_TOKEN_SECRET="$$(cat /run/secrets/filebrowser_jwt_token_secret)"
+        export FILEBROWSER_ADMIN_PASSWORD="$$(cat /run/secrets/filebrowser_admin_password)"
+        exec ./filebrowser
+    environment:
+      # OIDC values configured in config.yaml, but secrets must be passed via env vars.
+      - TZ=Europe/London
+    volumes:
+      - /home/davepifive/DockerData/filebrowser/data:/home/filebrowser/data  # config.yaml + database.sqlite
+      # Config sources: one mount per directory, each mapped to a source in config.yaml.
+      # Mount DIRECTORIES only. Each save writes a temp file and rename it, which fails on a single-file bind mount.
+      - /home/davepifive/DockerData/authelia/config:/srv/authelia
+      - /home/davepifive/DockerData/crowdsec/config:/srv/crowdsec
+      - /home/davepifive/DockerData/dashboard-glance/config:/srv/glance
+      - /home/davepifive/DockerData/dashy/config:/srv/dashy
+      - /home/davepifive/DockerData/glances/config:/srv/glances
+      - /home/davepifive/DockerData/grafana/provisioning:/srv/grafana/provisioning
+      - /home/davepifive/DockerData/grafana/data/dashboards:/srv/grafana/data/dashboards
+      - /home/davepifive/DockerData/traefik/dynamic:/srv/traefik/dynamic
+      - /home/davepifive/DockerData/traefik/config:/srv/traefik/config
+      - /home/davepifive/DockerData/traefik/plugins:/srv/traefik/plugins
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
+      - "traefik.http.routers.filebrowser.rule=Host(`filebrowser.thehome.party`)"
+      - "traefik.http.routers.filebrowser.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser.tls=true"
+      - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
+      - "glance.name=File Browser Quantum"
+      - "glance.icon=sh:filebrowser-quantum"
+      - "glance.url=https://filebrowser.thehome.party"
+      - "glance.description=File editor"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:80/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    secrets:
+      - filebrowser_admin_password
+      - filebrowser_jwt_token_secret
+      - filebrowser_oidc_client_secret
+    networks:
+      - default  # egress, to reach https://sso.thehome.party for OIDC discovery
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true
+secrets:
+  filebrowser_admin_password:
+    file: /home/davepifive/DockerData/filebrowser/secrets/filebrowser_admin_password
+  filebrowser_jwt_token_secret:
+    file: /home/davepifive/DockerData/filebrowser/secrets/filebrowser_jwt_token_secret
+  filebrowser_oidc_client_secret:
+    file: /home/davepifive/DockerData/filebrowser/secrets/filebrowser_oidc_client_secret
