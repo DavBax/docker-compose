@@ -49,7 +49,7 @@ services:
       - gotify_def_user_pass
       - gotify_oidc_client_secret
     networks:
-      # - default
+      - default  # Required for gotify to reach https://sso.thehome.party for OIDC auth
       - traefik-internal
 networks:
   traefik-internal:
