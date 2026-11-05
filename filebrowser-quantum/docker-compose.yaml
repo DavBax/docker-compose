@@ -24,7 +24,7 @@ services:
         export FILEBROWSER_ADMIN_PASSWORD="$$(cat /run/secrets/filebrowser_admin_password)"
         exec ./filebrowser
     environment:
-      # OIDC values configured in config.yaml, but secrets must be passed via env vars.
+      # OIDC values are configured in config.yaml, but secrets must be passed via env vars.
       - TZ=Europe/London
     volumes:
       - /home/davepifive/DockerData/filebrowser/data:/home/filebrowser/data  # config.yaml + database.sqlite
