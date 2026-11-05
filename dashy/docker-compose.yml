@@ -11,7 +11,7 @@ services:
       - no-new-privileges:true
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
-      - /home/davepifive/DockerData/dashy/conf.yml:/app/user-data/conf.yml
+      - /home/davepifive/DockerData/dashy:/app/user-data
       # SSL certs are required to enable the HTTPS server on port 4001:443, even though accessing via reverse proxy
       # - '/home/dave/certs/privkey1.pem:/etc/ssl/certs/dashy-priv.key'
       # - '/home/dave/certs/cert1.pem:/etc/ssl/certs/dashy-pub.pem'
