@@ -33,7 +33,7 @@ services:
       - /home/davepifive/DockerData/authelia/config:/srv/authelia
       - /home/davepifive/DockerData/crowdsec/config:/srv/crowdsec
       - /home/davepifive/DockerData/dashboard-glance/config:/srv/glance
-      - /home/davepifive/DockerData/dashy/config:/srv/dashy
+      - /home/davepifive/DockerData/dashy:/srv/dashy
       - /home/davepifive/DockerData/glances/config:/srv/glances
       - /home/davepifive/DockerData/grafana/provisioning:/srv/grafana/provisioning
       - /home/davepifive/DockerData/grafana/data/dashboards:/srv/grafana/data/dashboards
