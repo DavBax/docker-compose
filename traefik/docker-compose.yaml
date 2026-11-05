@@ -62,7 +62,7 @@ services:
       - '0.0.0.0:80:80'
       - '0.0.0.0:443:443'
     volumes:
-      - /home/davepifive/DockerData/traefik/config/traefik.yml:/etc/traefik/traefik.yml:ro  # Static Traefik Configuration
+      - /home/davepifive/DockerData/traefik/config:/etc/traefik:ro  # Static Traefik Configuration
       - /home/davepifive/DockerData/traefik/dynamic/:/etc/traefik/dynamic/:ro  # Folder to store dynamic configuration file provider
       # - ./config/authusers.txt:/etc/traefik/authusers.txt:ro  # userfile for basic auth
       # - ./config/acme/acme.json:/etc/traefik/acme.json  # certificate storage
