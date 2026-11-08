@@ -68,6 +68,7 @@ services:
       # - ./config/acme/acme.json:/etc/traefik/acme.json  # certificate storage
       - /home/davepifive/DockerData/traefik/letsencrypt/acme.json:/letsencrypt/acme.json  # certificate storage
       - /home/davepifive/DockerData/traefik/plugins:/plugins-storage
+      - /home/davepifive/DockerData/traefik/signals:/signals  # poison-pill restart signal from Traefik Manager
     labels:
       - "traefik.enable=true"  # traefik.yml sets "exposedByDefault: false", so every container is ignored, unless this line is present
       - "traefik.docker.network=traefik-internal"  # tells the container which network to use for traefik traffic
@@ -84,8 +85,9 @@ services:
       - "glance.url=https://traefik.thehome.party"
       - "glance.description=Reverse Proxy"
     healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping", "--ping.entrypoint=web"]
-      interval: 10s
+      #  test: ["CMD", "traefik", "healthcheck", "--ping", "--ping.entrypoint=web"]
+      test: ["CMD-SHELL", "if [ -f /signals/restart.sig ]; then rm -f /signals/restart.sig; kill -TERM 1; exit 0; fi; traefik healthcheck --ping --ping.entrypoint=web"]
+      interval: 5s
       timeout: 5s
       retries: 3
       start_period: 5s

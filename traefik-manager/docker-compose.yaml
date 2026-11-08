@@ -1,0 +1,71 @@
+# ~/docker-compose/traefik-manager/docker-compose.yaml
+# Config:  /home/davepifive/DockerData/traefik-manager/config (manager.yml + generated keys; back up .otp_key)
+# Backups: /home/davepifive/DockerData/traefik-manager/backups
+# Signals: /home/davepifive/DockerData/traefik/signals (shared with Traefik; needs the poison-pill healthcheck in the Traefik compose)
+# Secrets: /home/davepifive/DockerData/traefik-manager/secrets/traefik_manager_oidc_client_secret
+# Upstream: https://github.com/chr0nzz/traefik-manager
+
+services:
+  traefik-manager:
+    image: ghcr.io/chr0nzz/traefik-manager:1.15.5
+    container_name: traefik-manager
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256M
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        export OIDC_CLIENT_SECRET="$$(cat /run/secrets/traefik_manager_oidc_client_secret)"
+        exec /app/scripts/docker-entrypoint.sh gunicorn --config /app/gunicorn.conf.py app:app
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+      - COOKIE_SECURE=true
+      - TRAEFIK_API_URL=http://traefik:8080
+      - CONFIG_DIR=/app/config/traefik
+      - STATIC_CONFIG_PATH=/app/traefik-config/traefik.yml
+      - ACME_JSON_PATH=/letsencrypt/acme.json
+      - DOMAINS=thehome.party
+      - CERT_RESOLVER=cloudflare
+      # Poison-pill restart: writes the signal file, Traefik's healthcheck sees it and SIGTERMs PID 1
+      - RESTART_METHOD=poison-pill
+      - SIGNAL_FILE_PATH=/signals/restart.sig
+      - OIDC_ENABLED=true
+      - OIDC_PROVIDER_URL=https://sso.thehome.party
+      - OIDC_CLIENT_ID=traefik-manager
+      - OIDC_DISPLAY_NAME=Authelia
+      - OIDC_REDIRECT_URI=https://traefik-manager.thehome.party/auth/oidc/callback
+      - OIDC_ALLOWED_GROUPS=admins  # both allow-lists empty = every login denied
+    volumes:
+      - /home/davepifive/DockerData/traefik-manager/config:/app/config
+      - /home/davepifive/DockerData/traefik-manager/backups:/app/backups
+      # Mount DIRECTORIES only (rename-on-save leaves single-file mounts stale).
+      - /home/davepifive/DockerData/traefik/dynamic:/app/config/traefik
+      - /home/davepifive/DockerData/traefik/config:/app/traefik-config
+      - /home/davepifive/DockerData/traefik/letsencrypt:/letsencrypt
+      - /home/davepifive/DockerData/traefik/signals:/signals  # poison-pill signal file, shared with Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
+      - "traefik.http.routers.traefik-manager.rule=Host(`traefik-manager.thehome.party`)"
+      - "traefik.http.routers.traefik-manager.entrypoints=websecure"
+      - "traefik.http.routers.traefik-manager.tls=true"
+      - "traefik.http.services.traefik-manager.loadbalancer.server.port=5000"
+      - "glance.name=Traefik Manager"
+      - "glance.icon=sh:traefik-manager"
+      - "glance.url=https://traefik-manager.thehome.party"
+      - "glance.description=Traefik route manager"
+    secrets:
+      - traefik_manager_oidc_client_secret
+    networks:
+      - default  # egress: OIDC discovery, GeoIP download, release checks
+      - traefik-internal
+networks:
+  traefik-internal:
+    external: true
+secrets:
+  traefik_manager_oidc_client_secret:
+    file: /home/davepifive/DockerData/traefik-manager/secrets/traefik_manager_oidc_client_secret
