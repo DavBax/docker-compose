@@ -54,8 +54,8 @@ services:
       - crowdsec_web_ui_oidc_client_secret
     networks:
       - default  # egress: OIDC, NVD (CVE rules), notification destinations
-      - traefik-internal  # Traefik -> UI, and UI -> LAPI (crowdsec is also on this network)
-      - crowdsec-lapi  # UI -> LAPI (crowdsec is also on this network)
+      - traefik-internal  # Traefik -> UI
+      - crowdsec-lapi  # UI -> LAPI (crowdsec's config.yaml trusts this network's IP range)
 networks:
   traefik-internal:
     external: true
