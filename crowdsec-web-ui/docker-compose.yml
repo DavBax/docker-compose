@@ -24,9 +24,11 @@ services:
       CONFIG_INSTANCE_METRICS_URL: http://crowdsec:6060/metrics
       CONFIG_UPDATES_ENABLED: "false"  # Renovate does this
       # Optional: OIDC via Authelia. Callback: https://crowdsec-ui.thehome.party/api/auth/oidc/callback
+      CONFIG_AUTH_PASSWORD_LOGIN_ENABLED: "false"  # disable local password login, only OIDC
       CONFIG_AUTH_OIDC_ISSUER_URL: https://sso.thehome.party
       CONFIG_AUTH_OIDC_CLIENT_ID: crowdsec-web-ui
       CONFIG_AUTH_OIDC_CLIENT_SECRET_FILE: /run/secrets/crowdsec_web_ui_oidc_client_secret
+      CONFIG_AUTH_OIDC_SCOPE: openid profile email groups
       CONFIG_AUTH_OIDC_ADMIN_GROUPS: '[admins]'
       CONFIG_AUTH_OIDC_UNMATCHED_ROLE: deny
     volumes:
@@ -39,7 +41,7 @@ services:
       - "traefik.http.routers.crowdsec-web-ui.entrypoints=websecure"
       - "traefik.http.routers.crowdsec-web-ui.tls=true"
       - "traefik.http.services.crowdsec-web-ui.loadbalancer.server.port=3000"
-      - "traefik.http.routers.crowdsec-web-ui.middlewares=authelia@docker"
+      # - "traefik.http.routers.crowdsec-web-ui.middlewares=authelia@docker"
       # - "traefik.http.routers.crowdsec-web-ui.middlewares=authelia@docker,crowdsec@file"
       # Glance
       - "glance.name=CrowdSec Web UI"
