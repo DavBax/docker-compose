@@ -7,7 +7,6 @@ services:
   freshrss:
     image: ghcr.io/freshrss/freshrss:1.30.4
     container_name: freshrss
-    hostname: freshrss
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
