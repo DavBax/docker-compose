@@ -11,10 +11,8 @@ services:
     mem_limit: 256M
     environment:
       - TZ=Europe/London
-      - COLLECTIONS=crowdsecurity/traefik
-      - COLLECTIONS=crowdsecurity/appsec-virtual-patching
-      - COLLECTIONS=crowdsecurity/appsec-crs-inband
-      - COLLECTIONS=crowdsecurity/appsec-generic-rules
+      - COLLECTIONS=crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs-inband crowdsecurity/appsec-generic-rules
+      - PARSERS=crowdsecurity/geoip-enrich  # country/ASN/coords on source IPs; downloads GeoLite2 mmdb files into the data volume
       # - BOUNCER_KEY_traefik=${BOUNCER_KEY_traefik}
       - DOCKER_HOST=tcp://socket-proxy-readonly-wm:2375
     volumes:
