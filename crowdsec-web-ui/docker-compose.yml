@@ -1,0 +1,66 @@
+# ~/docker-compose/crowdsec-web-ui/docker-compose.yml
+# Data:    /home/davepifive/DockerData/crowdsec-web-ui/data   (state.db, cache.db, config.yaml)
+# Secrets: /home/davepifive/DockerData/crowdsec-web-ui/secrets/crowdsec_web_ui_password
+# Upstream: https://github.com/TheDuffman85/crowdsec-web-ui/blob/main/docker-compose.yml
+# Needs a CrowdSec machine ("watcher") registered first, see notes in chat.
+
+services:
+  crowdsec-web-ui:
+    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.11.6
+    container_name: crowdsec-web-ui
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256M
+    logging:
+      options:
+        max-size: 10m
+    user: "1000:1000"
+    environment:
+      TZ: Europe/London
+      CONFIG_INSTANCE_LAPI_URL: http://crowdsec-lapi:8080
+      CONFIG_INSTANCE_LAPI_AUTH_USERNAME: crowdsec-web-ui
+      CONFIG_INSTANCE_LAPI_AUTH_PASSWORD_FILE: /run/secrets/crowdsec_web_ui_password
+      CONFIG_INSTANCE_METRICS_URL: http://crowdsec:6060/metrics
+      CONFIG_UPDATES_ENABLED: "false"  # Renovate does this
+      # Optional: OIDC via Authelia. Callback: https://crowdsec-ui.thehome.party/api/auth/oidc/callback
+      CONFIG_AUTH_OIDC_ISSUER_URL: https://sso.thehome.party
+      CONFIG_AUTH_OIDC_CLIENT_ID: crowdsec-web-ui
+      CONFIG_AUTH_OIDC_CLIENT_SECRET_FILE: /run/secrets/crowdsec_web_ui_oidc_client_secret
+      CONFIG_AUTH_OIDC_ADMIN_GROUPS: '[admins]'
+      CONFIG_AUTH_OIDC_UNMATCHED_ROLE: deny
+    volumes:
+      - /home/davepifive/DockerData/crowdsec-web-ui/data:/app/data
+    labels:
+      # Traefik
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-internal"
+      - "traefik.http.routers.crowdsec-web-ui.rule=Host(`crowdsec-ui.thehome.party`)"  # hostname?
+      - "traefik.http.routers.crowdsec-web-ui.entrypoints=websecure"
+      - "traefik.http.routers.crowdsec-web-ui.tls=true"
+      - "traefik.http.services.crowdsec-web-ui.loadbalancer.server.port=3000"
+      - "traefik.http.routers.crowdsec-web-ui.middlewares=authelia@docker"
+      # - "traefik.http.routers.crowdsec-web-ui.middlewares=authelia@docker,crowdsec@file"
+      # Glance
+      - "glance.name=CrowdSec Web UI"
+      - "glance.icon=sh:crowdsec"
+      - "glance.url=https://crowdsec-ui.thehome.party"
+      - "glance.description=CrowdSec alerts and decisions"
+      # - "glance.parent=crowdsec"  # needs glance.id=crowdsec on the crowdsec service
+    secrets:
+      - crowdsec_web_ui_password
+      - crowdsec_web_ui_oidc_client_secret
+    networks:
+      - default  # egress: OIDC, NVD (CVE rules), notification destinations
+      - traefik-internal  # Traefik -> UI, and UI -> LAPI (crowdsec is also on this network)
+      - crowdsec-lapi  # UI -> LAPI (crowdsec is also on this network)
+networks:
+  traefik-internal:
+    external: true
+  crowdsec-lapi:
+    external: true
+secrets:
+  crowdsec_web_ui_password:
+    file: /home/davepifive/DockerData/crowdsec-web-ui/secrets/crowdsec_web_ui_password
+  crowdsec_web_ui_oidc_client_secret:
+    file: /home/davepifive/DockerData/crowdsec-web-ui/secrets/crowdsec_web_ui_oidc_client_secret

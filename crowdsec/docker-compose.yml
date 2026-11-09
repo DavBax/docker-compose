@@ -25,15 +25,24 @@ services:
       - "glance.description=WAF + Blocklists"
     secrets:
       - bouncer_key_traefik  # the image's entrypoint matches on "bouncher_key_<name>" to auto-register a bouncer on boot
-    networks:
-      - default  # required to reach Crowdsec console
-      - traefik-internal
-      - wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net
+    networks:  # no "dashes" because they are now map format (using {}), not list format
+      default: {}  # required to reach Crowdsec console
+      traefik-internal: {}
+      wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net: {}
+      crowdsec-lapi:
+        aliases:
+          - crowdsec-lapi  # required for crowdsec-web-ui to reach the LAPI
 networks:
   traefik-internal:
     external: true
   wollomatic-socket-proxy-readonly_socket-proxy-readonly-wm-net:
     external: true
+  crowdsec-lapi:
+    name: crowdsec-lapi   # fixed name, otherwise compose prefixes the project name
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.4.0/28
 secrets:
   bouncer_key_traefik:
     file: /home/davepifive/DockerData/crowdsec/secrets/bouncer_key_traefik
