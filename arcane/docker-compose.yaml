@@ -11,18 +11,18 @@ services:
     mem_limit: 256M
     environment:
       - TZ=Europe/London
-      - APP_URL=https://arcane.thehome.party
+      - ARCANE_APP_URL=https://arcane.thehome.party
       - PUID="1000"
       - PGID="1000"
-      - PROJECTS_DIRECTORY=/home/davepifive/docker-compose
-      - ENCRYPTION_KEY_FILE=/run/secrets/arcane_encryption_key
+      - ARCANE_PROJECTS_DIRECTORY=/home/davepifive/docker-compose
+      - ARCANE_ENCRYPTION_KEY_FILE=/run/secrets/arcane_encryption_key
       - DOCKER_HOST=tcp://socket-proxy-management:2375
-      - OIDC_ENABLED='true'
-      - OIDC_ISSUER_URL='https://sso.thehome.party'
-      - OIDC_CLIENT_ID='arcane'
-      - OIDC_CLIENT_SECRET_FILE=/run/secrets/arcane_oidc_client_secret
-      - OIDC_SCOPES='openid email profile'
-      - OIDC_MERGE_ACCOUNTS='true'
+      - ARCANE_OIDC_ENABLED='true'
+      - ARCANE_OIDC_ISSUER_URL='https://sso.thehome.party'
+      - ARCANE_OIDC_CLIENT_ID='arcane'
+      - ARCANE_OIDC_CLIENT_SECRET_FILE=/run/secrets/arcane_oidc_client_secret
+      - ARCANE_OIDC_SCOPES='openid email profile'
+      - ARCANE_OIDC_MERGE_ACCOUNTS='true'
       - OTEL_METRICS_EXPORTER=prometheus
       - OTEL_EXPORTER_PROMETHEUS_HOST=0.0.0.0
     secrets:
