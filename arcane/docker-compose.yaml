@@ -12,7 +12,7 @@ services:
     environment:
       - TZ=Europe/London
       - ARCANE_APP_URL=https://arcane.thehome.party
-      - ARCANE_LOG_LEVEL=debug
+      # - ARCANE_LOG_LEVEL=debug
       - PUID="1000"
       - PGID="1000"
       - ARCANE_PROJECTS_DIRECTORY=/home/davepifive/docker-compose
