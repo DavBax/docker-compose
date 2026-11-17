@@ -1,0 +1,42 @@
+services:
+  readeck:
+    image: codeberg.org/readeck/readeck:0.23.5
+    container_name: readeck
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    # mem_limit: 64M
+    ports:
+      - 8000:8000
+    environment:
+      READECK_LOG_LEVEL: info
+      READECK_SERVER_HOST: "0.0.0.0"  # The IP address on which Readeck listens.
+      READECK_SERVER_PORT: 8000
+      READECK_LOG_FORMAT: json
+      READECK_SERVER_BASE_URL: "https://readeck.thehome.party"
+      READECK_TRUSTED_PROXIES: "10.10.3.128/25"  # traefik-internal network range
+    networks:
+      - default
+      - traefik-internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-internal
+      - traefik.http.routers.readeck.rule=Host(`readeck.thehome.party`)
+      - traefik.http.routers.readeck.entrypoints=websecure
+      - traefik.http.routers.readeck.tls=true
+      - traefik.http.services.readeck.loadbalancer.server.port=8000
+      - glance.name=Readeck
+      - glance.icon=sh:readdeck
+      - glance.url=https://readeck.thehome.party
+      - glance.description=RSS and Bookmarks
+  volumes:
+      - /home/davepifive/DockerData/readeck/data:/readeck
+  healthcheck:
+      test: ["CMD", "/bin/readeck", "healthcheck", "-config", "config.toml"]
+      interval: 30s
+      timeout: 2s
+      retries: 3
+networks:
+  traefik-internal:
+    external: true
