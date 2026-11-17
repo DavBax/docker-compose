@@ -23,7 +23,7 @@ services:
       start_period: 10s
 
   paperless-webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.4.2
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.5.0
     container_name: paperless-webserver
     restart: unless-stopped
     security_opt:
@@ -89,7 +89,7 @@ services:
 
   # --- Optional: uncomment for Office-doc / .eml OCR support ---
   paperless-gotenberg:
-    image: index.docker.io/gotenberg/gotenberg:9.5.1
+    image: index.docker.io/gotenberg/gotenberg:9.6.0
     container_name: paperless-gotenberg
     restart: unless-stopped
     security_opt:
