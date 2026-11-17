@@ -7,8 +7,12 @@ services:
       - no-new-privileges:true
     user: "1000:1000"
     # mem_limit: 64M
-    ports:
-      - 8000:8000
+    secrets:
+      - readeck_oidc_client_secret
+    command:
+      - /bin/sh
+      - -c
+      - 'export READECK_AUTH_OIDC_PROVIDERS_1_CLIENT_SECRET="$$(cat /run/secrets/readeck_oidc_client_secret)"; exec /bin/readeck serve -config config.toml'
     environment:
       READECK_LOG_LEVEL: info
       READECK_SERVER_HOST: "0.0.0.0"  # The IP address on which Readeck listens.
@@ -16,6 +20,12 @@ services:
       READECK_LOG_FORMAT: json
       READECK_SERVER_BASE_URL: "https://readeck.thehome.party"
       READECK_TRUSTED_PROXIES: "10.10.3.128/25"  # traefik-internal network range
+      TZ: Europe/London
+      READECK_ALLOWED_HOSTS: readeck.thehome.party
+      READECK_AUTH_OIDC_PROVIDERS_1_NAME: Authelia
+      READECK_AUTH_OIDC_PROVIDERS_1_URL: https://sso.thehome.party
+      READECK_AUTH_OIDC_PROVIDERS_1_CLIENT_ID: readeck
+      READECK_AUTH_OIDC_PROVIDERS_1_GROUPS: "admins=admin users=user"
     networks:
       - default
       - traefik-internal
@@ -40,3 +50,6 @@ services:
 networks:
   traefik-internal:
     external: true
+secrets:
+  readeck_oidc_client_secret:
+    file: /home/davepifive/DockerData/readeck/secrets/oidc_client_secret
