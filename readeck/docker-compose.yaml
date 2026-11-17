@@ -52,4 +52,4 @@ networks:
     external: true
 secrets:
   readeck_oidc_client_secret:
-    file: /home/davepifive/DockerData/readeck/secrets/oidc_client_secret
+    file: /home/davepifive/DockerData/readeck/secrets/readeck_oidc_client_secret
