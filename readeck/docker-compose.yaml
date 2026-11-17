@@ -21,7 +21,7 @@ services:
       READECK_SERVER_BASE_URL: "https://readeck.thehome.party"
       READECK_TRUSTED_PROXIES: "10.10.3.128/25"  # traefik-internal network range
       TZ: Europe/London
-      READECK_ALLOWED_HOSTS: readeck.thehome.party
+      READECK_ALLOWED_HOSTS: readeck.thehome.party,localhost,127.0.0.1
       READECK_AUTH_OIDC_PROVIDERS_1_NAME: Authelia
       READECK_AUTH_OIDC_PROVIDERS_1_URL: https://sso.thehome.party
       READECK_AUTH_OIDC_PROVIDERS_1_CLIENT_ID: readeck
