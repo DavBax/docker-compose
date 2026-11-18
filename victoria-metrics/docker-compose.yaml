@@ -192,6 +192,11 @@ services:
       - GOTIFY_TOKEN=${gotify_token}
       - GOTIFY_ENDPOINT=http://gotify:80/message
       - EXTENDED_DETAILS=true
+    labels:
+      - "glance.name=Alertmanager-Gotify-Bridge"
+      - "glance.parent=victoriametrics"
+      - "glance.icon=sh:gotify"
+      - "glance.description=Alerts to Gotify"
     networks:
       - traefik-internal
 secrets:
