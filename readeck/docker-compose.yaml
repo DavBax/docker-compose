@@ -37,9 +37,9 @@ services:
       - traefik.http.routers.readeck.tls=true
       - traefik.http.services.readeck.loadbalancer.server.port=8000
       - glance.name=Readeck
-      - glance.icon=sh:readdeck
+      - glance.icon=sh:readeck
       - glance.url=https://readeck.thehome.party
-      - glance.description=RSS and Bookmarks
+      - glance.description=Bookmarks & Read-it-Later
     volumes:
       - /home/davepifive/DockerData/readeck/data:/readeck
     # healthcheck:
