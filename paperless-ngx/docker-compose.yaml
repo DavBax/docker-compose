@@ -1,6 +1,6 @@
 services:
   paperless-broker:
-    image: index.docker.io/valkey/valkey:9.1.4-alpine
+    image: index.docker.io/valkey/valkey:9.2.0-alpine
     container_name: paperless-broker
     restart: unless-stopped
     user: '1000:1000'
