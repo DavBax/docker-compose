@@ -1,7 +1,7 @@
 services:
   dynacat:
     container_name: dynacat
-    image: ghcr.io/panonim/dynacat:3.0.2
+    image: ghcr.io/panonim/dynacat:3.0.3
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
