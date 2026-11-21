@@ -42,11 +42,6 @@ services:
       - glance.description=Bookmarks & Read-it-Later
     volumes:
       - /home/davepifive/DockerData/readeck/data:/readeck
-    # healthcheck:
-      # test: ["CMD", "/bin/readeck", "healthcheck", "-config", "config.toml"]
-      # interval: 30s
-      # timeout: 2s
-      # retries: 3
 networks:
   traefik-internal:
     external: true
