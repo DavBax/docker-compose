@@ -5,7 +5,7 @@
 
 services:
   freshrss:
-    image: ghcr.io/freshrss/freshrss:1.30.4
+    image: ghcr.io/freshrss/freshrss:1.31.0
     container_name: freshrss
     restart: unless-stopped
     security_opt:
