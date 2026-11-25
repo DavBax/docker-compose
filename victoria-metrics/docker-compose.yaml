@@ -151,7 +151,7 @@ services:
   # alertmanager - receives firing alerts from vmalert, routes notifications.
   # ---------------------------------------------------------------------------
   alertmanager:
-    image: index.docker.io/prom/alertmanager:v0.35.0
+    image: index.docker.io/prom/alertmanager:v0.35.1
     container_name: alertmanager
     user: "1000:1000"
     restart: unless-stopped
