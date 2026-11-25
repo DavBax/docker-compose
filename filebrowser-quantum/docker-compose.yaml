@@ -6,7 +6,7 @@
 
 services:
   filebrowser-quantum:
-    image: ghcr.io/gtsteffaniak/filebrowser:2.0.2-stable-slim
+    image: ghcr.io/gtsteffaniak/filebrowser:2.1.0-stable-slim
     container_name: filebrowser-quantum
     restart: unless-stopped
     security_opt:
