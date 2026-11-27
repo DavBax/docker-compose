@@ -1,6 +1,6 @@
 services:
   paperless-broker:
-    image: index.docker.io/valkey/valkey:9.2.0-alpine
+    image: index.docker.io/valkey/valkey:9.2.1-alpine
     container_name: paperless-broker
     restart: unless-stopped
     user: '1000:1000'
@@ -89,7 +89,7 @@ services:
 
   # --- Optional: uncomment for Office-doc / .eml OCR support ---
   paperless-gotenberg:
-    image: index.docker.io/gotenberg/gotenberg:9.10.1
+    image: index.docker.io/gotenberg/gotenberg:9.10.2
     container_name: paperless-gotenberg
     restart: unless-stopped
     security_opt:
